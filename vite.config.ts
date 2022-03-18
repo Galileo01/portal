@@ -1,11 +1,12 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import vitePluginForArco from '@arco-plugins/vite-react' // 自动导入 arco 样式文件，按需引入
 
 const { resolve } = require('path')
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), vitePluginForArco()],
   resolve: {
     // 配置路径 别名
     alias: [

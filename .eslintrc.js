@@ -43,5 +43,7 @@ module.exports = {
     ],
     // 关闭 对文件扩展名的 校验
     'import/extensions': 'off',
+    // 关闭对于 组件可选prop 的默认值必须 检测
+    'react/require-default-props': 'off',
   },
 }
