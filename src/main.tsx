@@ -6,14 +6,11 @@ import 'normalize.css'
 
 import './index.css'
 import App from './App'
-import { EditerDataProvider } from './store/editer-data'
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <EditerDataProvider>
-        <App />
-      </EditerDataProvider>
+      <App />
     </Router>
   </React.StrictMode>,
   document.getElementById('root')

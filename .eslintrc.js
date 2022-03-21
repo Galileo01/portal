@@ -43,7 +43,15 @@ module.exports = {
     ],
     // 关闭 对文件扩展名的 校验
     'import/extensions': 'off',
-    // 关闭对于 组件可选prop 的默认值必须 检测
+    // 关闭 组件可选prop 的必须传递 默认值  的报错
     'react/require-default-props': 'off',
+    // 添加 snake_case 命名规则 到 naming-convention
+    '@typescript-eslint/naming-convention': [
+      'error',
+      {
+        selector: 'variable',
+        format: ['camelCase', 'PascalCase', 'UPPER_CASE', 'snake_case'],
+      },
+    ],
   },
 }
