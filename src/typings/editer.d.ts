@@ -1,16 +1,17 @@
-export type Component = {
-  component: string // 组件名称 ：Swiper 唯一
-  // name: string // 中文
-  id: string
+import { ResourceComponent } from './resosurce-component'
+
+export type ComponentDataItem = {
+  id: string // 组件唯一id  拖拽时 动态生成
+  resourceComponent: ResourceComponent
 }
 
-export type ComponentList = Component[]
+export type ComponentDataList = ComponentDataItem[]
 
 export type EditerData = {
   // 快照列表 最大程度为 5
-  snapshotList: ComponentList[]
+  snapshotList: ComponentDataList[]
   // 当前快照 所在的位置
   currentSnapshotIndex: number
-  // 当前组件信息
-  componenList: ComponentList
+  // 当前组件列表
+  componenDataList: ComponentDataList
 }

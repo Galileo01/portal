@@ -1,20 +1,21 @@
-import { ResourceComponent } from '@/typings/resosurce-component'
+import {
+  ResourceComponent,
+  ComponentCategoryEnum,
+} from '@/typings/resosurce-component'
 
-import Nav from './nav'
-
+import navComponentConfig from './nav/config'
+import navTestComponentConfig from './nav_test/config'
 /**
  * TODO:
  *  1.previewImg  转为 服务器存储 url
  */
-const componentsList: ResourceComponent[] = [
-  {
-    name: '导航',
-    key: 'nav',
-    previewImg:
-      'https://gw.alipayobjects.com/mdn/rms_ae7ad9/afts/img/A*luthRonCYuQAAAAAAAAAAABkARQnAQ',
-    category: 'navigation',
-    component: Nav,
-  },
+// 所有组件列表
+export const componentsList: ResourceComponent[] = [
+  navComponentConfig,
+  navTestComponentConfig,
 ]
 
-export default componentsList
+// 导航类组件
+export const navCateComponents = componentsList.filter(
+  (component) => component.category === ComponentCategoryEnum.NAVIGATION
+)

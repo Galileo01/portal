@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 
 import { Select } from '@arco-design/web-react'
 import { IconSun, IconMoon, IconDesktop } from '@arco-design/web-react/icon'

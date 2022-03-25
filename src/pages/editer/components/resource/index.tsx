@@ -1,9 +1,7 @@
-import React from 'react'
+import * as React from 'react'
 
 import { Layout, Tabs, Popover } from '@arco-design/web-react'
 import { IconCodeSandbox, IconApps } from '@arco-design/web-react/icon'
-
-import useDevLogger from '@/common/hooks/useDevLogger'
 
 import styles from './index.module.less'
 
@@ -15,8 +13,6 @@ const { Sider } = Layout
 const Resource = () => {
   const [collapsed, setCollapsed] = React.useState(true)
   const [activeTab, setActiveTab] = React.useState('component')
-
-  const devLogger = useDevLogger()
 
   const handleCollapse = (collapse: boolean) => {
     setCollapsed(collapse)
@@ -35,15 +31,13 @@ const Resource = () => {
     }
   }
 
-  devLogger('handleTabClick', '666')
-
   return (
     <Sider
       collapsible
       collapsed={collapsed}
       onCollapse={handleCollapse}
       breakpoint="lg"
-      width={300}
+      width={350}
     >
       <Tabs
         direction="vertical"

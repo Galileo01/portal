@@ -1,7 +1,7 @@
-import React from 'react'
+import * as React from 'react'
 
-import { Button, Space } from '@arco-design/web-react'
-import { IconRedo, IconUndo } from '@arco-design/web-react/icon'
+import { Button, Space, Popover } from '@arco-design/web-react'
+import { IconRedo, IconUndo, IconInfoCircle } from '@arco-design/web-react/icon'
 import clsx from 'clsx'
 import { useSearchParams, useHref } from 'react-router-dom'
 
@@ -11,49 +11,46 @@ import {
   useEditerDataStore,
   useEditerDataDispatch,
   EditerDataActionEnum,
+  MAX_LENGTH,
 } from '@/store/editer-data'
 import { ROUTE_PAGE } from '@/common/constant/route'
-import useDevLogger from '@/common/hooks/useDevLogger'
+import { devLogger } from '@/common/utils'
 
 import styles from './index.module.less'
 
+// TODO: 预览器 尺寸改变 ?
 const ToolBar = () => {
   const [params] = useSearchParams()
   const href = useHref(
     `${ROUTE_PAGE}?page_id=${params.get('page_id')}&is_preview=1`
   )
 
-  const devLogger = useDevLogger('tool-bar')
-
   const { snapshotList, currentSnapshotIndex } = useEditerDataStore()
   const editDataDispatch = useEditerDataDispatch()
 
   const canSnapshotBack = currentSnapshotIndex > 0
   const canSnapshotForward =
-    currentSnapshotIndex > 0 && currentSnapshotIndex < snapshotList.length - 1
+    currentSnapshotIndex > -1 && currentSnapshotIndex < snapshotList.length - 1
 
   const handleSnapshotBack = () => {
     if (canSnapshotBack) {
       editDataDispatch({
-        type: EditerDataActionEnum.SET_CURRENT_INDEX,
-        payload: currentSnapshotIndex - 1,
+        type: EditerDataActionEnum.BACK,
       })
-      devLogger('handleSnapshotBack')
+      devLogger('tool-bar', 'handleSnapshotBack')
     }
   }
 
   const handleSnapshotForward = () => {
     if (canSnapshotForward) {
       editDataDispatch({
-        type: EditerDataActionEnum.SET_CURRENT_INDEX,
-        payload: currentSnapshotIndex + 1,
+        type: EditerDataActionEnum.FORWARD,
       })
-      devLogger('handleSnapshotForward')
+      devLogger('tool-bar', 'handleSnapshotForward')
     }
   }
 
   const handlePreviewClick = () => {
-    devLogger('href', href)
     window.open(href, '_blank')
   }
 
@@ -62,6 +59,7 @@ const ToolBar = () => {
       <Logo size={50} className={styles.circle_logo} />
       <Space className={styles.btns} size="medium">
         <ThemeSwitch />
+
         <IconUndo
           className={clsx(
             styles.snapshot_btn,
@@ -69,6 +67,9 @@ const ToolBar = () => {
           )}
           onClick={handleSnapshotBack}
         />
+        <Popover content={`注意: 最多保存${MAX_LENGTH}个状态快照`}>
+          <IconInfoCircle className={styles.snapshot_btn} />
+        </Popover>
         <IconRedo
           className={clsx(
             styles.snapshot_btn,

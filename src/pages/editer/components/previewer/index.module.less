@@ -1,4 +1,9 @@
 .previewer {
   background-color: var(--color-text-4);
   height: 100%;
+
+  // 全局类名  务必和 src/common/constant/index.ts 文件 RESOURCE_COMPONENT_COMMON_CLASS 常量  保持一致
+  :global(.portal_resource_component) {
+    cursor: pointer;
+  }
 }
