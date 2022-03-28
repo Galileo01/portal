@@ -3,7 +3,8 @@ import * as React from 'react'
 import { Layout, Image } from '@arco-design/web-react'
 import clsx from 'clsx'
 
-import { RESOURCE_COMPONENT_COMMON_CLASS } from '@/common/constant'
+import { RESOURCE_COMPONENT_RENDERED_COMMON_CLASS } from '@/common/constant'
+import { CommonProps } from '@/typings/resosurce-component'
 
 import styles from './index.module.less'
 
@@ -19,19 +20,30 @@ export type NavProps = {
   }>
   height?: number
   className?: string
-}
+} & CommonProps
 
 // TEST: 用于 从测试的 源组件
 // TODO: 使用栅格系统 ，并暴露组件
 
 const Nav: React.FC<NavProps> = (props) => {
-  const { logoSrc, navList, className, height = DEFAULT_NAV_HEIGHT } = props
+  const {
+    logoSrc,
+    navList,
+    className,
+    height = DEFAULT_NAV_HEIGHT,
+    ...restProps
+  } = props
   return (
     <Header
-      className={clsx(styles.nav, className, RESOURCE_COMPONENT_COMMON_CLASS)}
+      className={clsx(
+        styles.nav,
+        className,
+        RESOURCE_COMPONENT_RENDERED_COMMON_CLASS
+      )}
       style={{
         height,
       }}
+      {...restProps}
     >
       <Image src={logoSrc} preview={false} height={height - 10} />
       <div className={styles.nav_list}>

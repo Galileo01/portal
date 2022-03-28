@@ -10,12 +10,12 @@ import navTestComponentConfig from './nav_test/config'
  *  1.previewImg  转为 服务器存储 url
  */
 // 所有组件列表
-export const componentsList: ResourceComponent[] = [
+export const RCList: ResourceComponent[] = [
   navComponentConfig,
   navTestComponentConfig,
 ]
 
 // 导航类组件
-export const navCateComponents = componentsList.filter(
+export const navCateComponents = RCList.filter(
   (component) => component.category === ComponentCategoryEnum.NAVIGATION
 )

@@ -1,11 +1,10 @@
 import * as React from 'react'
 
-import { Layout, Tabs, Popover } from '@arco-design/web-react'
+import { Layout, Tabs, Tooltip } from '@arco-design/web-react'
 import { IconCodeSandbox, IconApps } from '@arco-design/web-react/icon'
 
-import styles from './index.module.less'
-
 import ComponentPane from './components/component-pane'
+import styles from './index.module.less'
 
 const { TabPane } = Tabs
 const { Sider } = Layout
@@ -48,9 +47,9 @@ const Resource = () => {
         <TabPane
           key="component"
           title={
-            <Popover content="组件" position="right">
+            <Tooltip content="组件" position="right" mini>
               <IconCodeSandbox />
-            </Popover>
+            </Tooltip>
           }
         >
           <ComponentPane />
@@ -58,9 +57,9 @@ const Resource = () => {
         <TabPane
           key="template"
           title={
-            <Popover content="模板" position="right">
+            <Tooltip content="模板" position="right" mini>
               <IconApps />
-            </Popover>
+            </Tooltip>
           }
         >
           template

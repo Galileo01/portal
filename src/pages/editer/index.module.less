@@ -1,8 +1,25 @@
 .editer_container {
   height: 100vh;
+  // 覆盖  position  解决  tool-box 定位 错误
+  :global(.arco-image) {
+    position: static;
+  }
+  // 防止 arco-image-img 图片 元素 被拖拽
+  :global(.arco-image-img) {
+    -webkit-user-drag: none;
+  }
+  // 关闭 arco-layout-sider 的 过渡， 使 tool-box 的MutationObserver 及时更新
+  :global(.arco-layout-sider) {
+    transition: unset;
+  }
+
+  :global(.arco-layout-sider-trigger) {
+    transition: unset;
+  }
 }
 
 .content_container {
   margin-top: 4px;
   justify-content: space-between;
+  background-color: var(--color-bg-1);
 }

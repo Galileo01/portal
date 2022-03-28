@@ -4,7 +4,7 @@ import { Layout } from '@arco-design/web-react'
 
 import { EditerDataProvider } from '@/store/editer-data'
 
-import ToolBar from './components/tool-bar'
+import ToolNav from './components/tool-nav'
 import Resource from './components/resource'
 import Previewer from './components/previewer'
 import Prop from './components/prop'
@@ -16,7 +16,7 @@ const Editer = () => (
   <EditerDataProvider>
     <Layout className={styles.editer_container}>
       <Header>
-        <ToolBar />
+        <ToolNav />
       </Header>
       <Layout className={styles.content_container}>
         <Resource />

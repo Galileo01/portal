@@ -3,10 +3,10 @@ import {
   ComponentCategoryEnum,
 } from '@/typings/resosurce-component'
 
-import Nav, { NavProps } from './index'
+import Nav, { NavProps } from '../nav'
 
 const initProps: NavProps = {
-  logoSrc: 'https://zos.alipayobjects.com/rmsportal/nLzbeGQLPyBJoli.png',
+  logoSrc: 'https://zos.alipayobjects.com/rmsportal/gyseCGEPqWjQpYF.jpg',
   navList: [
     {
       title: 'bilibili',

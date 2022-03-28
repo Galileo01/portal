@@ -8,7 +8,6 @@ const Page = () => {
   const [params] = useSearchParams()
   const pageIdRef = React.useRef(params.get('page_id'))
   const isPreviewRef = React.useRef(Boolean(params.get('is_preview')))
-
   return (
     <div className={styles.about}>
       Page

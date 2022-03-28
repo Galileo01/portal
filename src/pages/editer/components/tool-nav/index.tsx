@@ -19,14 +19,14 @@ import { devLogger } from '@/common/utils'
 import styles from './index.module.less'
 
 // TODO: 预览器 尺寸改变 ?
-const ToolBar = () => {
+const ToolNav = () => {
   const [params] = useSearchParams()
   const href = useHref(
     `${ROUTE_PAGE}?page_id=${params.get('page_id')}&is_preview=1`
   )
 
   const { snapshotList, currentSnapshotIndex } = useEditerDataStore()
-  const editDataDispatch = useEditerDataDispatch()
+  const editerDataDispatch = useEditerDataDispatch()
 
   const canSnapshotBack = currentSnapshotIndex > 0
   const canSnapshotForward =
@@ -34,7 +34,7 @@ const ToolBar = () => {
 
   const handleSnapshotBack = () => {
     if (canSnapshotBack) {
-      editDataDispatch({
+      editerDataDispatch({
         type: EditerDataActionEnum.BACK,
       })
       devLogger('tool-bar', 'handleSnapshotBack')
@@ -43,7 +43,7 @@ const ToolBar = () => {
 
   const handleSnapshotForward = () => {
     if (canSnapshotForward) {
-      editDataDispatch({
+      editerDataDispatch({
         type: EditerDataActionEnum.FORWARD,
       })
       devLogger('tool-bar', 'handleSnapshotForward')
@@ -89,4 +89,4 @@ const ToolBar = () => {
   )
 }
 
-export default ToolBar
+export default ToolNav

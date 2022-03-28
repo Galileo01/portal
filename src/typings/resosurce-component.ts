@@ -1,5 +1,10 @@
 import * as React from 'react'
 
+export type CommonProps = {
+  id?: string
+  draggable?: boolean
+}
+
 export enum ComponentCategoryEnum {
   NAVIGATION = 'navigation',
   BANNER = 'banner',
@@ -28,9 +33,9 @@ export type ResourceComponent = {
   key: string
   category: ComponentCategoryEnum
   previewImg: string
-  component: React.FC<unknown>
+  component: React.FC<CommonProps>
   // 组件 需要的props ,  使用 jsonSchema 进行 描述
-  propsSchema: unknown
+  propsSchema: object
   // 组件 的 初始 props
-  initProps: unknown
+  initProps: object
 }

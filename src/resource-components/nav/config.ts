@@ -8,7 +8,7 @@ import {
 import Nav, { NavProps } from './index'
 
 const initProps: NavProps = {
-  logoSrc: 'https://zos.alipayobjects.com/rmsportal/nLzbeGQLPyBJoli.png',
+  logoSrc: 'https://zos.alipayobjects.com/rmsportal/chnhazooyzrjWSv.jpg',
   navList: [
     {
       title: 'Baidu-百度',
@@ -54,6 +54,10 @@ export const componentConfig: ResourceComponent = {
           },
         },
       },
+    },
+    height: {
+      label: '高度',
+      type: 'number',
     },
   },
 }

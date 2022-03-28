@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { nanoid } from 'nanoid'
+import clsx from 'clsx'
 
 import { devLogger } from '@/common/utils'
 import {
@@ -8,70 +8,93 @@ import {
   useEditerDataDispatch,
   EditerDataActionEnum,
 } from '@/store/editer-data'
-import { componentsList } from '@/resource-components'
-import { DATASET_KEY_COMPONENT_KEY } from '@/common/constant'
-import { ComponentDataItem } from '@/typings/editer'
+import { PREVIEWER_CLASS, PREVIEWER_CONTAINER_CLASS } from '@/common/constant'
+import { ComponentDataList } from '@/typings/editer'
+import RCListRenderer from '@/components/rclist-renderer'
 
+import ToolBox from './components/tool-box'
+import { useDragAndDrop, useToolBox } from './hooks'
 import styles from './index.module.less'
 
 const Previewer = () => {
   const { componenDataList, snapshotList, currentSnapshotIndex } =
     useEditerDataStore()
-  const editDataDispatch = useEditerDataDispatch()
+  const editerDataDispatch = useEditerDataDispatch()
 
-  /**
-   * drop 放置 事件需要处理的任务
-   * 1. 根据 key 构建 ComponentDataItem
-   * 2. 更新 store 存储的 componenDataList ，会触发 快照的新建
-   *
-   */
-  const handleDrop: React.DragEventHandler<HTMLDivElement> = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
+  const previewerElementRef = React.useRef<HTMLDivElement | null>(null)
 
-    const componentKey = e.dataTransfer.getData(DATASET_KEY_COMPONENT_KEY)
-
-    const targetComponent = componentsList.find(
-      (component) => component.key === componentKey
-    )
-    const newComponentDataItem: ComponentDataItem = {
-      id: `${componentKey}_${nanoid(10)}`,
-      resourceComponent: targetComponent!!, // 排除 nullable 情况
-    }
-
-    devLogger('handleDrop', e.target, componentKey, newComponentDataItem)
-
-    editDataDispatch({
+  const updateComponenDataList = (newList: ComponentDataList) => {
+    editerDataDispatch({
       type: EditerDataActionEnum.SET_COMPONENT_DATA_LIST,
-      payload: [...componenDataList, newComponentDataItem],
+      payload: [...newList],
     })
   }
 
-  devLogger('Previewer', componenDataList, snapshotList, currentSnapshotIndex)
+  const { handleDragLeave, handleDrop, handleDragOver, handleRCRDragStart } =
+    useDragAndDrop({
+      previewerElementRef,
+      componenDataList,
+      updateComponenDataList,
+    })
 
-  // 需要 在 dragover 事件  preventDefault 才能正常触发 drop事件
-  const handleDragOver: React.DragEventHandler<HTMLDivElement> = (e) => {
-    e.preventDefault()
+  const {
+    toolBoxRef,
+    clickTarget,
+    hiddenToolBox,
+    handlePreviewerClick,
+    handleOprateBtnClick,
+  } = useToolBox({
+    componenDataList,
+    updateComponenDataList,
+  })
+
+  const handleDragOverWrappered: React.DragEventHandler<HTMLElement> = (e) => {
+    // 处理  DragOver 事件 之前 隐藏 toolbox
+    hiddenToolBox()
+    handleDragOver(e)
   }
 
+  const handleRCRDragStartWrappered: React.DragEventHandler<HTMLElement> = (
+    e
+  ) => {
+    // 处理  DragStart 事件 之前 隐藏 toolbox
+    hiddenToolBox()
+    handleRCRDragStart(e)
+  }
+
+  devLogger(
+    'Previewer',
+    'componenDataList = ',
+    componenDataList,
+    'snapshotList=',
+    snapshotList,
+    'currentSnapshotIndex =',
+    currentSnapshotIndex
+  )
+
   return (
-    <div
-      className={styles.previewer}
-      onDrop={handleDrop}
-      onDragOver={handleDragOver}
+    <section
+      className={clsx(styles.previewer_container, PREVIEWER_CONTAINER_CLASS)}
     >
-      {componenDataList.map((component) => {
-        const { id, resourceComponent } = component
-        return (
-          <resourceComponent.component
-            key={id}
-            {...resourceComponent.initProps}
-          >
-            {component.id}
-          </resourceComponent.component>
-        )
-      })}
-    </div>
+      <div
+        className={clsx(styles.previewer, PREVIEWER_CLASS)}
+        onDrop={handleDrop}
+        onDragOver={handleDragOverWrappered}
+        ref={previewerElementRef}
+        onDragLeave={handleDragLeave}
+        onClickCapture={handlePreviewerClick}
+      >
+        <RCListRenderer
+          RCList={componenDataList}
+          onDragStart={handleRCRDragStartWrappered}
+        />
+      </div>
+      <ToolBox
+        toolBoxRef={toolBoxRef}
+        targetElement={clickTarget}
+        onOprateBtnClick={handleOprateBtnClick}
+      />
+    </section>
   )
 }
 

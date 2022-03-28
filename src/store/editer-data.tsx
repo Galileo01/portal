@@ -45,7 +45,7 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
     'snapshotList',
     snapshotList,
     type,
-    ' type',
+    'type',
     'payload',
     payload
   )
