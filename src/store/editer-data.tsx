@@ -2,22 +2,39 @@ import * as React from 'react'
 
 import { cloneDeep } from 'lodash-es'
 
-import { EditerData, ComponentDataList } from '@/typings/editer'
+import {
+  EditerData,
+  ComponentDataList,
+  ComponentDataItem,
+} from '@/typings/editer'
 import { devLogger } from '@/common/utils'
 
 type Store = EditerData
 
-type Action = {
-  type: EditerDataActionEnum
-  payload?: Store | ComponentDataList
-}
-
 export enum EditerDataActionEnum {
-  SET_STATE = 'setState',
-  SET_CURRENT_INDEX = 'setCurrentIndex',
-  SET_COMPONENT_DATA_LIST = 'setComponentDataList',
   BACK = 'back',
   FORWARD = 'forward',
+  SET_STATE = 'setState',
+  SET_COMPONENT_DATA_LIST = 'setComponentDataList',
+  SET_CURRENT_CLICK_ELEMENT = 'setCurrentClickElement',
+  UPDATE_COMPONENT_DATA_ITEM = 'updateComponentDataItem',
+}
+
+export type ActionPayloadMap = {
+  [EditerDataActionEnum.BACK]: undefined
+  [EditerDataActionEnum.FORWARD]: undefined
+  [EditerDataActionEnum.SET_STATE]: Store
+  [EditerDataActionEnum.SET_COMPONENT_DATA_LIST]: ComponentDataList
+  [EditerDataActionEnum.SET_CURRENT_CLICK_ELEMENT]: HTMLElement
+  [EditerDataActionEnum.UPDATE_COMPONENT_DATA_ITEM]: {
+    index: number
+    newData: ComponentDataItem
+  }
+}
+
+type Action = {
+  type: EditerDataActionEnum
+  payload?: ActionPayloadMap[Action['type']]
 }
 
 // 快照列表 的最大长度
@@ -26,7 +43,8 @@ export const MAX_LENGTH = 5
 const initStore: Store = {
   snapshotList: [[]], // 初始存在一个空的 快照
   currentSnapshotIndex: 0,
-  componenDataList: [],
+  componentDataList: [],
+  currentClickElement: undefined,
 }
 
 const EditerDataContext = React.createContext<Store>(initStore)
@@ -35,25 +53,21 @@ const EditerDataDispatchContext = React.createContext<React.Dispatch<Action>>(
 )
 
 const reducer: React.Reducer<Store, Action> = (state, action) => {
-  const { currentSnapshotIndex: preIndex, snapshotList } = state
+  const {
+    currentSnapshotIndex: preIndex,
+    snapshotList,
+    componentDataList,
+  } = state
   const { type, payload } = action
 
-  devLogger(
-    'reducer of  editer-data :',
-    'preIndex',
-    preIndex,
-    'snapshotList',
-    snapshotList,
-    type,
-    'type',
-    'payload',
-    payload
-  )
+  devLogger('reducer of  editer-data :', 'action', action)
 
   let newIndex = preIndex
   let newSnapshotList = []
   let newComponentDataList = []
   let spliceStart = 0
+  let updateIndex = -1
+
   switch (type) {
     // 全量更新
     case EditerDataActionEnum.SET_STATE:
@@ -67,7 +81,7 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
       return {
         ...state,
         currentSnapshotIndex: newIndex,
-        componenDataList: snapshotList[newIndex],
+        componentDataList: snapshotList[newIndex],
       }
     // 前进 - 下标 增大
     case EditerDataActionEnum.FORWARD:
@@ -75,11 +89,11 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
       return {
         ...state,
         currentSnapshotIndex: newIndex,
-        componenDataList: snapshotList[newIndex],
+        componentDataList: snapshotList[newIndex],
       }
     /**
-     * 当 componenDataList 组件列表发生变化  需要进行的操作：
-     * 1.更新 componenDataList
+     * 当 componentDataList 组件列表发生变化  需要进行的操作：
+     * 1.更新 componentDataList
      * 2.创建 新的快照
      */
     case EditerDataActionEnum.SET_COMPONENT_DATA_LIST:
@@ -96,9 +110,27 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
         spliceStart >= 0 ? spliceStart : 0
       )
       return {
+        ...state,
         snapshotList: newSnapshotList,
         currentSnapshotIndex: newSnapshotList.length - 1,
-        componenDataList: newComponentDataList,
+        componentDataList: newComponentDataList,
+      }
+    // 更新currentClickElement
+    case EditerDataActionEnum.SET_CURRENT_CLICK_ELEMENT:
+      return {
+        ...state,
+        currentClickElement: payload as HTMLElement,
+      }
+    // 更新 componentDataList 某一项 ，并不创建快照
+    case EditerDataActionEnum.UPDATE_COMPONENT_DATA_ITEM:
+      updateIndex = (payload as ActionPayloadMap['updateComponentDataItem'])
+        .index
+      componentDataList[updateIndex] = (
+        payload as ActionPayloadMap['updateComponentDataItem']
+      ).newData
+      return {
+        ...state,
+        componentDataList,
       }
     default:
       return {

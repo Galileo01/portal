@@ -42,7 +42,7 @@ const ComponentPane = () => {
               key={key}
               draggable
               // data-key 请和  @/common/constant 下  DATASET_KEY_RESOURCE_COMPONENT_KEY 常量 保持一致
-              data-portal_resource_component_key={key}
+              data-resource_component_key={key}
             >
               {name}
             </Card>

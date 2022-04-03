@@ -6,34 +6,15 @@ import {
   PropTypeEnum,
 } from '@/typings/resosurce-component'
 
-import Nav, { NavProps } from './index'
-
-const initProps: NavProps = {
-  logoSrc: 'https://zos.alipayobjects.com/rmsportal/chnhazooyzrjWSv.jpg',
-  navList: [
-    {
-      title: 'Baidu-百度',
-      href: 'https://www.baidu.com',
-    },
-    {
-      title: 'Github',
-      href: 'https://github.com/',
-    },
-    {
-      title: 'Google-谷歌',
-      href: 'https://www.google.com/',
-    },
-  ],
-  height: 60,
-}
+import Example from './index'
 
 export const componentConfig: ResourceComponent = {
-  name: '导航',
-  key: 'nav',
-  previewImg: 'https://zos.alipayobjects.com/rmsportal/chnhazooyzrjWSv.jpg',
+  name: '颜色测试组件',
+  key: 'example',
+  previewImg: 'https://s3.bmp.ovh/imgs/2022/04/03/67d8127b695f4e2b.png',
   category: ComponentCategoryEnum.NAVIGATION,
-  component: Nav as React.FC<unknown>,
-  props: initProps,
+  component: Example as React.FC<unknown>,
+  props: Object,
   propsSchema: {
     logoSrc: {
       label: 'logo 地址',

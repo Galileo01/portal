@@ -23,7 +23,7 @@ const Editer = () => (
         <Content>
           <Previewer />
         </Content>
-        <Sider>
+        <Sider width={300}>
           <Prop />
         </Sider>
       </Layout>

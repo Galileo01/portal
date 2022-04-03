@@ -1,10 +1,11 @@
 import * as React from 'react'
 
-import { Layout, Image } from '@arco-design/web-react'
+import { Layout } from '@arco-design/web-react'
 import clsx from 'clsx'
 
 import { RESOURCE_COMPONENT_RENDERED_COMMON_CLASS } from '@/common/constant'
 import { CommonProps } from '@/typings/resosurce-component'
+import CustomImage from '../components/custom-image'
 
 import styles from './index.module.less'
 
@@ -45,7 +46,7 @@ const Nav: React.FC<NavProps> = (props) => {
       }}
       {...restProps}
     >
-      <Image src={logoSrc} preview={false} height={height - 10} />
+      <CustomImage src={logoSrc} preview={false} height={height - 10} />
       <div className={styles.nav_list}>
         {navList.map(({ title, href }) => (
           <a

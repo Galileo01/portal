@@ -1,0 +1,67 @@
+import tinycolor from 'tinycolor2'
+
+import {
+  PREVIEWER_CLASS,
+  PAGE_CONTAINER_CLASS,
+  IS_SET_CORLOR_VARIABLE_KEY,
+} from '@/common/constant'
+import {
+  COLOR_VARIABLES,
+  KEY_OF_COLOR_VARIABLES,
+  ColorVarValue,
+} from '@/common/constant/color-variable'
+
+export const getColorVariableValue = () => {
+  const varValue: ColorVarValue = {}
+  const previewElement = document.querySelector(
+    `.${PREVIEWER_CLASS}`
+  ) as HTMLElement | null
+
+  // 判断 previewer 是否 设置过颜色变量 ，总而判断 变量的读取元素
+  const isSetColor = Boolean(
+    previewElement &&
+      getComputedStyle(previewElement).getPropertyValue(
+        IS_SET_CORLOR_VARIABLE_KEY
+      )
+  )
+
+  const targetElement =
+    previewElement && isSetColor ? previewElement : document.body
+
+  KEY_OF_COLOR_VARIABLES.forEach((key) => {
+    const { varKey } = COLOR_VARIABLES[key]
+    const value = getComputedStyle(targetElement)
+      .getPropertyValue(varKey)
+      .trim()
+
+    // rgb/rgba 转换为 hex
+    varValue[key] = tinycolor(value).toHexString()
+  })
+
+  return varValue
+}
+
+export const setColorVariableValue = (
+  varValue: ColorVarValue,
+  isPreview = false
+) => {
+  const targetClass = isPreview
+    ? `.${PREVIEWER_CLASS}`
+    : `.${PAGE_CONTAINER_CLASS}`
+
+  const targetElement = document.querySelector(
+    targetClass
+  ) as HTMLElement | null
+
+  if (!targetElement) return
+
+  KEY_OF_COLOR_VARIABLES.forEach((key) => {
+    const { varKey } = COLOR_VARIABLES[key]
+    const value = varValue[key]
+    targetElement.style.setProperty(varKey, value)
+  })
+  // 标记 previewer 设置过颜色
+  if (isPreview) {
+    targetElement.style.setProperty(IS_SET_CORLOR_VARIABLE_KEY, '1')
+  }
+}

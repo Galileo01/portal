@@ -2,7 +2,14 @@
   height: 100vh;
   // 覆盖  position  解决  tool-box 定位 错误
   :global(.arco-image) {
-    position: static;
+    position: revert;
+  }
+  :global(.arco-image .arco-image-overlay) {
+    position: relative;
+    left: revert;
+    right: revert;
+    top: revert;
+    bottom: revert;
   }
   // 防止 arco-image-img 图片 元素 被拖拽
   :global(.arco-image-img) {
@@ -10,11 +17,11 @@
   }
   // 关闭 arco-layout-sider 的 过渡， 使 tool-box 的MutationObserver 及时更新
   :global(.arco-layout-sider) {
-    transition: unset;
+    transition: revert;
   }
 
   :global(.arco-layout-sider-trigger) {
-    transition: unset;
+    transition: revert;
   }
 }
 

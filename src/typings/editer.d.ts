@@ -13,5 +13,7 @@ export type EditerData = {
   // 当前快照 所在的位置
   currentSnapshotIndex: number
   // 当前组件列表
-  componenDataList: ComponentDataList
+  componentDataList: ComponentDataList
+  // 当前 previewer 内点击的元素
+  currentClickElement?: HTMLElement
 }

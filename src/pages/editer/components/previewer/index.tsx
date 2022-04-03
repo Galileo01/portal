@@ -17,8 +17,12 @@ import { useDragAndDrop, useToolBox } from './hooks'
 import styles from './index.module.less'
 
 const Previewer = () => {
-  const { componenDataList, snapshotList, currentSnapshotIndex } =
-    useEditerDataStore()
+  const {
+    componentDataList,
+    snapshotList,
+    currentSnapshotIndex,
+    currentClickElement,
+  } = useEditerDataStore()
   const editerDataDispatch = useEditerDataDispatch()
 
   const previewerElementRef = React.useRef<HTMLDivElement | null>(null)
@@ -30,42 +34,46 @@ const Previewer = () => {
     })
   }
 
-  const { handleDragLeave, handleDrop, handleDragOver, handleRCRDragStart } =
-    useDragAndDrop({
-      previewerElementRef,
-      componenDataList,
-      updateComponenDataList,
+  const updateClickElement = (newElement?: HTMLElement) => {
+    editerDataDispatch({
+      type: EditerDataActionEnum.SET_CURRENT_CLICK_ELEMENT,
+      payload: newElement,
     })
+  }
 
-  const {
-    toolBoxRef,
-    clickTarget,
-    hiddenToolBox,
-    handlePreviewerClick,
-    handleOprateBtnClick,
-  } = useToolBox({
-    componenDataList,
+  const { toolBoxRef, hiddenToolBox, handleOprateBtnClick } = useToolBox({
+    currentClickElement,
+    updateClickElement,
+    componentDataList,
     updateComponenDataList,
   })
 
+  const { handleDragLeave, handleDrop, handleDragOver, handleRCRDragStart } =
+    useDragAndDrop({
+      previewerElementRef,
+      componentDataList,
+      updateComponenDataList,
+      actionsBeforeHandle: hiddenToolBox,
+    })
+
   const handleDragOverWrappered: React.DragEventHandler<HTMLElement> = (e) => {
     // 处理  DragOver 事件 之前 隐藏 toolbox
-    hiddenToolBox()
-    handleDragOver(e)
+    handleDragOver(e.target as HTMLElement)
+    // NOTE:需要 在 dragover 事件  preventDefault 才能正常触发 drop事件
+    // preventDefault 不能放入 throttle 中 ，否则 无法触发 drop 事件
+    e.preventDefault()
   }
 
-  const handleRCRDragStartWrappered: React.DragEventHandler<HTMLElement> = (
-    e
-  ) => {
-    // 处理  DragStart 事件 之前 隐藏 toolbox
-    hiddenToolBox()
-    handleRCRDragStart(e)
+  const handlePreviewerClick: React.DragEventHandler<HTMLDivElement> = (e) => {
+    // 阻止 浏览器的 默认行为(a 标签等)
+    e.preventDefault()
+    updateClickElement(e.target as HTMLElement)
   }
 
   devLogger(
     'Previewer',
-    'componenDataList = ',
-    componenDataList,
+    'componentDataList = ',
+    componentDataList,
     'snapshotList=',
     snapshotList,
     'currentSnapshotIndex =',
@@ -82,16 +90,16 @@ const Previewer = () => {
         onDragOver={handleDragOverWrappered}
         ref={previewerElementRef}
         onDragLeave={handleDragLeave}
-        onClickCapture={handlePreviewerClick}
+        onClick={handlePreviewerClick}
       >
         <RCListRenderer
-          RCList={componenDataList}
-          onDragStart={handleRCRDragStartWrappered}
+          RCList={componentDataList}
+          onDragStart={handleRCRDragStart}
         />
       </div>
       <ToolBox
         toolBoxRef={toolBoxRef}
-        targetElement={clickTarget}
+        targetElement={currentClickElement}
         onOprateBtnClick={handleOprateBtnClick}
       />
     </section>

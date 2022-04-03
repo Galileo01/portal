@@ -16,7 +16,7 @@ const RCListRenderer: React.FC<RCListRendererProps> = ({
     {RCList.map((component) => {
       const { id, resourceComponent } = component
 
-      let restProps = resourceComponent.initProps
+      let restProps = resourceComponent.props
 
       /* 在 editer 路由 下  需要  添加用到的 属性
        * id :用于 计算 下标

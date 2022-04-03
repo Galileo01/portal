@@ -14,11 +14,9 @@ import {
   MAX_LENGTH,
 } from '@/store/editer-data'
 import { ROUTE_PAGE } from '@/common/constant/route'
-import { devLogger } from '@/common/utils'
 
 import styles from './index.module.less'
 
-// TODO: 预览器 尺寸改变 ?
 const ToolNav = () => {
   const [params] = useSearchParams()
   const href = useHref(
@@ -37,7 +35,6 @@ const ToolNav = () => {
       editerDataDispatch({
         type: EditerDataActionEnum.BACK,
       })
-      devLogger('tool-bar', 'handleSnapshotBack')
     }
   }
 
@@ -46,7 +43,6 @@ const ToolNav = () => {
       editerDataDispatch({
         type: EditerDataActionEnum.FORWARD,
       })
-      devLogger('tool-bar', 'handleSnapshotForward')
     }
   }
 

@@ -1,14 +1,15 @@
 .previewer_container {
-  margin: 20px 10px 0;
   height: calc(100% - 20px);
+  padding: 20px 10px 0;
   background-color: var(--color-text-4);
 
   // 全局类名  务必和 src/common/constant/index.ts 文件 RESOURCE_COMPONENT_RENDERED_COMMON_CLASS 常量  保持一致
-  :global(.portal_resource_component_rendered) {
+  :global(.resource_component_rendered) {
     cursor: pointer;
   }
 }
 
 .previewer {
   height: 100%;
+  background-color: var(--color-bg-1);
 }

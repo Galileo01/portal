@@ -5,6 +5,7 @@ import {
 
 import navComponentConfig from './nav/config'
 import navTestComponentConfig from './nav_test/config'
+import exampleComponentCnfig from './example/config'
 /**
  * TODO:
  *  1.previewImg  转为 服务器存储 url
@@ -13,6 +14,7 @@ import navTestComponentConfig from './nav_test/config'
 export const RCList: ResourceComponent[] = [
   navComponentConfig,
   navTestComponentConfig,
+  exampleComponentCnfig,
 ]
 
 // 导航类组件

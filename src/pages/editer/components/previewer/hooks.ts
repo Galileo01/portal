@@ -11,8 +11,8 @@ import { devLogger, getUniqueId } from '@/common/utils'
 import {
   isPreviewerElement,
   getRCRenderedParentElement,
+  getComponentDataIndexFromElement,
 } from '@/common/utils/element'
-import { getComponentDataIndexFromElement } from '@/common/utils/component-data'
 import { RCList } from '@/resource-components'
 
 import { ToolBoxRef, ToolBoxProps } from './components/tool-box'
@@ -34,14 +34,19 @@ const createPlaceHolder = () => {
 
 export type useDragAndDropParams = {
   previewerElementRef: React.MutableRefObject<HTMLElement | null>
-  componenDataList: ComponentDataList
-  updateComponenDataList: (componenDataList: ComponentDataList) => void
+  componentDataList: ComponentDataList
+  updateComponenDataList: (componentDataList: ComponentDataList) => void
+  actionsBeforeHandle: () => void
 }
 
 // 处理拖拽 逻辑
 export const useDragAndDrop = (params: useDragAndDropParams) => {
-  const { previewerElementRef, componenDataList, updateComponenDataList } =
-    params
+  const {
+    previewerElementRef,
+    componentDataList,
+    updateComponenDataList,
+    actionsBeforeHandle,
+  } = params
 
   // placeHolder  元素
   const placeHolderElementRef = React.useRef<HTMLElement | null>(null)
@@ -59,23 +64,23 @@ export const useDragAndDrop = (params: useDragAndDropParams) => {
       previewerElementRef.current.removeChild(placeHolderElementRef.current)
     }
   }
-  // RCR: RCRendered
+  // RCR: RCRendered 拖拽开始
   const handleRCRDragStart: React.DragEventHandler<HTMLElement> = (e) => {
-    devLogger('handleRCRDragStart', e.target)
+    actionsBeforeHandle()
     currentDragingRCRRef.current = e.target as HTMLElement
   }
 
   /**
    * drop 放置 事件需要处理的任务
    * 1. 根据 key 构建 ComponentDataItem
-   * 2. 更新 store 存储的 componenDataList ，会触发 快照的新建
+   * 2. 更新 store 存储的 componentDataList ，会触发 快照的新建
    *
    */
+
   const handleDrop: React.DragEventHandler<HTMLElement> = (e) => {
     e.preventDefault()
     e.stopPropagation()
 
-    // FIXME: 内部元素 也是可拖拽的 ，拖放事件 可能来源于 previewer 已存在的 子元素 即 e.dataTransfer 为空的情况
     // 获取 组件key
     const componentKey = e.dataTransfer.getData(
       DATASET_KEY_RESOURCE_COMPONENT_KEY
@@ -94,18 +99,17 @@ export const useDragAndDrop = (params: useDragAndDropParams) => {
     }
     // 否则 -- 来自 previewer 内 已有的 RCR元素 拖拽
     else if (currentDragingRCRRef.current!) {
-      devLogger('componentKey undefined')
       const preIndex = getComponentDataIndexFromElement(
-        componenDataList,
+        componentDataList,
         currentDragingRCRRef.current
       )
       // 截取/删除 并返回
       // eslint-disable-next-line prefer-destructuring
-      insertComponentDataItem = componenDataList.splice(preIndex, 1)[0]
+      insertComponentDataItem = componentDataList.splice(preIndex, 1)[0]
     }
 
     const insertIndex = getComponentDataIndexFromElement(
-      componenDataList,
+      componentDataList,
       e.target as HTMLElement
     )
     devLogger(
@@ -121,13 +125,13 @@ export const useDragAndDrop = (params: useDragAndDropParams) => {
     )
 
     // 插入 指定位置 或者末尾
-    componenDataList.splice(
-      insertIndex > -1 ? insertIndex : componenDataList.length,
+    componentDataList.splice(
+      insertIndex > -1 ? insertIndex : componentDataList.length,
       0,
       insertComponentDataItem as ComponentDataItem
     )
 
-    updateComponenDataList(componenDataList)
+    updateComponenDataList(componentDataList)
     removePlaceHolder()
     currentDragingRCRRef.current = null
   }
@@ -136,16 +140,10 @@ export const useDragAndDrop = (params: useDragAndDropParams) => {
     () =>
       throttle<(target: HTMLElement) => void>(
         (target) => {
+          actionsBeforeHandle()
           if (!previewerElementRef.current || !placeHolderElementRef.current)
             return
           const isPreviewer = isPreviewerElement(target)
-
-          devLogger(
-            'insertPlaceHolderThrottled',
-            'isPreviewer',
-            isPreviewer,
-            target
-          )
 
           // 如果是 previewer 容器 元素   直接 追加在末尾
           if (isPreviewer) {
@@ -165,16 +163,8 @@ export const useDragAndDrop = (params: useDragAndDropParams) => {
         // NOTE:取消 节流结束 后的那次调用 ，否则  又会 append 到 末尾
         { trailing: false }
       ),
-    [previewerElementRef]
+    [previewerElementRef, actionsBeforeHandle]
   )
-
-  const handleDragOver: React.DragEventHandler<HTMLElement> = (e) => {
-    insertPlaceHolderThrottled(e.target as HTMLElement)
-
-    // NOTE:需要 在 dragover 事件  preventDefault 才能正常触发 drop事件
-    // preventDefault 不能放入 throttle 中 ，否则 无法触发 drop 事件
-    e.preventDefault()
-  }
 
   React.useEffect(() => {
     placeHolderElementRef.current = createPlaceHolder()
@@ -183,42 +173,41 @@ export const useDragAndDrop = (params: useDragAndDropParams) => {
   return {
     handleDragLeave: removePlaceHolder,
     handleDrop,
-    handleDragOver,
+    handleDragOver: insertPlaceHolderThrottled,
     handleRCRDragStart,
   }
 }
 
 export type useToolBoxParams = Pick<
   useDragAndDropParams,
-  'componenDataList' | 'updateComponenDataList'
->
+  'componentDataList' | 'updateComponenDataList'
+> & {
+  currentClickElement?: HTMLElement
+  updateClickElement: (newElement?: HTMLElement) => void
+}
 
 // 处理  ToolBox 的 控制 逻辑
 export const useToolBox = (params: useToolBoxParams) => {
-  const { componenDataList, updateComponenDataList } = params
+  const {
+    currentClickElement,
+    componentDataList,
+    updateComponenDataList,
+    updateClickElement,
+  } = params
 
   const toolBoxRef = React.useRef<ToolBoxRef>(null)
-  const [clickTarget, setClickTarget] = React.useState<HTMLElement>()
-
-  const handlePreviewerClick: React.MouseEventHandler<HTMLElement> = (e) => {
-    // NOTE:阻止 事件 继续传递  和 浏览器 的默认行为
-    // e.stopPropagation()
-    e.preventDefault()
-    setClickTarget(e.target as HTMLElement)
-  }
 
   const hiddenToolBox = () => {
-    devLogger('hiddenToolBox')
-    setClickTarget(undefined)
+    if (currentClickElement) updateClickElement(undefined)
   }
 
   const handleOprateBtnClick: ToolBoxProps['onOprateBtnClick'] = (
     opratetype
   ) => {
-    const tempList = [...componenDataList]
+    const tempList = [...componentDataList]
     const preIndex = getComponentDataIndexFromElement(
       tempList,
-      clickTarget! // 强制 排除 null
+      currentClickElement! // 强制 排除 null
     )
     const componentData = tempList.splice(preIndex, 1)[0]
 
@@ -230,7 +219,7 @@ export const useToolBox = (params: useToolBoxParams) => {
         break
       // 下移 - 之后元素的 下标发生改变
       case 'down_move':
-        if (preIndex === componenDataList.length - 1) return
+        if (preIndex === componentDataList.length - 1) return
         tempList.splice(preIndex + 1, 0, componentData)
         break
       // 删除 情况  ,已经被移除了
@@ -246,7 +235,6 @@ export const useToolBox = (params: useToolBoxParams) => {
     const asiderElement = document.querySelector(`.${ARCO_LAYOUT_SIDER_CLASS}`)
 
     const observer = new MutationObserver(() => {
-      devLogger('MutationObserver')
       toolBoxRef.current?.updateStyle()
     })
     // asider 监听 width(attributes 属性) 变化
@@ -260,9 +248,7 @@ export const useToolBox = (params: useToolBoxParams) => {
 
   return {
     toolBoxRef,
-    clickTarget,
     hiddenToolBox,
-    handlePreviewerClick,
     handleOprateBtnClick,
   }
 }

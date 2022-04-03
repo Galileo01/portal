@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 import { BrowserRouter as Router } from 'react-router-dom'
 import 'normalize.css'
 
-import './index.css'
+import './assets/style/global.less'
 import App from './App'
 
 ReactDOM.render(

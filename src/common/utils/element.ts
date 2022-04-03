@@ -1,3 +1,4 @@
+import { ComponentDataList } from '@/typings/editer'
 import {
   RESOURCE_COMPONENT_RENDERED_COMMON_CLASS,
   PREVIEWER_CLASS,
@@ -39,4 +40,17 @@ export const getRCRenderedParentElement = (element: HTMLElement) => {
 export const getIdFromElement = (element: HTMLElement) => {
   const ele = getRCRenderedParentElement(element)
   return ele?.id
+}
+
+// 获取 previewer 子元素 父元素 对应 RCR 的 下标
+export const getComponentDataIndexFromElement: (
+  componentDataList: ComponentDataList,
+  element: HTMLElement
+) => number = (componentDataList, element) => {
+  const id = getIdFromElement(element)
+
+  const index = id
+    ? componentDataList.findIndex((component) => component.id === id)
+    : -1
+  return index
 }
