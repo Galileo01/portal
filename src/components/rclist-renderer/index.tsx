@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { ComponentDataList } from '@/typings/editer'
+import { ComponentDataList } from '@/typings/common/editer'
 import { IS_ROUTE_EDITER } from '@/common/utils'
 
 export type RCListRendererProps = {

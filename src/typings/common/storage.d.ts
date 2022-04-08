@@ -1,10 +1,11 @@
 import {
-  LOSTORAGE_KEY_COMPONENT_CONFIG,
+  LOSTORAGE_KEY_PAGE_CONFIGS,
   LOSTORAGE_KEY_IS_SIDER_COLLAPSE,
 } from '@/common/constant'
+import { PageConfig } from './editer'
 
 export type Storage = {
-  [LOSTORAGE_KEY_COMPONENT_CONFIG]: string
+  [LOSTORAGE_KEY_PAGE_CONFIGS]: string
   [LOSTORAGE_KEY_IS_SIDER_COLLAPSE]: string
 }
 
@@ -16,3 +17,7 @@ export type GetLocalStorageFun = (
 ) => string | undefined
 
 export type SetLocalStorageFun = (key: StorageKeys, value: string) => void
+
+export type PageConfigStorageValue = {
+  [page_id: string]: PageConfig
+}

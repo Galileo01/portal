@@ -1,7 +1,7 @@
 import {
   ResourceComponent,
   ComponentCategoryEnum,
-} from '@/typings/resosurce-component'
+} from '@/typings/common/resosurce-component'
 
 import navComponentConfig from './nav/config'
 import navTestComponentConfig from './nav_test/config'

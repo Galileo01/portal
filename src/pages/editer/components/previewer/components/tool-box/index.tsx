@@ -59,9 +59,13 @@ const ToolBox: React.FC<ToolBoxProps> = (props) => {
   }, [targetElement])
 
   // 像 父组件 暴露 手动 更新的 方法
-  React.useImperativeHandle(toolBoxRef, () => ({
-    updateStyle,
-  }))
+  React.useImperativeHandle(
+    toolBoxRef,
+    () => ({
+      updateStyle,
+    }),
+    [updateStyle]
+  )
 
   const handleUpMove = () => {
     onOprateBtnClick('up_move')

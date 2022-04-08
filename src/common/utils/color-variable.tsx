@@ -8,25 +8,29 @@ import {
 import {
   COLOR_VARIABLES,
   KEY_OF_COLOR_VARIABLES,
-  ColorVarValue,
 } from '@/common/constant/color-variable'
+import { ColorVarValue } from '@/typings/common/editer-config-data'
 
-export const getColorVariableValue = () => {
+export const getColorVariableValue = (sourceElement?: 'body' | 'previewer') => {
   const varValue: ColorVarValue = {}
-  const previewElement = document.querySelector(
-    `.${PREVIEWER_CLASS}`
-  ) as HTMLElement | null
 
-  // 判断 previewer 是否 设置过颜色变量 ，总而判断 变量的读取元素
-  const isSetColor = Boolean(
-    previewElement &&
-      getComputedStyle(previewElement).getPropertyValue(
-        IS_SET_CORLOR_VARIABLE_KEY
-      )
-  )
+  let targetElement = document.body
 
-  const targetElement =
-    previewElement && isSetColor ? previewElement : document.body
+  if (sourceElement === 'previewer') {
+    const previewElement = document.querySelector(
+      `.${PREVIEWER_CLASS}`
+    ) as HTMLElement | null
+    // 判断 previewer 是否 设置过颜色变量 ，总而判断 变量的读取元素
+    const isSetColored = Boolean(
+      previewElement &&
+        getComputedStyle(previewElement).getPropertyValue(
+          IS_SET_CORLOR_VARIABLE_KEY
+        )
+    )
+
+    targetElement =
+      previewElement && isSetColored ? previewElement : document.body
+  }
 
   KEY_OF_COLOR_VARIABLES.forEach((key) => {
     const { varKey } = COLOR_VARIABLES[key]
@@ -64,4 +68,9 @@ export const setColorVariableValue = (
   if (isPreview) {
     targetElement.style.setProperty(IS_SET_CORLOR_VARIABLE_KEY, '1')
   }
+}
+
+export const restorePreviewColorVariable = () => {
+  const bodyValue = getColorVariableValue('body')
+  setColorVariableValue(bodyValue, true)
 }

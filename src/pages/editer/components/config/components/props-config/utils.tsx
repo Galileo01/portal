@@ -9,13 +9,13 @@ import {
 } from '@arco-design/web-react/icon'
 import clsx from 'clsx'
 
-import { ComponentDataItem } from '@/typings/editer'
+import { ComponentDataItem } from '@/typings/common/editer'
 import {
   PropsTypeDesc,
   PropTypeEnum,
   PLAIN_TYPE_LIST,
   OptionsType,
-} from '@/typings/resosurce-component'
+} from '@/typings/common/resosurce-component'
 
 import styles from './index.module.less'
 import { devLogger } from '@/common/utils'

@@ -1,4 +1,4 @@
-import { ComponentDataList } from '@/typings/editer'
+import { ComponentDataList } from '@/typings/common/editer'
 import {
   RESOURCE_COMPONENT_RENDERED_COMMON_CLASS,
   PREVIEWER_CLASS,

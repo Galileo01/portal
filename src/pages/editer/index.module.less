@@ -4,6 +4,7 @@
   :global(.arco-image) {
     position: revert;
   }
+  // 解决 image 在 显示error 时 定位问题  TODO: 封装进CustomImage统一处理
   :global(.arco-image .arco-image-overlay) {
     position: relative;
     left: revert;
@@ -11,22 +12,28 @@
     top: revert;
     bottom: revert;
   }
+
   // 防止 arco-image-img 图片 元素 被拖拽
   :global(.arco-image-img) {
     -webkit-user-drag: none;
   }
+
   // 关闭 arco-layout-sider 的 过渡， 使 tool-box 的MutationObserver 及时更新
   :global(.arco-layout-sider) {
     transition: revert;
+    // sider 溢出 滚动
+    max-height: calc(
+      100vh - var(--header-height) - var(--content-container-margin-top)
+    );
   }
-
+  // 同上
   :global(.arco-layout-sider-trigger) {
     transition: revert;
   }
 }
 
 .content_container {
-  margin-top: 4px;
+  margin-top: var(--content-container-margin-top);
   justify-content: space-between;
   background-color: var(--color-bg-1);
 }

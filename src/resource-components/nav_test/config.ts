@@ -2,7 +2,7 @@ import {
   ResourceComponent,
   ComponentCategoryEnum,
   PropTypeEnum,
-} from '@/typings/resosurce-component'
+} from '@/typings/common/resosurce-component'
 
 import Nav, { NavProps } from '../nav'
 

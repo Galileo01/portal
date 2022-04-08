@@ -6,7 +6,8 @@ import {
   EditerData,
   ComponentDataList,
   ComponentDataItem,
-} from '@/typings/editer'
+  GlobalConfig,
+} from '@/typings/common/editer'
 import { devLogger } from '@/common/utils'
 
 type Store = EditerData
@@ -18,6 +19,8 @@ export enum EditerDataActionEnum {
   SET_COMPONENT_DATA_LIST = 'setComponentDataList',
   SET_CURRENT_CLICK_ELEMENT = 'setCurrentClickElement',
   UPDATE_COMPONENT_DATA_ITEM = 'updateComponentDataItem',
+  UPDATE_GLOBALCONFIG = 'updateGlobalConfig',
+  CLEAR = 'clear',
 }
 
 export type ActionPayloadMap = {
@@ -30,6 +33,8 @@ export type ActionPayloadMap = {
     index: number
     newData: ComponentDataItem
   }
+  [EditerDataActionEnum.UPDATE_GLOBALCONFIG]: GlobalConfig
+  [EditerDataActionEnum.CLEAR]: undefined
 }
 
 type Action = {
@@ -45,6 +50,7 @@ const initStore: Store = {
   currentSnapshotIndex: 0,
   componentDataList: [],
   currentClickElement: undefined,
+  globalConfig: undefined,
 }
 
 const EditerDataContext = React.createContext<Store>(initStore)
@@ -57,6 +63,7 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
     currentSnapshotIndex: preIndex,
     snapshotList,
     componentDataList,
+    globalConfig,
   } = state
   const { type, payload } = action
 
@@ -132,6 +139,18 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
         ...state,
         componentDataList,
       }
+    // 更新页面配置
+    case EditerDataActionEnum.UPDATE_GLOBALCONFIG:
+      return {
+        ...state,
+        globalConfig: {
+          ...globalConfig,
+          ...payload,
+        },
+      }
+    // 清空 所有
+    case EditerDataActionEnum.CLEAR:
+      return initStore
     default:
       return {
         ...state,

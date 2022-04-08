@@ -38,7 +38,7 @@ const PaletteModal: React.FC<PaletteModalProps> = (props) => {
   const [loading, setLoading] = React.useState(false)
   const [colorInfo, setColor] = React.useState<ColorInfo>(defaultColorInfo)
 
-  // 主动 释放 url 优化性能
+  // 主动 释放 url 优化 内存占用
   const revokeUrl = () => {
     if (imgFile?.url) {
       URL.revokeObjectURL(imgFile?.url)

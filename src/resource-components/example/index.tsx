@@ -3,7 +3,7 @@ import * as React from 'react'
 import clsx from 'clsx'
 
 import { RESOURCE_COMPONENT_RENDERED_COMMON_CLASS } from '@/common/constant'
-import { CommonProps } from '@/typings/resosurce-component'
+import { CommonProps } from '@/typings/common/resosurce-component'
 
 import styles from './index.module.less'
 
@@ -29,6 +29,10 @@ const Example: React.FC<CommonProps> = (props) => (
     <p className={styles.sentenceColor}>语句字体</p>
     <p className={styles.secondaryTextColor}>次要信息字体</p>
     <p className={styles.forbidTextColor}>禁用状态字体</p>
+    <p className={styles.test_font}>
+      Almost before we knew it, we had left the ground789
+    </p>
+    <p>Almost before we knew it, we had left the ground789</p>
   </div>
 )
 

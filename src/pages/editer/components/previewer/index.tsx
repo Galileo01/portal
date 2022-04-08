@@ -2,27 +2,26 @@ import * as React from 'react'
 
 import clsx from 'clsx'
 
-import { devLogger } from '@/common/utils'
 import {
   useEditerDataStore,
   useEditerDataDispatch,
   EditerDataActionEnum,
 } from '@/store/editer-data'
 import { PREVIEWER_CLASS, PREVIEWER_CONTAINER_CLASS } from '@/common/constant'
-import { ComponentDataList } from '@/typings/editer'
+import { ComponentDataList } from '@/typings/common/editer'
 import RCListRenderer from '@/components/rclist-renderer'
 
 import ToolBox from './components/tool-box'
 import { useDragAndDrop, useToolBox } from './hooks'
 import styles from './index.module.less'
 
+/**
+ * FIXME:
+ * 其他组件  拖拽到 example  上方 placeholder 显示问题
+ */
+
 const Previewer = () => {
-  const {
-    componentDataList,
-    snapshotList,
-    currentSnapshotIndex,
-    currentClickElement,
-  } = useEditerDataStore()
+  const { componentDataList, currentClickElement } = useEditerDataStore()
   const editerDataDispatch = useEditerDataDispatch()
 
   const previewerElementRef = React.useRef<HTMLDivElement | null>(null)
@@ -69,16 +68,6 @@ const Previewer = () => {
     e.preventDefault()
     updateClickElement(e.target as HTMLElement)
   }
-
-  devLogger(
-    'Previewer',
-    'componentDataList = ',
-    componentDataList,
-    'snapshotList=',
-    snapshotList,
-    'currentSnapshotIndex =',
-    currentSnapshotIndex
-  )
 
   return (
     <section

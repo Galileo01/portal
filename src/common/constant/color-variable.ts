@@ -1,12 +1,4 @@
-export type ColorVarMap = Record<
-  string,
-  {
-    label: string
-    varKey: string
-  }
->
-
-export type ColorVarValue = Record<string, string>
+import { ColorVarMap } from '@/typings/common/editer-config-data'
 
 export const COLOR_VARIABLES: ColorVarMap = {
   mainBg: {

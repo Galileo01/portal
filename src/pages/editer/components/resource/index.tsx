@@ -44,6 +44,7 @@ const Resource = () => {
       collapsible
       collapsed={collapsed}
       onCollapse={handleCollapse}
+      // --resource-sider-width
       width={350}
     >
       <Tabs

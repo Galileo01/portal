@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { throttle } from 'lodash-es'
 
-import { ComponentDataItem, ComponentDataList } from '@/typings/editer'
+import { ComponentDataItem, ComponentDataList } from '@/typings/common/editer'
 import {
   DATASET_KEY_RESOURCE_COMPONENT_KEY,
   ARCO_LAYOUT_SIDER_CLASS,

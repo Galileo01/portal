@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { Button, Space, Popover } from '@arco-design/web-react'
+import { Button, Space, Popover, Message, Modal } from '@arco-design/web-react'
 import { IconRedo, IconUndo, IconInfoCircle } from '@arco-design/web-react/icon'
 import clsx from 'clsx'
 import { useSearchParams, useHref } from 'react-router-dom'
@@ -14,16 +14,31 @@ import {
   MAX_LENGTH,
 } from '@/store/editer-data'
 import { ROUTE_PAGE } from '@/common/constant/route'
+import { setPageConfig, clearPageConfig } from '@/common/utils/storage'
+import { restorePreviewColorVariable } from '@/common/utils/color-variable'
+import { removeFontStyleNode } from '@/common/utils/font'
+import { usePrompt } from '@/common/hooks/react-router-dom'
 
 import styles from './index.module.less'
 
 const ToolNav = () => {
   const [params] = useSearchParams()
-  const href = useHref(
-    `${ROUTE_PAGE}?page_id=${params.get('page_id')}&is_preview=1`
-  )
 
-  const { snapshotList, currentSnapshotIndex } = useEditerDataStore()
+  const pageIdRef = React.useRef(params.get('page_id') || '')
+
+  const href = useHref(
+    `${ROUTE_PAGE}?page_id=${pageIdRef.current}&is_preview=1`
+  )
+  const [isBlocking, setIsBlocking] = React.useState(true)
+
+  usePrompt('您还未保存配置，确认离开编辑页么？', isBlocking)
+
+  const {
+    snapshotList,
+    currentSnapshotIndex,
+    componentDataList,
+    globalConfig,
+  } = useEditerDataStore()
   const editerDataDispatch = useEditerDataDispatch()
 
   const canSnapshotBack = currentSnapshotIndex > 0
@@ -48,6 +63,30 @@ const ToolNav = () => {
 
   const handlePreviewClick = () => {
     window.open(href, '_blank')
+  }
+
+  const handleSaveClick = () => {
+    setIsBlocking(false)
+    setPageConfig(pageIdRef.current, {
+      globalConfig,
+      componentDataList,
+    })
+    Message.success('保存成功')
+  }
+
+  const handleClearClick = () => {
+    Modal.confirm({
+      title: '此操作会清空编辑器的数据，确认要清空么？',
+      onOk: () => {
+        editerDataDispatch({
+          type: EditerDataActionEnum.CLEAR,
+        })
+        clearPageConfig(pageIdRef.current)
+        restorePreviewColorVariable()
+        removeFontStyleNode()
+        setIsBlocking(false)
+      },
+    })
   }
 
   return (
@@ -76,8 +115,8 @@ const ToolNav = () => {
         <Button type="primary" onClick={handlePreviewClick}>
           预览
         </Button>
-        <Button>保存</Button>
-        <Button>清空</Button>
+        <Button onClick={handleSaveClick}>保存</Button>
+        <Button onClick={handleClearClick}>清空</Button>
         <Button type="outline">出码</Button>
         <Button type="primary">发布</Button>
       </Space>

@@ -27,3 +27,14 @@ export const getUniqueId = (preFix?: string) => {
   const id = nanoid(NANO_ID_LENGTH)
   return preFix ? `${preFix}_${id}` : id
 }
+
+export const customJsonParse = <T = unknown>(str: string, defaultValue?: T) => {
+  try {
+    return JSON.parse(str) as T
+  } catch (err) {
+    devLogger('customJsonParse failed err:', err)
+    // eslint-disable-next-line no-console
+    console.warn('customJsonParse failed err:', err)
+    return defaultValue
+  }
+}

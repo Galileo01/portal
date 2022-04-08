@@ -7,7 +7,7 @@ import { EditerDataProvider } from '@/store/editer-data'
 import ToolNav from './components/tool-nav'
 import Resource from './components/resource'
 import Previewer from './components/previewer'
-import Prop from './components/prop'
+import Prop from './components/config'
 import styles from './index.module.less'
 
 const { Header, Content, Sider } = Layout
@@ -23,6 +23,7 @@ const Editer = () => (
         <Content>
           <Previewer />
         </Content>
+        {/* --props-sider-width */}
         <Sider width={300}>
           <Prop />
         </Sider>

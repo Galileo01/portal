@@ -4,7 +4,7 @@ import {
   ResourceComponent,
   ComponentCategoryEnum,
   PropTypeEnum,
-} from '@/typings/resosurce-component'
+} from '@/typings/common/resosurce-component'
 
 import Example from './index'
 
