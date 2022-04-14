@@ -1,39 +1,55 @@
 import * as React from 'react'
 
 import { Popover } from '@arco-design/web-react'
-import { IconUndo } from '@arco-design/web-react/icon'
+import { IconClose } from '@arco-design/web-react/icon'
 import { SketchPicker, SketchPickerProps } from 'react-color'
 import clsx from 'clsx'
+import tinycolor from 'tinycolor2'
 
 import styles from './index.module.less'
-import { devLogger } from '@/common/utils'
 
 export type CustomColorPickerProps = Omit<SketchPickerProps, 'onChange'> & {
   value?: string
   /**
-   * @allowReset 是否允许 重置到第一个有意义的值
+   * @allowClear 是否允许 重置到第一个有意义的值
    */
-  allowReset?: boolean
+  allowClear?: boolean
+  /**
+   * @clearToValid 是否清空到第一个有意义的值
+   */
+  clearToValid?: boolean
+  /**
+   * 是否展示 hex 的值
+   */
+  showHexValue?: boolean
   onChange?: (value?: string) => void
 }
 
 const CustomColorPicker: React.FC<CustomColorPickerProps> = (props) => {
-  const { value, allowReset = false, onChange, ...rest } = props
+  const {
+    value,
+    showHexValue = true,
+    allowClear = false,
+    clearToValid = false,
+    onChange,
+    ...rest
+  } = props
 
   // 初始值 记录初始值(第一个有意义的值)
   const initialValueRef = React.useRef<string | undefined>()
 
   const handleChange: SketchPickerProps['onChange'] = (colorRes) => {
-    onChange?.(colorRes.hex)
+    const { r, g, b, a } = colorRes.rgb
+    // 携带 透明度
+    onChange?.(tinycolor({ r, g, b, a }).toHex8String())
   }
 
   const handleResetClick = () => {
-    onChange?.(initialValueRef.current)
+    onChange?.(clearToValid ? initialValueRef.current : undefined)
   }
 
   React.useEffect(() => {
     if (!initialValueRef.current) {
-      devLogger('initialValueRef update', value, initialValueRef.current)
       initialValueRef.current = value
     }
   }, [value])
@@ -55,10 +71,10 @@ const CustomColorPicker: React.FC<CustomColorPickerProps> = (props) => {
         <div
           className={clsx(
             styles.color_picker_trigger,
-            allowReset && styles.allow_reset
+            allowClear && styles.allow_clear
           )}
         >
-          <div className={styles.color_value}>{value}</div>
+          {showHexValue && <div className={styles.color_value}>{value}</div>}
           <div
             className={styles.color_display}
             style={{
@@ -67,9 +83,9 @@ const CustomColorPicker: React.FC<CustomColorPickerProps> = (props) => {
           />
         </div>
       </Popover>
-      {allowReset && (
-        <div className={styles.reset_icon_wrapper}>
-          <IconUndo className={styles.reset_icon} onClick={handleResetClick} />
+      {allowClear && (
+        <div className={styles.clear_icon_wrapper}>
+          <IconClose className={styles.clear_icon} onClick={handleResetClick} />
         </div>
       )}
     </div>

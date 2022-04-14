@@ -11,12 +11,16 @@ import {
 
 const { Item: FormItem } = Form
 
-export const generateColorFormItems = (customColors?: string[]) =>
+export const generateColorFormItems = (customPalette?: string[]) =>
   KEY_OF_COLOR_VARIABLES.map((key) => {
     const { label } = COLOR_VARIABLES[key]
     return (
       <FormItem label={label} field={key} key={key}>
-        <CustomColorPicker presetColors={customColors} allowReset />
+        <CustomColorPicker
+          presetColors={customPalette}
+          allowClear
+          clearToValid
+        />
       </FormItem>
     )
   })

@@ -2,7 +2,6 @@ import * as React from 'react'
 
 import {
   Form,
-  Cascader,
   Button,
   Message,
   Tooltip,
@@ -14,13 +13,18 @@ import {
 import { IconQuestionCircle, IconSave } from '@arco-design/web-react/icon'
 import { FontList } from '@/@types/portal-network'
 
+import FontCascader from '@/components/custom-form-inner/font-cascader'
 import { devLogger } from '@/common/utils'
-import { createFontStyleNode } from '@/common/utils/font'
-import { useGlobalConfig } from '@/common/hooks/editer-data'
 import { FontFormData } from '@/typings/common/editer-config-data'
+import {
+  filterFontByType,
+  createFontStyleNode,
+  updatePreviewerGlobalFont,
+} from '@/common/utils/font'
+import { useGlobalConfig } from '@/common/hooks/editer-data'
 
 import styles from './index.module.less'
-import { computeCascaderOptions, filterFontByType } from './utils'
+import { COLLAPSE_BASE_PROPS } from '../../../config'
 
 export type FontFormProps = {
   /**
@@ -35,14 +39,9 @@ const { Meta: ListItemMeta } = ListItem
 const { Item: CollapseItem } = Collapse
 
 const FontForm: React.FC<FontFormProps> = ({ fontList }) => {
-  const { configData, updateGlobalConfig } = useGlobalConfig('font')
+  const { configData, updateGlobalConfig } = useGlobalConfig()
 
   const [fontForm] = Form.useForm<FontFormData>()
-
-  const options = React.useMemo(
-    () => computeCascaderOptions(fontList),
-    [fontList]
-  )
 
   const platFormFontList = React.useMemo(
     () => filterFontByType(fontList, 'platform_provide'),
@@ -70,13 +69,18 @@ const FontForm: React.FC<FontFormProps> = ({ fontList }) => {
 
   const handleSaveClick = () => {
     const usedFontName =
-      fontForm.getFieldsValue(['usedFont']).usedFont?.map((item) => item[1]) ||
+      fontForm.getFieldsValue(['usedFont'])?.usedFont?.map((item) => item[1]) ||
       []
+
+    const globalFont = fontForm.getFieldsValue(['globalFont']).globalFont?.[1]
 
     const usedFont = fontList.filter(
       (font) => font.src && usedFontName.includes(font.name)
     )
-    createFontStyleNode(usedFont)
+
+    if (usedFont.length > 0) createFontStyleNode(usedFont)
+
+    updatePreviewerGlobalFont(globalFont)
 
     updateGlobalConfig({
       fontConfig: fontForm.getFieldsValue(),
@@ -89,6 +93,7 @@ const FontForm: React.FC<FontFormProps> = ({ fontList }) => {
     <section className={styles.font_form}>
       <Form
         form={fontForm}
+        size="small"
         labelCol={{
           span: 9,
         }}
@@ -98,18 +103,10 @@ const FontForm: React.FC<FontFormProps> = ({ fontList }) => {
         labelAlign="left"
         onChange={handleFormChangeHandler}
         className={styles.font_form}
-        initialValues={configData}
+        initialValues={configData?.fontConfig}
       >
         <FormItem field="globalFont" label="全局字体">
-          <Cascader
-            options={options}
-            allowClear
-            renderFormat={(valueShow) => valueShow[1]}
-            fieldNames={{
-              label: 'name',
-              value: 'name',
-            }}
-          />
+          <FontCascader fontList={fontList} />
         </FormItem>
         <FormItem
           field="usedFont"
@@ -122,26 +119,18 @@ const FontForm: React.FC<FontFormProps> = ({ fontList }) => {
             </span>
           }
         >
-          <Cascader
-            options={options}
-            mode="multiple"
-            allowClear
-            renderFormat={(valueShow) => valueShow[1]}
-            fieldNames={{
-              label: 'name',
-              value: 'name',
-            }}
-          />
+          <FontCascader fontList={fontList} mode="multiple" />
         </FormItem>
         <Button
           icon={<IconSave />}
+          type="primary"
           style={{
             width: '100%',
           }}
           onClick={handleSaveClick}
         />
       </Form>
-      <Collapse lazyload bordered={false} expandIconPosition="right" accordion>
+      <Collapse {...COLLAPSE_BASE_PROPS}>
         <CollapseItem
           header={<div className="tip_text">平台提供的免费商用字体如下</div>}
           name="font_list"

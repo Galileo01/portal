@@ -1,21 +1,14 @@
 .editer_container {
   height: 100vh;
-  // 覆盖  position  解决  tool-box 定位 错误
-  :global(.arco-image) {
-    position: revert;
-  }
-  // 解决 image 在 显示error 时 定位问题  TODO: 封装进CustomImage统一处理
-  :global(.arco-image .arco-image-overlay) {
-    position: relative;
-    left: revert;
-    right: revert;
-    top: revert;
-    bottom: revert;
-  }
 
-  // 防止 arco-image-img 图片 元素 被拖拽
+  //覆盖 arco-image-img 样式   防止 该元素被拖拽  影响排序
   :global(.arco-image-img) {
     -webkit-user-drag: none;
+  }
+
+  // 防止 成为点击事件的 目标 影响  tool-box 定位
+  :global(.previewer .arco-image-img) {
+    pointer-events: none;
   }
 
   // 关闭 arco-layout-sider 的 过渡， 使 tool-box 的MutationObserver 及时更新

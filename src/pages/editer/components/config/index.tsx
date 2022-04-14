@@ -8,22 +8,25 @@ import {
   useEditerDataDispatch,
   EditerDataActionEnum,
 } from '@/store/editer-data'
+import { useFetchDataDispatch, FetchDataActionEnum } from '@/store/fetch-data'
 import { devLogger } from '@/common/utils'
 import {
   isPreviewerElement,
   getComponentDataIndexFromElement,
   isRCRenderedElement,
 } from '@/common/utils/element'
+import { fontList } from '@/mock/fontList'
 
 import styles from './index.module.less'
 import GlobalConfig from './components/global-config'
 import StyleConfig from './components/style-config'
 import PropConfig, { PropConfigProps } from './components/props-config'
-import { ConfigPaneNameEnum } from './config'
+import { ConfigPaneNameEnum, COLLAPSE_BASE_PROPS } from './config'
 
 const Config = () => {
   const { currentClickElement, componentDataList } = useEditerDataStore()
   const editerDispatch = useEditerDataDispatch()
+  const fetchDataDispatch = useFetchDataDispatch()
 
   const [componentData, setComponentData] = React.useState<ComponentDataItem>()
   const componentDataIndexRef = React.useRef(-1)
@@ -32,6 +35,8 @@ const Config = () => {
 
   const [activeKey, setActiveKey] = React.useState('')
   const activeKeyRef = React.useRef('') // 使用ref 存储 ，防止 userEffect 重复触发
+
+  const currentClickElementValid = Boolean(currentClickElement)
 
   // 更新 componentData  isPreviwer isRCComponent
   const refreshState = React.useCallback(() => {
@@ -101,13 +106,18 @@ const Config = () => {
     refreshState()
   }, [refreshState])
 
+  // 模拟 网络请求- 字体列表
+  React.useEffect(() => {
+    fetchDataDispatch({
+      type: FetchDataActionEnum.SET_ALL_FONT_LIST,
+      payload: fontList,
+    })
+  }, [fetchDataDispatch])
+
   return (
     <div className={styles.config}>
       <Collapse
-        lazyload
-        bordered={false}
-        expandIconPosition="right"
-        accordion
+        {...COLLAPSE_BASE_PROPS}
         activeKey={activeKey}
         onChange={handleCollpaseChange}
       >
@@ -122,7 +132,7 @@ const Config = () => {
           componentData={componentData}
           updateComponentProps={updateComponentProps}
         />
-        <StyleConfig />
+        <StyleConfig active={currentClickElementValid} />
       </Collapse>
     </div>
   )

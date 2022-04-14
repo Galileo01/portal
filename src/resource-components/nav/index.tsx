@@ -5,7 +5,7 @@ import clsx from 'clsx'
 
 import { RESOURCE_COMPONENT_RENDERED_COMMON_CLASS } from '@/common/constant'
 import { CommonProps } from '@/typings/common/resosurce-component'
-import CustomImage from '../components/custom-image'
+import CustomImage from '@/components/custom-image'
 
 import styles from './index.module.less'
 

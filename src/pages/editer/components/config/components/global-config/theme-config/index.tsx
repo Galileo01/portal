@@ -18,19 +18,15 @@ import PaletteModal, { PaletteModalProps } from '../palette-modal'
 const { Item: CollapseItem } = Collapse
 
 const ThemeConfig = () => {
-  const { configData, updateGlobalConfig } = useGlobalConfig('theme')
+  const { configData, updateGlobalConfig } = useGlobalConfig()
 
   const [colorConfigFom] = Form.useForm()
 
-  const [customColors, setColors] = React.useState<string[]>([])
   const [modalVisible, setModalVisible] = React.useState(false)
 
   const colorFormItems = React.useMemo(
-    () =>
-      generateColorFormItems(
-        customColors.length > 0 ? customColors : undefined
-      ),
-    [customColors]
+    () => generateColorFormItems(configData?.customPalette || undefined),
+    [configData?.customPalette]
   )
 
   const showPaletteModal = () => {
@@ -44,7 +40,9 @@ const ThemeConfig = () => {
   const handlePaletteModalConfirm: PaletteModalProps['onConfirm'] = (
     paletteColors
   ) => {
-    setColors(paletteColors)
+    updateGlobalConfig({
+      customPalette: paletteColors,
+    })
     hidePaletteModal()
   }
 
@@ -59,16 +57,17 @@ const ThemeConfig = () => {
   }
 
   React.useEffect(() => {
-    if (configData) {
-      setColorVariableValue(configData as ColorVarValue, true)
+    if (configData?.themeConfig) {
+      setColorVariableValue(configData.themeConfig as ColorVarValue, true)
     }
+    // 仅在 第一次 渲染 时
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <CollapseItem
       header="主题配置"
-      name="page_config.theme_config"
+      name="global_config.theme_config"
       className={styles.theme_config}
     >
       <div className={styles.form_tip}>
@@ -80,6 +79,7 @@ const ThemeConfig = () => {
       </div>
       <Form
         form={colorConfigFom}
+        size="small"
         labelCol={{
           span: 9,
         }}
@@ -87,7 +87,7 @@ const ThemeConfig = () => {
           span: 15,
         }}
         labelAlign="left"
-        initialValues={configData || getColorVariableValue('body')}
+        initialValues={configData?.themeConfig || getColorVariableValue('body')}
         onValuesChange={handleColorConfigFormChange}
       >
         {colorFormItems}

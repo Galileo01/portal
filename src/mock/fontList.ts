@@ -8,16 +8,6 @@ export const fontList: FontList = [
     type: 'system_exist',
   },
   {
-    name: 'Arial',
-    mainLanguage: 'en',
-    type: 'system_exist',
-  },
-  {
-    name: 'Tahoma',
-    mainLanguage: 'en',
-    type: 'system_exist',
-  },
-  {
     name: 'STHeiti',
     mainLanguage: 'ch',
     type: 'system_exist',
@@ -25,6 +15,41 @@ export const fontList: FontList = [
   {
     name: 'Hiragino Sans GB',
     mainLanguage: 'ch',
+    type: 'system_exist',
+  },
+  {
+    name: 'Arial',
+    mainLanguage: 'en',
+    type: 'system_exist',
+  },
+  {
+    name: 'Arial Black',
+    mainLanguage: 'en',
+    type: 'system_exist',
+  },
+  {
+    name: 'Comic Sans MS',
+    mainLanguage: 'en',
+    type: 'system_exist',
+  },
+  {
+    name: 'Courier New',
+    mainLanguage: 'en',
+    type: 'system_exist',
+  },
+  {
+    name: 'Impact',
+    mainLanguage: 'en',
+    type: 'system_exist',
+  },
+  {
+    name: 'Courier New',
+    mainLanguage: 'en',
+    type: 'system_exist',
+  },
+  {
+    name: 'Papyrus',
+    mainLanguage: 'en',
     type: 'system_exist',
   },
   {

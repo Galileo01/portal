@@ -1,5 +1,9 @@
 import { ResourceComponent } from './resosurce-component'
-import { ThemeConfigData, FontConfigData } from './editer-config-data'
+import {
+  ThemeConfigData,
+  FontConfigData,
+  StyleConfigItem,
+} from './editer-config-data'
 
 export type ComponentDataItem = {
   id: string // 组件唯一id  拖拽时 动态生成
@@ -9,10 +13,14 @@ export type ComponentDataItem = {
 export type ComponentDataList = ComponentDataItem[]
 
 export type GlobalConfig = {
-  // 主题配置
+  // 主题配置 - 颜色变量
   themeConfig?: ThemeConfigData
+  // 个性 调色板
+  customPalette?: string[]
   // 字体配置
   fontConfig?: FontConfigData
+  // 样式配置
+  styleConfig?: StyleConfigItem[]
 }
 
 export type PageConfig = {

@@ -7,7 +7,6 @@ import {
   IconArrowFall,
   IconPlus,
 } from '@arco-design/web-react/icon'
-import clsx from 'clsx'
 
 import { ComponentDataItem } from '@/typings/common/editer'
 import {
@@ -18,7 +17,6 @@ import {
 } from '@/typings/common/resosurce-component'
 
 import styles from './index.module.less'
-import { devLogger } from '@/common/utils'
 
 const { Item: FormItem } = Form
 
@@ -75,29 +73,13 @@ export const generateFormList = (
 ) => (
   <Form.List field={key} key={key}>
     {(fields, { add, remove, move }) => {
-      const addDisable = maxItems ? fields.length === maxItems : false
-      const removeDisable = minItems ? fields.length === minItems : false
-      /**
-       * 可编辑的情况
-       * 1.  maxItems !== minItems ：个数不固定
-       * 2.  maxItems === minItems && fields.length !== maxItems ：个数虽然固定 但是 没有达到该个数
-       */
-      const canAddOrRemove =
-        maxItems !== minItems ||
-        (maxItems === minItems && fields.length !== maxItems)
+      // NOTE: 假定 type =array  情况下，maxItems 和 minItems 字段都存在
+      const canAdd = maxItems ? fields.length < maxItems : false
+      const canDelete = minItems ? fields.length > minItems : false
+      const canMove = fields.length > 1
 
+      const canEdit = canAdd || canDelete
       const title = generateFormListTitle(label, minItems!, maxItems!)
-
-      devLogger(
-        'fields',
-        fields,
-        'addDisable',
-        addDisable,
-        'removeDisable',
-        removeDisable,
-        'canAddOrRemove',
-        canAddOrRemove
-      )
 
       return (
         <div className={styles.form_list}>
@@ -155,32 +137,31 @@ export const generateFormList = (
               <div className={styles.form_item_line}>
                 {formItems}
                 <div>
-                  {canAddOrRemove && (
+                  {canDelete && (
                     <IconDelete
                       key={`${field.field}_remove`}
-                      className={clsx(
-                        styles.oprate_btn,
-                        removeDisable && styles.oprate_btn_disable
-                      )}
+                      className={styles.oprate_btn}
                       onClick={() => remove(index)}
                     />
                   )}
-                  <MoveIcon
-                    key={`${field.field}move`}
-                    className={styles.oprate_btn}
-                    onClick={() =>
-                      move(index, index > 0 ? index - 1 : index + 1)
-                    }
-                  />
+                  {canMove && (
+                    <MoveIcon
+                      key={`${field.field}move`}
+                      className={styles.oprate_btn}
+                      onClick={() =>
+                        move(index, index > 0 ? index - 1 : index + 1)
+                      }
+                    />
+                  )}
                 </div>
               </div>
             )
           })}
-          {canAddOrRemove && (
+          {canEdit && (
             <Button
               key={`${key}_add`}
               icon={<IconPlus />}
-              disabled={addDisable}
+              disabled={!canAdd}
               style={{ marginBottom: 10, width: '100%' }}
               onClick={() => {
                 add(label)

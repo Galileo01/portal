@@ -39,3 +39,8 @@ export const FONT_STYLE_NODE_ID = 'font_style_node'
 
 // 配置
 export const NANO_ID_LENGTH = 10
+
+// 其他
+
+export const BLEND_MODE_DOC_HREF =
+  'https://developer.mozilla.org/zh-CN/docs/Web/CSS/blend-mode'

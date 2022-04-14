@@ -34,10 +34,11 @@ const Previewer = () => {
   }
 
   const updateClickElement = (newElement?: HTMLElement) => {
-    editerDataDispatch({
-      type: EditerDataActionEnum.SET_CURRENT_CLICK_ELEMENT,
-      payload: newElement,
-    })
+    if (currentClickElement !== newElement)
+      editerDataDispatch({
+        type: EditerDataActionEnum.SET_CURRENT_CLICK_ELEMENT,
+        payload: newElement,
+      })
   }
 
   const { toolBoxRef, hiddenToolBox, handleOprateBtnClick } = useToolBox({

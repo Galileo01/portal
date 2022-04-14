@@ -38,3 +38,14 @@ export const customJsonParse = <T = unknown>(str: string, defaultValue?: T) => {
     return defaultValue
   }
 }
+
+export const compose =
+  <T = any>(...funs: Function[]) =>
+  (...args: any[]) =>
+    funs.reduceRight(
+      (preValue, curFun) =>
+        // preVal 遍历过程中 可能为单个值 或 值的数组；而concat 同时 接收数组 和 参数列表(逗号分隔)
+        // eslint-disable-next-line prefer-spread
+        curFun.apply(null, [].concat(preValue as any | any[])),
+      args
+    ) as unknown as T

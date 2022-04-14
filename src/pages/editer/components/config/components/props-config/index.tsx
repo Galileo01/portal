@@ -45,6 +45,7 @@ const PropConfig: React.FC<PropConfigProps> = (props) => {
     >
       <Form
         form={form}
+        size="small"
         labelCol={{
           span: 7,
         }}

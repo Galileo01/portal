@@ -2,7 +2,11 @@ import * as React from 'react'
 
 import { Collapse, CollapseProps } from '@arco-design/web-react'
 
-import { ConfigPaneBaseProps, ConfigPaneNameEnum } from '../../config'
+import {
+  ConfigPaneBaseProps,
+  ConfigPaneNameEnum,
+  COLLAPSE_BASE_PROPS,
+} from '../../config'
 import ThemeConfig from './theme-config'
 import FontConfig from './font-config'
 
@@ -29,11 +33,8 @@ const GlobalConfig: React.FC<ConfigPaneBaseProps> = ({ active }) => {
       disabled={!active}
     >
       <Collapse
+        {...COLLAPSE_BASE_PROPS}
         activeKey={activeKey}
-        lazyload
-        bordered={false}
-        expandIconPosition="right"
-        accordion
         onChange={handleCollapseChange}
       >
         <ThemeConfig />

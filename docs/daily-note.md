@@ -127,3 +127,66 @@ Ps: all:revert 会重置 svg 的 fill 属性，这一点可能会造成较大的
    - 设置
 
      element.style.setProperty('--color', '#cd0000');
+
+## 0408
+
+1. 字体配置 分为 三个部分
+
+   - 平台提供
+   - 系统自带
+   - 用户上传
+
+2. 配置结构更新，更新为
+
+   页面配置 分为
+
+   - 全局配置-主题+字体
+   - 属性配置
+   - 样式配置
+
+3. 主题配置 通过 store 存储
+
+4. 保存按钮和清空按钮 点击 功能实现
+
+## 0409
+
+1. 样式编辑方案
+
+   - talwind？
+   - 生成 样式表？
+
+   都需要 **根据元素 获取它的 唯一 css 选择器**
+
+   id、className、:nth-of-type 三者结合 构造 唯一的 选择器
+
+   从 请求或者 本地存储 恢复 页面时，必须要沿用 id
+
+2. 封装 generateSelector 方法 获取元素的 唯一选择器
+
+## 0410
+
+1. 编写 元素 边距 表单，封装一下？用到 border？
+2. 抽离 一系列 基础组件 用于 样式配置
+
+##0411
+
+1. 字体列表 抽离到 feta-data context+reducer 进行存储，用于 存储网络请求数据
+
+## 0412
+
+1. 根据 当前的 点击元素 生成 唯一 的 selector
+
+   id + class + :nth-of-type(n) ，尤其是 nth 选择器 可以唯一 确定 一个 元素
+
+2. 样式 配置 表格变化时 更改 对应 style node 节点的 innerHTML
+
+3.
+
+## 0414
+
+1. Form 的 onChange 和 onValuesChange
+   - onChange 只在页面上 点击/输入 造成表单 变化 时触发
+   - onValuesChange 除以上情况外 还会在通过 form.setFieldValue 等函数式 更新的方法设置值时 触发
+2. 编写 样式配置 formData 值到 css 样式表的 转换韩式
+3. 从 dom 生成 样式配置的表单 初始值 ！！
+4.

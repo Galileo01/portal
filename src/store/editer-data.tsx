@@ -19,7 +19,7 @@ export enum EditerDataActionEnum {
   SET_COMPONENT_DATA_LIST = 'setComponentDataList',
   SET_CURRENT_CLICK_ELEMENT = 'setCurrentClickElement',
   UPDATE_COMPONENT_DATA_ITEM = 'updateComponentDataItem',
-  UPDATE_GLOBALCONFIG = 'updateGlobalConfig',
+  UPDATE_GLOBAL_CONFIG = 'updateGlobalConfig',
   CLEAR = 'clear',
 }
 
@@ -33,7 +33,7 @@ export type ActionPayloadMap = {
     index: number
     newData: ComponentDataItem
   }
-  [EditerDataActionEnum.UPDATE_GLOBALCONFIG]: GlobalConfig
+  [EditerDataActionEnum.UPDATE_GLOBAL_CONFIG]: GlobalConfig
   [EditerDataActionEnum.CLEAR]: undefined
 }
 
@@ -140,7 +140,7 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
         componentDataList,
       }
     // 更新页面配置
-    case EditerDataActionEnum.UPDATE_GLOBALCONFIG:
+    case EditerDataActionEnum.UPDATE_GLOBAL_CONFIG:
       return {
         ...state,
         globalConfig: {

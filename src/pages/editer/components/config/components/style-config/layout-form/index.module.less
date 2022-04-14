@@ -1,0 +1,157 @@
+.simulater_box {
+  height: 150px;
+  position: relative;
+  margin-bottom: 10px;
+
+  // 覆盖 arco-input 样式
+  :global(.arco-input) {
+    background-color: transparent;
+    border: none;
+    position: absolute;
+    padding: 0;
+    text-align: center;
+    font-size: 12px;
+  }
+
+  --attr-item-size: 20px;
+  --attr-item-gap: 5px;
+  --negative--attr-item-size: calc(-1 * var(--attr-item-size));
+  --padding-primary-position-value: calc(
+    var(--attr-item-size) + var(--attr-item-gap)
+  );
+  --padding-secondary-position-value: calc(
+    var(--attr-item-size) + var(--attr-item-gap) * 2
+  );
+}
+
+.attr_text {
+  color: var(--color-text-3);
+  font-size: 12px;
+  position: absolute;
+  line-height: var(--attr-item-size);
+}
+
+.attr_item {
+  position: absolute;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.attr_horizon_arco_input_reset {
+  line-height: var(--attr-item-size);
+  height: var(--attr-item-size);
+}
+
+.attr_vertical_arco_input_reset {
+  width: var(--attr-item-size);
+  height: 100%;
+}
+
+.margin_top {
+  .attr_item();
+  top: 0;
+  left: 0;
+  right: 0;
+  border-left: var(--attr-item-size) solid transparent;
+  border-right: var(--attr-item-size) solid transparent;
+  border-top: var(--attr-item-size) solid rgb(var(--blue-2));
+
+  &:hover {
+    border-top-color: rgb(var(--blue-3));
+  }
+
+  // 覆盖 arco-input 样式
+  :global(.arco-input) {
+    .attr_horizon_arco_input_reset();
+    top: var(--negative--attr-item-size);
+  }
+}
+
+.margin_right {
+  .attr_item();
+  top: var(--attr-item-gap);
+  bottom: var(--attr-item-gap);
+  right: 0;
+  border-top: var(--attr-item-size) solid transparent;
+  border-bottom: var(--attr-item-size) solid transparent;
+  border-right: var(--attr-item-size) solid rgb(var(--blue-2));
+
+  &:hover {
+    border-right-color: rgb(var(--blue-3));
+  }
+
+  // 覆盖 arco-input 样式
+  :global(.arco-input) {
+    .attr_vertical_arco_input_reset();
+    right: var(--negative--attr-item-size);
+  }
+}
+
+.margin_bottom {
+  .attr_item();
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-left: var(--attr-item-size) solid transparent;
+  border-right: var(--attr-item-size) solid transparent;
+  border-bottom: var(--attr-item-size) solid rgb(var(--blue-2));
+
+  &:hover {
+    border-bottom-color: rgb(var(--blue-3));
+  }
+
+  // 覆盖 arco-input 样式
+  :global(.arco-input) {
+    .attr_horizon_arco_input_reset();
+    bottom: var(--negative--attr-item-size);
+  }
+}
+
+.margin_left {
+  .attr_item();
+  left: 0;
+  top: var(--attr-item-gap);
+  bottom: var(--attr-item-gap);
+
+  border-top: var(--attr-item-size) solid transparent;
+  border-bottom: var(--attr-item-size) solid transparent;
+  border-left: var(--attr-item-size) solid rgb(var(--blue-2));
+
+  &:hover {
+    border-left-color: rgb(var(--blue-3));
+  }
+
+  // 覆盖 arco-input 样式
+  :global(.arco-input) {
+    .attr_vertical_arco_input_reset();
+    left: var(--negative--attr-item-size);
+  }
+}
+
+.padding_top {
+  .margin_top();
+  top: var(--padding-primary-position-value);
+  left: var(--padding-primary-position-value);
+  right: var(--padding-primary-position-value);
+}
+
+.padding_right {
+  .margin_right();
+  top: var(--padding-secondary-position-value);
+  bottom: var(--padding-secondary-position-value);
+  right: var(--padding-primary-position-value);
+}
+
+.padding_bottom {
+  .margin_bottom();
+  left: var(--padding-secondary-position-value);
+  bottom: var(--padding-primary-position-value);
+  right: var(--padding-secondary-position-value);
+}
+
+.padding_left {
+  .margin_left();
+  top: var(--padding-secondary-position-value);
+  bottom: var(--padding-secondary-position-value);
+  left: var(--padding-primary-position-value);
+}

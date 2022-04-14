@@ -7,14 +7,14 @@ import {
 } from '@/store/editer-data'
 import { GlobalConfig } from '@/typings/common/editer'
 
-export const useGlobalConfig = (config: 'theme' | 'font') => {
+export const useGlobalConfig = () => {
   const { globalConfig } = useEditerDataStore()
   const editerDataDispatch = useEditerDataDispatch()
 
   const updateGlobalConfig = React.useCallback(
     (lastConfig: GlobalConfig) => {
       editerDataDispatch({
-        type: EditerDataActionEnum.UPDATE_GLOBALCONFIG,
+        type: EditerDataActionEnum.UPDATE_GLOBAL_CONFIG,
         payload: lastConfig,
       })
     },
@@ -22,8 +22,7 @@ export const useGlobalConfig = (config: 'theme' | 'font') => {
   )
 
   return {
-    configData:
-      config === 'font' ? globalConfig?.fontConfig : globalConfig?.themeConfig,
+    configData: globalConfig,
     updateGlobalConfig,
   }
 }
