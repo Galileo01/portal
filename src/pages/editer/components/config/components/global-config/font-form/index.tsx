@@ -14,12 +14,10 @@ import { IconQuestionCircle, IconSave } from '@arco-design/web-react/icon'
 import { FontList } from '@/@types/portal-network'
 
 import FontCascader from '@/components/custom-form-inner/font-cascader'
-import { devLogger } from '@/common/utils'
 import { FontFormData } from '@/typings/common/editer-config-data'
 import {
   filterFontByType,
-  createFontStyleNode,
-  updatePreviewerGlobalFont,
+  updateFontConfigToElement,
 } from '@/common/utils/font'
 import { useGlobalConfig } from '@/common/hooks/editer-data'
 
@@ -52,8 +50,6 @@ const FontForm: React.FC<FontFormProps> = ({ fontList }) => {
     value,
     values
   ) => {
-    devLogger('handleFormChangeHandler', value, values)
-
     // 更新 的字段不是  globalFont
     if (!value.globalFont) return
     const [, globalFont] = value.globalFont
@@ -68,19 +64,7 @@ const FontForm: React.FC<FontFormProps> = ({ fontList }) => {
   }
 
   const handleSaveClick = () => {
-    const usedFontName =
-      fontForm.getFieldsValue(['usedFont'])?.usedFont?.map((item) => item[1]) ||
-      []
-
-    const globalFont = fontForm.getFieldsValue(['globalFont']).globalFont?.[1]
-
-    const usedFont = fontList.filter(
-      (font) => font.src && usedFontName.includes(font.name)
-    )
-
-    if (usedFont.length > 0) createFontStyleNode(usedFont)
-
-    updatePreviewerGlobalFont(globalFont)
+    updateFontConfigToElement(fontForm.getFieldsValue(), fontList, true)
 
     updateGlobalConfig({
       fontConfig: fontForm.getFieldsValue(),

@@ -3,7 +3,6 @@ import * as React from 'react'
 import { Collapse, Form, FormProps } from '@arco-design/web-react'
 
 import { ComponentDataItem } from '@/typings/common/editer'
-import { devLogger } from '@/common/utils'
 
 import { ConfigPaneBaseProps, ConfigPaneNameEnum } from '../../config'
 import { generatePropFormItems } from './utils'
@@ -23,14 +22,12 @@ const PropConfig: React.FC<PropConfigProps> = (props) => {
   const [formItems, setList] = React.useState<JSX.Element[]>([])
 
   const handlePropsChange: FormProps['onValuesChange'] = (value, values) => {
-    devLogger('handlePropsChange', 'value', value, 'values', values)
     updateComponentProps(values)
   }
 
   React.useEffect(() => {
     if (componentData) {
       const elements = generatePropFormItems(componentData)
-      devLogger('PropConfig  generatePropFormItems', elements)
       setList(elements)
       // 更新 表单数据
       form.setFieldsValue(componentData?.resourceComponent.props)

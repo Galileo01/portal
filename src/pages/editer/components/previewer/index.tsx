@@ -83,7 +83,7 @@ const Previewer = () => {
         onClick={handlePreviewerClick}
       >
         <RCListRenderer
-          RCList={componentDataList}
+          componentDataList={componentDataList}
           onDragStart={handleRCRDragStart}
         />
       </div>

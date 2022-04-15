@@ -2,9 +2,13 @@ import * as React from 'react'
 
 import { FontList, FontType } from '@/@types/portal-network'
 
-import { PREVIEWER_CLASS, FONT_STYLE_NODE_ID } from '@/common/constant'
+import {
+  PREVIEWER_CLASS,
+  FONT_STYLE_NODE_ID,
+  PAGE_CONTAINER_CLASS,
+} from '@/common/constant'
+import { FontConfigData } from '@/typings/common/editer-config-data'
 
-import { devLogger } from './index'
 import { updateStyleNodeInnerHTML, removeStyleNode } from './element'
 
 export const filterFontByType = (fontList: FontList, type: FontType) =>
@@ -69,12 +73,13 @@ export const computeCascaderOptions = (fontList: FontList) => {
   return options
 }
 
-export const updatePreviewerGlobalFont = (globalFont?: string) => {
-  const previewerElement = document.querySelector(
-    `.${PREVIEWER_CLASS}`
+export const updateGlobalFont = (globalFont?: string, isEditer = false) => {
+  const targetElement = document.querySelector(
+    `.${isEditer ? PREVIEWER_CLASS : PAGE_CONTAINER_CLASS}`
   ) as HTMLElement | null
-  if (previewerElement) {
-    previewerElement.style.setProperty('font-family', globalFont || 'revert')
+
+  if (targetElement) {
+    targetElement.style.setProperty('font-family', globalFont || 'revert')
   }
 }
 
@@ -88,10 +93,31 @@ export const createFontStyleNode = (fontList: FontList) => {
       src:url("${src}");
     }`
   }, '')
-  devLogger('innerHTML', innerHTML)
   updateStyleNodeInnerHTML(FONT_STYLE_NODE_ID, innerHTML)
 }
 
 export const removeFontStyleNode = () => {
   removeStyleNode(FONT_STYLE_NODE_ID)
+}
+
+// 将最新的 字体配置 更到 元素
+/**
+ * 网站全局 字体
+ * 网站 用到的字体
+ */
+export const updateFontConfigToElement = (
+  fontConfig: FontConfigData,
+  fontList: FontList,
+  isEditer = false
+) => {
+  const usedFontName = fontConfig.usedFont?.map((item) => item[1]) || []
+  const globalFont = fontConfig.globalFont?.[1]
+
+  const usedFont = fontList.filter(
+    (font) => font.src && usedFontName.includes(font.name)
+  )
+
+  if (usedFont.length > 0) createFontStyleNode(usedFont)
+
+  updateGlobalFont(globalFont, isEditer)
 }

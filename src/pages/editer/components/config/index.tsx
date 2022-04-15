@@ -8,14 +8,11 @@ import {
   useEditerDataDispatch,
   EditerDataActionEnum,
 } from '@/store/editer-data'
-import { useFetchDataDispatch, FetchDataActionEnum } from '@/store/fetch-data'
-import { devLogger } from '@/common/utils'
 import {
   isPreviewerElement,
   getComponentDataIndexFromElement,
   isRCRenderedElement,
 } from '@/common/utils/element'
-import { fontList } from '@/mock/fontList'
 
 import styles from './index.module.less'
 import GlobalConfig from './components/global-config'
@@ -26,7 +23,6 @@ import { ConfigPaneNameEnum, COLLAPSE_BASE_PROPS } from './config'
 const Config = () => {
   const { currentClickElement, componentDataList } = useEditerDataStore()
   const editerDispatch = useEditerDataDispatch()
-  const fetchDataDispatch = useFetchDataDispatch()
 
   const [componentData, setComponentData] = React.useState<ComponentDataItem>()
   const componentDataIndexRef = React.useRef(-1)
@@ -62,7 +58,6 @@ const Config = () => {
     props
   ) => {
     const { resourceComponent, id } = componentData!
-    devLogger('updateComponentProps', 'id', id, 'newprops', props)
     // 更props 的更新不能  触发 新快照的  创建
     editerDispatch({
       type: EditerDataActionEnum.UPDATE_COMPONENT_DATA_ITEM,
@@ -105,14 +100,6 @@ const Config = () => {
   React.useEffect(() => {
     refreshState()
   }, [refreshState])
-
-  // 模拟 网络请求- 字体列表
-  React.useEffect(() => {
-    fetchDataDispatch({
-      type: FetchDataActionEnum.SET_ALL_FONT_LIST,
-      payload: fontList,
-    })
-  }, [fetchDataDispatch])
 
   return (
     <div className={styles.config}>

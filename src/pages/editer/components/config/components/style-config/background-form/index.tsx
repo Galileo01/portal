@@ -22,7 +22,6 @@ import { BLEND_MODE_DOC_HREF } from '@/common/constant'
 import { BlendModeSelect } from '@/components/custom-form-inner/simple'
 import CustomColorPicker from '@/components/custom-color-picker'
 import CustomImage from '@/components/custom-image'
-import { devLogger } from '@/common/utils'
 
 import styles from './index.module.less'
 import OperatePopover from './operate-popover'
@@ -105,7 +104,6 @@ const BackgroundForm: React.FC<BackgroundFormProps> = (props) => {
         image: targetItem,
       })
 
-    devLogger('operateOne', index, targetItem)
     showPopup()
   }
 
@@ -114,15 +112,6 @@ const BackgroundForm: React.FC<BackgroundFormProps> = (props) => {
       const styleConfigFormValues = styleConfigForm.getFieldsValue()
       const targetItem = styleConfigFormValues.backgrounds?.[index]
       // MARK: 临时 先取  url
-      devLogger(
-        'getBackgroundFromStyleConfigForm',
-        styleConfigFormValues,
-        styleConfigFormValues.backgrounds,
-        index,
-        targetItem,
-        targetItem?.url,
-        currentOprateBgValueRef.current
-      )
       // NOTE: FormList 的渲染时机 似乎 早于 change 事件，最新的一项  拿不到
       return targetItem?.url || currentOprateBgValueRef.current
     },
@@ -143,59 +132,56 @@ const BackgroundForm: React.FC<BackgroundFormProps> = (props) => {
       <FormList field="backgrounds">
         {(fields, { remove, move }) => (
           <div>
-            {fields.map((item, index) => {
-              devLogger('FormList', 'item', item, index)
-              return (
-                <Row gutter={4} key={item.field}>
-                  <Col span={16}>
-                    <Form.Item
-                      field={item.field}
-                      label={`第${index + 1}项`}
-                      labelCol={{ span: 8 }}
-                      wrapperCol={{ span: 16 }}
+            {fields.map((item, index) => (
+              <Row gutter={4} key={item.field}>
+                <Col span={16}>
+                  <Form.Item
+                    field={item.field}
+                    label={`第${index + 1}项`}
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 16 }}
+                  >
+                    {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                    <CustomImage
+                      width={20}
+                      height={20}
+                      src={getBackgroundFromStyleConfigForm(index)}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <div className={styles.operate_btns}>
+                    <Button
+                      size="mini"
+                      icon={<IconDelete />}
+                      shape="circle"
+                      status="danger"
+                      onClick={() => {
+                        remove(index)
+                        setSavedFalse()
+                      }}
+                    />
+                    <Button
+                      size="mini"
+                      shape="circle"
+                      onClick={() => {
+                        move(index, index > 0 ? index - 1 : index + 1)
+                        setSavedFalse()
+                      }}
                     >
-                      {/* eslint-disable-next-line jsx-a11y/alt-text */}
-                      <CustomImage
-                        width={20}
-                        height={20}
-                        src={getBackgroundFromStyleConfigForm(index)}
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col span={8}>
-                    <div className={styles.operate_btns}>
-                      <Button
-                        size="mini"
-                        icon={<IconDelete />}
-                        shape="circle"
-                        status="danger"
-                        onClick={() => {
-                          remove(index)
-                          setSavedFalse()
-                        }}
-                      />
-                      <Button
-                        size="mini"
-                        shape="circle"
-                        onClick={() => {
-                          move(index, index > 0 ? index - 1 : index + 1)
-                          setSavedFalse()
-                        }}
-                      >
-                        {index > 0 ? <IconArrowRise /> : <IconArrowFall />}
-                      </Button>
-                      <Button
-                        size="mini"
-                        icon={<IconEdit />}
-                        shape="circle"
-                        type="primary"
-                        onClick={() => operateOne(index)}
-                      />
-                    </div>
-                  </Col>
-                </Row>
-              )
-            })}
+                      {index > 0 ? <IconArrowRise /> : <IconArrowFall />}
+                    </Button>
+                    <Button
+                      size="mini"
+                      icon={<IconEdit />}
+                      shape="circle"
+                      type="primary"
+                      onClick={() => operateOne(index)}
+                    />
+                  </div>
+                </Col>
+              </Row>
+            ))}
           </div>
         )}
       </FormList>

@@ -17,8 +17,6 @@ import {
   BackgroundClipSelect,
   BackgroundAttachmentSelect,
 } from '@/components/custom-form-inner/simple'
-import { devLogger } from '@/common/utils'
-import { FormDataGenerator } from '@/typings/common/editer-config-data'
 
 import styles from './index.module.less'
 
@@ -47,19 +45,6 @@ export type OperatePopoverProps = {
   setSavedFalse: () => void
 }
 
-export type Backgrounds = Array<
-  {
-    background_type: OprateTabKey
-  } & FormDataGenerator<
-    | 'url'
-    | 'background_size'
-    | 'background_repeat'
-    | 'background_clip'
-    | 'background_attachment',
-    string
-  >
->
-
 const OperatePopover: React.FC<OperatePopoverProps> = (props) => {
   const {
     visible,
@@ -77,20 +62,11 @@ const OperatePopover: React.FC<OperatePopoverProps> = (props) => {
 
   const handleConfirmClick = () => {
     if (!changed) {
-      devLogger('handleConfirmClick', 'dont changed')
       onHide()
       return
     }
     const operateFormValues = operateForm.getFieldsValue()
     const { backgrounds = [], ...rest } = styleConfigForm.getFieldsValue()
-    devLogger(
-      'BackgroundForm',
-      'handleConfirmClick',
-      'operateForm',
-      operateFormValues,
-      'styleConfigForm backgrounds',
-      backgrounds
-    )
 
     if (currentTab === 'image' && operateFormValues?.image?.url) {
       const newItem = {

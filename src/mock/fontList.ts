@@ -43,11 +43,6 @@ export const fontList: FontList = [
     type: 'system_exist',
   },
   {
-    name: 'Courier New',
-    mainLanguage: 'en',
-    type: 'system_exist',
-  },
-  {
     name: 'Papyrus',
     mainLanguage: 'en',
     type: 'system_exist',

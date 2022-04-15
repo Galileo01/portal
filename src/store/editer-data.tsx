@@ -6,8 +6,8 @@ import {
   EditerData,
   ComponentDataList,
   ComponentDataItem,
-  GlobalConfig,
 } from '@/typings/common/editer'
+import { GlobalConfig, StyleConfig } from '@/typings/common/editer-config-data'
 import { devLogger } from '@/common/utils'
 
 type Store = EditerData
@@ -20,13 +20,14 @@ export enum EditerDataActionEnum {
   SET_CURRENT_CLICK_ELEMENT = 'setCurrentClickElement',
   UPDATE_COMPONENT_DATA_ITEM = 'updateComponentDataItem',
   UPDATE_GLOBAL_CONFIG = 'updateGlobalConfig',
+  UPDATE_STYLE_CONFIG = 'updateStyleConfig',
   CLEAR = 'clear',
 }
 
 export type ActionPayloadMap = {
   [EditerDataActionEnum.BACK]: undefined
   [EditerDataActionEnum.FORWARD]: undefined
-  [EditerDataActionEnum.SET_STATE]: Store
+  [EditerDataActionEnum.SET_STATE]: Partial<Store>
   [EditerDataActionEnum.SET_COMPONENT_DATA_LIST]: ComponentDataList
   [EditerDataActionEnum.SET_CURRENT_CLICK_ELEMENT]: HTMLElement
   [EditerDataActionEnum.UPDATE_COMPONENT_DATA_ITEM]: {
@@ -34,6 +35,7 @@ export type ActionPayloadMap = {
     newData: ComponentDataItem
   }
   [EditerDataActionEnum.UPDATE_GLOBAL_CONFIG]: GlobalConfig
+  [EditerDataActionEnum.UPDATE_STYLE_CONFIG]: StyleConfig
   [EditerDataActionEnum.CLEAR]: undefined
 }
 
@@ -51,6 +53,7 @@ const initStore: Store = {
   componentDataList: [],
   currentClickElement: undefined,
   globalConfig: undefined,
+  styleConfig: [],
 }
 
 const EditerDataContext = React.createContext<Store>(initStore)
@@ -80,7 +83,7 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
     case EditerDataActionEnum.SET_STATE:
       return {
         ...state,
-        ...(payload as Store),
+        ...(payload as Partial<Store>),
       }
     // 后退 - 下标 减小
     case EditerDataActionEnum.BACK:
@@ -147,6 +150,12 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
           ...globalConfig,
           ...payload,
         },
+      }
+    // 更新 样式配置
+    case EditerDataActionEnum.UPDATE_STYLE_CONFIG:
+      return {
+        ...state,
+        styleConfig: payload as StyleConfig,
       }
     // 清空 所有
     case EditerDataActionEnum.CLEAR:

@@ -4,11 +4,10 @@ import { compose } from '@/common/utils'
 import {
   CssAttribute,
   StringKeyValueObject,
+  TextShadow,
+  Backgrounds,
+  BoxShadow,
 } from '@/typings//common/editer-config-data'
-
-import { TextShadow } from './font-form'
-import { Backgrounds } from './background-form/operate-popover'
-import { BoxShadow } from './border-form'
 
 // 表单值 到 css 样式 的转换器 formValue -> cssValue
 export type ValuesTransformer = (preFormValues: CssAttribute) => CssAttribute
@@ -113,6 +112,7 @@ export const composedValuesTransformer = compose<StringKeyValueObject>(
 
 export const textShadowGenerator: FormValueGenerator = () => {}
 
+// TODO: 临时 注释掉 从 样式表转为 表单  数据的  逻辑
 // export const generateStyleConfigData = (targetElement: HTMLElement) => {
 //   const computedStyle = getComputedStyle(targetElement)
 //   const styleConfig = EDITABLE_FIELD.reduce((preConfig, curField) => {

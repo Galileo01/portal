@@ -1,7 +1,11 @@
 import { EDITABLE_FIELD } from '@/common/constant/style-config'
-import { StringKeyValueObject } from '@/typings//common/editer-config-data'
-import { devLogger } from '@/common/utils'
-import { updateStyleNodeInnerHTML } from '@/common/utils/element'
+import {
+  StringKeyValueObject,
+  StyleConfig,
+} from '@/typings/common/editer-config-data'
+
+import { updateStyleNodeInnerHTML } from './element'
+import { composedValuesTransformer } from './style-transformer'
 
 export const computeStyleNodeInnerHtml = (
   selector: string,
@@ -45,6 +49,17 @@ export const updateTargetElementStyleNode = (
   cssValue: StringKeyValueObject
 ) => {
   const innerHTML = computeStyleNodeInnerHtml(selector, cssValue)
-  devLogger('computeStyleNodeInnerHtml innerHTML', innerHTML)
   updateStyleNodeInnerHTML(styleNodeId, innerHTML)
+}
+
+// 从配置 生成 style node, 例如  从 storege 恢复
+export const generateStyleNodeFromConfig = (styleConfig: StyleConfig) => {
+  styleConfig.forEach((configItem) => {
+    const { selector, styleNodeId, cssAttribute } = configItem
+    updateTargetElementStyleNode(
+      styleNodeId,
+      selector,
+      composedValuesTransformer(cssAttribute)
+    )
+  })
 }

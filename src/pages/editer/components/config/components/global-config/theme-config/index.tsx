@@ -8,7 +8,6 @@ import {
   getColorVariableValue,
   setColorVariableValue,
 } from '@/common/utils/color-variable'
-import { ColorVarValue } from '@/typings/common/editer-config-data'
 import { useGlobalConfig } from '@/common/hooks/editer-data'
 
 import styles from './index.module.less'
@@ -55,14 +54,6 @@ const ThemeConfig = () => {
       themeConfig: values,
     })
   }
-
-  React.useEffect(() => {
-    if (configData?.themeConfig) {
-      setColorVariableValue(configData.themeConfig as ColorVarValue, true)
-    }
-    // 仅在 第一次 渲染 时
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   return (
     <CollapseItem

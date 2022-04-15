@@ -8,7 +8,6 @@ import {
 } from '@/components/custom-form-inner/simple'
 import CustomColorPicker from '@/components/custom-color-picker'
 
-import { FormDataGenerator } from '@/typings/common/editer-config-data'
 import ItemsRow from '../items-row'
 
 const { Item: FormItem } = Form
@@ -17,11 +16,6 @@ const { TabPane } = Tabs
 export type BorderFormProps = {
   customPalette?: string[]
 }
-
-export type BoxShadow = FormDataGenerator<
-  'x_offset' | 'y_offset' | 'blur_radius' | 'spread_radius' | 'color',
-  string
->
 
 /**
  * NOTE: border-width border-style border-color border-radius 默认 4个方向 一致

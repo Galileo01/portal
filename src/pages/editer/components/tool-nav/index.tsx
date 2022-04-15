@@ -14,7 +14,7 @@ import {
   MAX_LENGTH,
 } from '@/store/editer-data'
 import { ROUTE_PAGE } from '@/common/constant/route'
-import { setPageConfig, clearPageConfig } from '@/common/utils/storage'
+import { setPageConfigById, clearPageConfig } from '@/common/utils/storage'
 import { restorePreviewColorVariable } from '@/common/utils/color-variable'
 import { removeFontStyleNode } from '@/common/utils/font'
 import { usePrompt } from '@/common/hooks/react-router-dom'
@@ -38,6 +38,7 @@ const ToolNav = () => {
     currentSnapshotIndex,
     componentDataList,
     globalConfig,
+    styleConfig,
   } = useEditerDataStore()
   const editerDataDispatch = useEditerDataDispatch()
 
@@ -67,8 +68,9 @@ const ToolNav = () => {
 
   const handleSaveClick = () => {
     setIsBlocking(false)
-    setPageConfig(pageIdRef.current, {
+    setPageConfigById(pageIdRef.current, {
       globalConfig,
+      styleConfig,
       componentDataList,
     })
     Message.success('保存成功')

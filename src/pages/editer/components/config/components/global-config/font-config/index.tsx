@@ -6,7 +6,6 @@ import clsx from 'clsx'
 import { FontFamily } from '@/@types/portal-network'
 
 import { FontLanguageSelect } from '@/components/custom-form-inner/simple'
-import { devLogger } from '@/common/utils'
 import { useFetchDataStore } from '@/store/fetch-data'
 
 import FontForm from '../font-form'
@@ -36,7 +35,6 @@ const FontConfig = () => {
       if (!errors && values) {
         const formData = addForm.getFieldsValue()
         const { name, src, mainLanguage } = formData
-        devLogger('handleConfirm', 'addForm', formData)
 
         setFontList((pre) => {
           pre.push({

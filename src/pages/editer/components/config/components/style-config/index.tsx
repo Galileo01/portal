@@ -20,16 +20,15 @@ import {
   generateUniqueNodeFromSelector,
   removeStyleNode,
 } from '@/common/utils/element'
-import { devLogger } from '@/common/utils'
+import { composedValuesTransformer } from '@/common/utils/style-transformer'
+import { updateTargetElementStyleNode } from '@/common/utils/style-config'
 
 import { COLLAPSE_BASE_PROPS } from '../../config'
-import { updateTargetElementStyleNode } from './utils'
 import LayoutForm from './layout-form'
 import FontForm from './font-form'
 import BackgroundForm from './background-form'
 import BorderForm from './border-form'
 import styles from './index.module.less'
-import { composedValuesTransformer } from './common'
 
 const { Item: CollapseItem } = Collapse
 
@@ -40,7 +39,8 @@ export type StyleConfigProps = {
 // NOTE: 新添字段 需要同步到  @/common/constant/style-config EDITABLE_FIELD
 
 const StyleConfig: React.FC<StyleConfigProps> = ({ active }) => {
-  const { currentClickElement, globalConfig } = useEditerDataStore()
+  const { currentClickElement, globalConfig, styleConfig } =
+    useEditerDataStore()
   const editerDataDispatch = useEditerDataDispatch()
   const { allFontList } = useFetchDataStore()
 
@@ -61,31 +61,21 @@ const StyleConfig: React.FC<StyleConfigProps> = ({ active }) => {
       : ''
     const styleNodeId = selector ? generateUniqueNodeFromSelector(selector) : ''
     const configIndex =
-      globalConfig?.styleConfig?.findIndex(
-        (config) => config.styleNodeId === styleNodeId
-      ) ?? -1
+      styleConfig?.findIndex((config) => config.styleNodeId === styleNodeId) ??
+      -1
 
     return {
       selector,
       styleNodeId,
       configIndex,
     }
-  }, [currentClickElement, globalConfig])
+  }, [currentClickElement, styleConfig])
 
   const handleChange: FormProps['onChange'] = (value, values) => {
     if (currentClickElement) {
-      devLogger(
-        'StyleConfig handleValuesChange 666',
-        value,
-        values,
-        targetElementInfo
-      )
-
-      const { styleNodeId: targerStyleNodeId, selector } = targetElementInfo
+      const { styleNodeId, selector } = targetElementInfo
 
       // 更新 store
-      const { styleConfig = [] } = globalConfig || {}
-
       // 修改
       if (targetElementInfo.configIndex > -1) {
         // 深拷贝 防止  由于同一 引用 在转换 函数中 被修改
@@ -95,17 +85,16 @@ const StyleConfig: React.FC<StyleConfigProps> = ({ active }) => {
       // 插入
       else {
         styleConfig.push({
-          styleNodeId: targerStyleNodeId,
+          styleNodeId,
+          selector,
           cssAttribute: cloneDeep(values),
         })
       }
 
       // 更新 store
       editerDataDispatch({
-        type: EditerDataActionEnum.UPDATE_GLOBAL_CONFIG,
-        payload: {
-          styleConfig,
-        },
+        type: EditerDataActionEnum.UPDATE_STYLE_CONFIG,
+        payload: [...styleConfig],
       })
 
       // 转换 为 可识别的 css 样式表
@@ -113,7 +102,7 @@ const StyleConfig: React.FC<StyleConfigProps> = ({ active }) => {
       const transformed = composedValuesTransformer(values)
 
       // 更新节点 样式
-      updateTargetElementStyleNode(targerStyleNodeId, selector, transformed)
+      updateTargetElementStyleNode(styleNodeId, selector, transformed)
     }
   }
 
@@ -122,13 +111,11 @@ const StyleConfig: React.FC<StyleConfigProps> = ({ active }) => {
 
     removeStyleNode(targetElementInfo.styleNodeId)
     // 删除 store 中存储 的对应项
-    if (targetElementInfo.configIndex > -1 && globalConfig?.styleConfig) {
-      globalConfig.styleConfig.splice(targetElementInfo.configIndex, 1)
+    if (targetElementInfo.configIndex > -1 && styleConfig) {
+      styleConfig.splice(targetElementInfo.configIndex, 1)
       editerDataDispatch({
-        type: EditerDataActionEnum.UPDATE_GLOBAL_CONFIG,
-        payload: {
-          styleConfig: [...globalConfig.styleConfig],
-        },
+        type: EditerDataActionEnum.UPDATE_STYLE_CONFIG,
+        payload: [...styleConfig],
       })
     }
   }
@@ -138,14 +125,14 @@ const StyleConfig: React.FC<StyleConfigProps> = ({ active }) => {
     // 能找到
     if (targetElementInfo.configIndex > -1) {
       styleConfigForm.setFieldsValue(
-        globalConfig?.styleConfig?.[targetElementInfo.configIndex].cssAttribute
+        styleConfig?.[targetElementInfo.configIndex].cssAttribute
       )
     }
     // 找不到 - 重置 表单
     else {
       styleConfigForm.resetFields()
     }
-  }, [targetElementInfo, styleConfigForm, globalConfig])
+  }, [targetElementInfo, styleConfigForm, styleConfig])
 
   return (
     <CollapseItem header="样式配置" name="style_config" disabled={!active}>

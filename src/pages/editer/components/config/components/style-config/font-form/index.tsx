@@ -10,7 +10,6 @@ import {
   TextAlignSelect,
 } from '@/components/custom-form-inner/simple'
 import CustomColorPicker from '@/components/custom-color-picker'
-import { FormDataGenerator } from '@/typings/common/editer-config-data'
 
 import ItemsRow from '../items-row'
 
@@ -21,21 +20,6 @@ export type FontFormProps = {
   usedFontList?: string[]
   customPalette?: string[]
 }
-
-export type FontBase = FormDataGenerator<
-  | 'font_family'
-  | 'color'
-  | 'font_size'
-  | 'font_weight'
-  | 'text_decoration'
-  | 'text_align',
-  string
->
-
-export type TextShadow = FormDataGenerator<
-  'x_offset' | 'y_offset' | 'color' | 'blur_radius',
-  string
->
 
 const FontForm: React.FC<FontFormProps> = (props) => {
   const { usedFontList, customPalette } = props

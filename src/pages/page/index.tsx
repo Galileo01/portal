@@ -2,17 +2,27 @@ import * as React from 'react'
 
 import { useSearchParams } from 'react-router-dom'
 
-import styles from './index.module.less'
+import { PAGE_CONTAINER_CLASS } from '@/common/constant'
+import { usePageInit } from '@/common/hooks/page-init'
+import RCListRenderer from '@/components/rclist-renderer'
 
 const Page = () => {
   const [params] = useSearchParams()
-  const pageIdRef = React.useRef(params.get('page_id'))
-  const isPreviewRef = React.useRef(Boolean(params.get('is_preview')))
+
+  const searchParamsRef = React.useRef({
+    page_id: params.get('page_id'),
+    is_preview: Boolean(params.get('is_preview')),
+  })
+
+  const { componentDataList } = usePageInit({
+    pageId: searchParamsRef.current.page_id,
+    isEditer: false,
+    initType: searchParamsRef.current.is_preview ? 'restore' : 'fetch',
+  })
+
   return (
-    <div className={styles.about}>
-      Page
-      <div>page_id:{pageIdRef.current}</div>
-      <div>is_pewview:{`${isPreviewRef.current}`}</div>
+    <div className={PAGE_CONTAINER_CLASS}>
+      <RCListRenderer componentDataList={componentDataList} />
     </div>
   )
 }

@@ -47,9 +47,9 @@ export const getColorVariableValue = (sourceElement?: 'body' | 'previewer') => {
 
 export const setColorVariableValue = (
   varValue: ColorVarValue,
-  isPreview = false
+  isEditer = false
 ) => {
-  const targetClass = isPreview
+  const targetClass = isEditer
     ? `.${PREVIEWER_CLASS}`
     : `.${PAGE_CONTAINER_CLASS}`
 
@@ -65,7 +65,7 @@ export const setColorVariableValue = (
     targetElement.style.setProperty(varKey, value)
   })
   // 标记 previewer 设置过颜色
-  if (isPreview) {
+  if (isEditer) {
     targetElement.style.setProperty(IS_SET_CORLOR_VARIABLE_KEY, '1')
   }
 }
