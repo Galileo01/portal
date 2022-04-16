@@ -1,5 +1,13 @@
-.editer_container {
+// 最大高度 超出 滚动
+.max_height {
+  max-height: calc(
+    100vh - var(--header-height) - var(--content-container-margin-top)
+  );
+}
+
+.editer_layout {
   height: 100vh;
+  overflow-y: hidden;
 
   //覆盖 arco-image-img 样式   防止 该元素被拖拽  影响排序
   :global(.arco-image-img) {
@@ -15,9 +23,7 @@
   :global(.arco-layout-sider) {
     transition: revert;
     // sider 溢出 滚动
-    max-height: calc(
-      100vh - var(--header-height) - var(--content-container-margin-top)
-    );
+    .max_height();
   }
   // 同上
   :global(.arco-layout-sider-trigger) {
@@ -25,8 +31,16 @@
   }
 }
 
-.content_container {
+.content_layout {
   margin-top: var(--content-container-margin-top);
   justify-content: space-between;
   background-color: var(--color-bg-1);
+}
+
+.content_container {
+  //溢出 滚动
+  .max_height();
+  background-color: var(--color-text-4);
+  padding: 20px 10px 0px;
+  box-sizing: border-box;
 }

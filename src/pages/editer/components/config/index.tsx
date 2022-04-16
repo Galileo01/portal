@@ -18,6 +18,7 @@ import styles from './index.module.less'
 import GlobalConfig from './components/global-config'
 import StyleConfig from './components/style-config'
 import PropConfig, { PropConfigProps } from './components/props-config'
+import ClickElementInfo from './components/click-element-info'
 import { ConfigPaneNameEnum, COLLAPSE_BASE_PROPS } from './config'
 
 const Config = () => {
@@ -81,6 +82,13 @@ const Config = () => {
     activeKeyRef.current = lastedKey
   }
 
+  const handleElementReset = () => {
+    editerDispatch({
+      type: EditerDataActionEnum.SET_CURRENT_CLICK_ELEMENT,
+      payload: undefined,
+    })
+  }
+
   // 手动折叠
   React.useEffect(() => {
     if (
@@ -108,11 +116,13 @@ const Config = () => {
         activeKey={activeKey}
         onChange={handleCollpaseChange}
       >
-        {isRCComponent && (
-          <div className={styles.component_info}>
-            <div>组件 : {componentData?.resourceComponent.name}</div>
-          </div>
-        )}
+        <ClickElementInfo
+          currentClickElement={currentClickElement}
+          isPreviwer={isPreviwer}
+          isRCComponent={isRCComponent}
+          RCComponentName={componentData?.resourceComponent.name}
+          onReset={handleElementReset}
+        />
         <GlobalConfig active={isPreviwer} />
         <PropConfig
           active={isRCComponent}
