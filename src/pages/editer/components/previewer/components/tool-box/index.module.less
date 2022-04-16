@@ -1,0 +1,30 @@
+.tool_box {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  border: 2px solid rgb(var(--arcoblue-5));
+  box-sizing: border-box;
+  will-change: height, width, left, top;
+  transition: height, width 0.25s ease-in;
+  pointer-events: none;
+}
+
+.tool_btns {
+  display: inline-flex;
+  justify-content: center;
+  border-radius: 2px;
+  overflow: hidden;
+  pointer-events: auto;
+
+  :global(.arco-icon) {
+    background-color: rgb(var(--arcoblue-5));
+    padding: 5px;
+    cursor: pointer;
+    color: #fff;
+
+    &:hover {
+      background-color: rgb(var(--arcoblue-4));
+    }
+  }
+}

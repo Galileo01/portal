@@ -1,0 +1,67 @@
+.custom_color_picker {
+  position: relative;
+
+  &:hover .clear_icon_wrapper {
+    display: block;
+  }
+}
+
+.color_picker_trigger {
+  width: 100%;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  box-sizing: border-box;
+  border-radius: 2px;
+  background-color: var(--color-fill-2);
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--color-fill-3);
+  }
+}
+
+.allow_clear {
+  padding-right: 20px;
+}
+
+.popover_wrapper {
+  :global(.arco-popover-content) {
+    padding: 0;
+  }
+}
+
+.color_value {
+  color: var(--color-text-1);
+}
+
+.color_display {
+  height: 24px;
+  width: 60px;
+  border-radius: 2px;
+}
+
+.clear_icon_wrapper {
+  display: none;
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 2px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--color-fill-4);
+  }
+}
+
+.clear_icon {
+  display: block;
+  height: 12px;
+  width: 12px;
+  cursor: pointer;
+}

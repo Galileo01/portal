@@ -1,19 +1,20 @@
-import React from 'react'
+import * as React from 'react'
 
 import ReactDOM from 'react-dom'
 import { BrowserRouter as Router } from 'react-router-dom'
 import 'normalize.css'
 
-import './index.css'
+import ErrorBoundary from './components/error-boundary'
+
+import './assets/style/global.less'
 import App from './App'
-import { EditerDataProvider } from './store/editer-data'
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <EditerDataProvider>
+      <ErrorBoundary>
         <App />
-      </EditerDataProvider>
+      </ErrorBoundary>
     </Router>
   </React.StrictMode>,
   document.getElementById('root')

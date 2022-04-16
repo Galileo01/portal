@@ -1,0 +1,46 @@
+// 最大高度 超出 滚动
+.max_height {
+  max-height: calc(
+    100vh - var(--header-height) - var(--content-container-margin-top)
+  );
+}
+
+.editer_layout {
+  height: 100vh;
+  overflow-y: hidden;
+
+  //覆盖 arco-image-img 样式   防止 该元素被拖拽  影响排序
+  :global(.arco-image-img) {
+    -webkit-user-drag: none;
+  }
+
+  // 防止 成为点击事件的 目标 影响  tool-box 定位
+  :global(.previewer .arco-image-img) {
+    pointer-events: none;
+  }
+
+  // 关闭 arco-layout-sider 的 过渡， 使 tool-box 的MutationObserver 及时更新
+  :global(.arco-layout-sider) {
+    transition: revert;
+    // sider 溢出 滚动
+    .max_height();
+  }
+  // 同上
+  :global(.arco-layout-sider-trigger) {
+    transition: revert;
+  }
+}
+
+.content_layout {
+  margin-top: var(--content-container-margin-top);
+  justify-content: space-between;
+  background-color: var(--color-bg-1);
+}
+
+.content_container {
+  //溢出 滚动
+  .max_height();
+  background-color: var(--color-text-4);
+  padding: 20px 10px 0px;
+  box-sizing: border-box;
+}

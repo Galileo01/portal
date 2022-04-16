@@ -25,7 +25,7 @@ module.exports = {
   rules: {
     // 开启 hooks 规则
     'react-hooks/rules-of-hooks': 'error',
-    // 打开 检查 effect 依赖 ，默认关闭
+    // 打开 检查 effect 依赖 ，默认是关闭 的
     'react-hooks/exhaustive-deps': 'warn',
     // 覆盖 eslint-config-airbnb 和 react 里的配置
     //  允许 在ts、tsx 中书写 jsx
@@ -43,7 +43,25 @@ module.exports = {
     ],
     // 关闭 对文件扩展名的 校验
     'import/extensions': 'off',
-    // 关闭对于 组件可选prop 的默认值必须 检测
+    // 关闭 组件可选prop 的必须传递 默认值  的校验
     'react/require-default-props': 'off',
+    // 添加 snake_case  到 naming-convention 的  合法命名规则列表中
+    '@typescript-eslint/naming-convention': [
+      'error',
+      {
+        selector: 'variable',
+        format: ['camelCase', 'PascalCase', 'UPPER_CASE', 'snake_case'],
+      },
+    ],
+    // 自定义组件 允许 使用扩展运算符  传递 props
+    'react/jsx-props-no-spreading': [
+      1,
+      {
+        custom: 'ignore',
+      },
+    ],
+    // 以下两条 关闭 对于 执行无障碍标准 的强制校验
+    'jsx-a11y/click-events-have-key-events': 'off',
+    'jsx-a11y/no-static-element-interactions': 'off',
   },
 }

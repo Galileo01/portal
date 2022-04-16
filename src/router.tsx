@@ -2,7 +2,7 @@ import React, { Suspense } from 'react'
 
 import type { RouteObject } from 'react-router-dom'
 
-// import Index from './pages/index'
+import Index from './pages/index'
 import Editer from './pages/editer'
 
 import RouterFallback from './components/router-fallback'
@@ -16,8 +16,7 @@ const Template = React.lazy(() => import('./pages/template'))
 const routes: RouteObject[] = [
   {
     path: '/',
-    // element: <Index />,
-    element: <Editer />,
+    element: <Index />,
   },
   {
     path: '/page',
@@ -29,11 +28,12 @@ const routes: RouteObject[] = [
   },
   {
     path: '/editer',
-    element: (
-      <Suspense fallback={<RouterFallback />}>
-        <Editer />
-      </Suspense>
-    ),
+    // element: (
+    //   <Suspense fallback={<RouterFallback />}>
+    //     <Editer />
+    //   </Suspense>
+    // ),
+    element: <Editer />,
   },
   {
     path: '/template',

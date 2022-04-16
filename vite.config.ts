@@ -19,7 +19,7 @@ export default defineConfig({
   css: {
     modules: {
       // 类名 前缀
-      generateScopedName: 'vite_demo__[folder]__[local]___[hash:base64:5]',
+      generateScopedName: 'portal__[local]___[hash:base64:5]', // 加上文件 路径 'portal__[folder]__[local]___[hash:base64:5]'
     },
   },
 })

@@ -1,0 +1,102 @@
+.palette_modal {
+  :global(.arco-upload) {
+    display: block;
+  }
+
+  :global(.arco-modal-content) {
+    padding-top: 10px;
+  }
+}
+
+.upload_trigger {
+  margin: 10px 0;
+  height: 280px;
+  position: relative;
+}
+
+.upload_wrapper {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: var(--color-fill-2);
+  border-radius: var(--border-radius-small);
+  border: 1px dashed var(--color-neutral-3);
+  transition: all 0.1s linear;
+  color: var(--color-text-2);
+  text-align: center;
+
+  &:hover {
+    border-color: var(--color-neutral-4);
+    background-color: var(--color-fill-3);
+  }
+}
+
+.upload_text {
+  margin-top: 8px;
+}
+
+.img_show {
+  height: 100%;
+
+  & img {
+    height: 100%;
+    display: block;
+    margin: 0 auto;
+  }
+}
+
+.edit_mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  border-radius: var(--border-radius-small);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: var(--color-white);
+  opacity: 0;
+  transition: opacity 0.1s linear;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  :global(.arco-icon-edit) {
+    font-size: 30px;
+  }
+}
+
+.result {
+  display: flex;
+}
+
+.dominant {
+  width: 30%;
+}
+
+.palette {
+  width: 70%;
+}
+
+.color_list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.dominant_color_circle {
+  height: 72px;
+  width: 72px;
+  border-radius: 50%;
+}
+
+.color_circle {
+  .dominant_color_circle();
+  height: 54px;
+  width: 54px;
+  margin: 0 5px 5px 0;
+}

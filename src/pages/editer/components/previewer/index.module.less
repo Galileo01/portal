@@ -1,0 +1,18 @@
+.previewer_container {
+  height: 100%;
+  /*
+  设置 position: relative 使 previewer_container 为 定位元素
+  1.方便 tool-box 获取 offsetxxx    
+  2.进行绝对定位
+  */
+  position: relative;
+  // 全局类名  务必和 src/common/constant/index.ts 文件 RESOURCE_COMPONENT_RENDERED_COMMON_CLASS 常量  保持一致
+  :global(.resource_component_rendered) {
+    cursor: pointer;
+  }
+}
+
+.previewer {
+  height: 100%;
+  background-color: var(--color-bg-1);
+}
