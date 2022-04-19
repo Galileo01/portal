@@ -51,7 +51,11 @@ const foformItemsLinkRenderer = (values: any) => {
               content={
                 <span>
                   多个图片、背景色之间重叠时如何计算色值
-                  <Link href={BLEND_MODE_DOC_HREF} target="_blank">
+                  <Link
+                    href={BLEND_MODE_DOC_HREF}
+                    target="_blank"
+                    hoverable={false}
+                  >
                     更多
                   </Link>
                 </span>

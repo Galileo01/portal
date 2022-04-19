@@ -55,6 +55,7 @@ export const usePageInit = (paramas: usePageInitParams) => {
   const fetchDataDispatch = useFetchDataDispatch()
 
   const [componentDataList, setDataList] = React.useState<ComponentDataList>([])
+  const [pageTitle, setTitle] = React.useState('')
 
   const pageInit = React.useCallback(() => {
     devLogger('usePage call', pageId, initType, isEditer)
@@ -93,6 +94,8 @@ export const usePageInit = (paramas: usePageInitParams) => {
           updateFontConfigToElement(config.globalConfig?.fontConfig, fontList)
         }
       }
+      setTitle(config?.title || pageId)
+
       if (fontList.length > 0 && isEditer) {
         fetchDataDispatch({
           type: FetchDataActionEnum.SET_ALL_FONT_LIST,
@@ -108,5 +111,6 @@ export const usePageInit = (paramas: usePageInitParams) => {
 
   return {
     componentDataList,
+    pageTitle,
   }
 }

@@ -49,3 +49,11 @@ export const compose =
         curFun.apply(null, [].concat(preValue as any | any[])),
       args
     ) as unknown as T
+
+export const createANewPage = () => {
+  const pageId = getUniqueId()
+  return {
+    pageId,
+    path: `${ROUTE_EDITER}?page_id=${pageId}&edit_type=create`,
+  }
+}

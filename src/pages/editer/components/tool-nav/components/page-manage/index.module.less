@@ -1,0 +1,31 @@
+.page_manage {
+  color: var(--color-text-1);
+}
+
+.text {
+  margin-left: 5px;
+}
+
+.inner_wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.current {
+  color: rgb(var(--primary-6));
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.btns {
+  margin-left: 10px;
+
+  :global(.arco-btn:last-of-type) {
+    margin-left: 5px;
+  }
+
+  // 防止 icon 成为 点击事件的 target
+  :global(.arco-icon) {
+    pointer-events: none;
+  }
+}

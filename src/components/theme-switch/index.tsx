@@ -1,9 +1,20 @@
 import * as React from 'react'
 
-import { Select } from '@arco-design/web-react'
+import { Dropdown, Menu } from '@arco-design/web-react'
 import { IconSun, IconMoon, IconDesktop } from '@arco-design/web-react/icon'
+import clsx from 'clsx'
 
-const { Option } = Select
+import {
+  globalThemeMediaQueryList,
+  setArcoThemeMoon,
+  setArcoThemeSun,
+  removeArcoThemeFollowSystem,
+  setArcoThemeFollowSystem,
+} from './utils'
+
+import styles from './index.module.less'
+
+const { Item: MenuItem } = Menu
 
 export enum ThemeModeEnum {
   SUN = 'sun',
@@ -29,42 +40,21 @@ export const options = [
   },
 ]
 
-export const globalThemeMediaQueryList =
-  window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)')
-
-export const setArcoThemeMoon = () => {
-  document.body.setAttribute('arco-theme', 'dark')
-}
-
-export const setArcoThemeSun = () => {
-  document.body.removeAttribute('arco-theme')
-}
-
-const handleMediaQueryChange = (e: MediaQueryListEvent) => {
-  if (e.matches) {
-    setArcoThemeMoon()
-  } else {
-    setArcoThemeSun()
-  }
-}
-
-export const setArcoThemeFollowSystem = () => {
-  globalThemeMediaQueryList.addEventListener('change', handleMediaQueryChange)
-}
-
-export const removeArcoThemeFollowSystem = () => {
-  globalThemeMediaQueryList.removeEventListener(
-    'change',
-    handleMediaQueryChange
-  )
-}
-
-const ThemeSwitch = () => {
+const ThemeSwitch: React.FC<{ className?: string }> = ({ className }) => {
   const [themeMode, setThemeMode] = React.useState<ThemeModeEnum>(
     ThemeModeEnum.SUN
   )
 
-  const handleSelectChange = (value: ThemeModeEnum) => {
+  const triggerElement = React.useMemo(
+    () => (
+      <div className={clsx('cursor_pointer', styles.trigger)}>
+        {options.find((option) => option.key === themeMode)?.icon}
+      </div>
+    ),
+    [themeMode]
+  )
+
+  const handleItemClick = (value: string) => {
     switch (value) {
       case ThemeModeEnum.MOON:
         setArcoThemeMoon()
@@ -90,17 +80,26 @@ const ThemeSwitch = () => {
         setArcoThemeSun()
         break
     }
-    setThemeMode(value)
+    setThemeMode(value as ThemeModeEnum)
   }
 
   return (
-    <Select value={themeMode} onChange={handleSelectChange}>
-      {options.map(({ value, key, icon }) => (
-        <Option key={key} value={key}>
-          {icon} {value}
-        </Option>
-      ))}
-    </Select>
+    <div className={clsx(styles.theme_switch, className)}>
+      <Dropdown
+        droplist={
+          <Menu onClickMenuItem={handleItemClick}>
+            {options.map(({ value, key, icon }) => (
+              <MenuItem key={key}>
+                {icon} {value}
+              </MenuItem>
+            ))}
+          </Menu>
+        }
+        position="bottom"
+      >
+        {triggerElement}
+      </Dropdown>
+    </div>
   )
 }
 

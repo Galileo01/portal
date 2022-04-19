@@ -5,7 +5,7 @@ import {
   useEditerDataDispatch,
   EditerDataActionEnum,
 } from '@/store/editer-data'
-import { GlobalConfig } from '@/typings/common/editer'
+import { GlobalConfig } from '@/typings/common/editer-config-data'
 
 export const useGlobalConfig = () => {
   const { globalConfig } = useEditerDataStore()

@@ -11,7 +11,7 @@ import RouterFallback from './components/router-fallback'
 const Page = React.lazy(() => import('./pages/page'))
 // const Editer = React.lazy(() => import('./pages/editer'))
 
-const Template = React.lazy(() => import('./pages/template'))
+const Login = React.lazy(() => import('./pages/login'))
 
 const routes: RouteObject[] = [
   {
@@ -28,18 +28,17 @@ const routes: RouteObject[] = [
   },
   {
     path: '/editer',
-    // element: (
-    //   <Suspense fallback={<RouterFallback />}>
-    //     <Editer />
-    //   </Suspense>
-    // ),
-    element: <Editer />,
-  },
-  {
-    path: '/template',
     element: (
       <Suspense fallback={<RouterFallback />}>
-        <Template />
+        <Editer />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/login',
+    element: (
+      <Suspense fallback={<RouterFallback />}>
+        <Login />
       </Suspense>
     ),
   },

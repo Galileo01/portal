@@ -1,6 +1,8 @@
 /* eslint-disable no-restricted-globals */
 import * as React from 'react'
 
+import { ROUTE_INDEX } from '@/common/constant/route'
+
 import styles from './index.module.less'
 
 const Error = () => {
@@ -15,7 +17,7 @@ const Error = () => {
     const timer = setInterval(() => {
       if (countRef.current === 0) {
         const { origin } = location
-        location.assign(`${origin}/`)
+        location.assign(`${origin}+${ROUTE_INDEX}`)
         clearInterval(timer)
       } else {
         setCount(countRef.current - 1)

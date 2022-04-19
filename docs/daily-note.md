@@ -188,5 +188,19 @@ Ps: all:revert 会重置 svg 的 fill 属性，这一点可能会造成较大的
    - onChange 只在页面上 点击/输入 造成表单 变化 时触发
    - onValuesChange 除以上情况外 还会在通过 form.setFieldValue 等函数式 更新的方法设置值时 触发
 2. 编写 样式配置 formData 值到 css 样式表的 转换韩式
-3. 从 dom 生成 样式配置的表单 初始值 ！！
-4.
+3. 从 dom 生成 样式配置的表单 初始值 -- 删除 这一特性 ，取而代之的是使用从 store 中存储的配置列表中恢复
+
+## 0415
+
+1. 封装 pageInit hook 完成 editer 和 page 页面 从 localstorage 恢复/网络请求的初步封装
+
+2. 修复 toolbox 获取 currentClickElement offsetxxx 值的问题
+
+   Offsetxxx 获取的是相对于定位父级/body 的距离数值，需要 设置特定父级 的 position 属性
+
+3. 创建 ClickElementInfo 组件展示当前 选中的元素信息
+
+## 0416
+
+1. 完成 editer 页面前端部分基本功能
+2. 开始设计首页

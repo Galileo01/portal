@@ -14,11 +14,17 @@ const Page = () => {
     is_preview: Boolean(params.get('is_preview')),
   })
 
-  const { componentDataList } = usePageInit({
+  const { componentDataList, pageTitle } = usePageInit({
     pageId: searchParamsRef.current.page_id,
     isEditer: false,
     initType: searchParamsRef.current.is_preview ? 'restore' : 'fetch',
   })
+
+  React.useEffect(() => {
+    if (pageTitle) {
+      document.title = pageTitle
+    }
+  }, [pageTitle])
 
   return (
     <div className={PAGE_CONTAINER_CLASS}>
