@@ -1,11 +1,17 @@
 import * as React from 'react'
 
 import { Modal, Form, Input, Radio, ModalProps } from '@arco-design/web-react'
+import domtoimage from 'dom-to-image'
+
+import { PREVIEWER_CLASS } from '@/common/constant'
+import CustomImage from '@/components/custom-image'
+import { devLogger } from '@/common/utils'
 
 export type PublishForm = {
   resourceID: string
   private: string
   resourceType: string
+  thumbnailUrl: string
 }
 
 export type PublishModalProps = Omit<ModalProps, 'onConfirm'> & {
@@ -30,10 +36,25 @@ const privateSelectRenderer = (values: any) => {
   return null
 }
 
+// TODO: 4.20-1 发布时 判断如果是 平台管理员 则展示 template_type 选择,或者 放到服务端 做？
 const PublishModal: React.FC<PublishModalProps> = (props) => {
   const { pageId, visible, onConfirm, ...rest } = props
 
-  const [publishForm] = Form.useForm()
+  const [publishForm] = Form.useForm<PublishForm>()
+  const [thumbnail, setThumbnail] = React.useState('')
+
+  // 展示  设置默认值
+  const generateThumbnail = React.useCallback(() => {
+    const previewerElement = document.querySelector(`.${PREVIEWER_CLASS}`)
+    if (previewerElement) {
+      domtoimage.toPng(previewerElement).then((imgUrl) => {
+        devLogger('domtoimage imgUrl', imgUrl)
+        setThumbnail(imgUrl)
+        // TODO: 使用 腾讯云 对象存储  临时使用 dataURL
+        publishForm.setFieldValue('thumbnailUrl', imgUrl)
+      })
+    }
+  }, [publishForm])
 
   const hanldeConfirm = () => {
     publishForm.validate((error, values) => {
@@ -44,17 +65,17 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
   }
 
   React.useEffect(() => {
-    // 展示  设置默认值
     if (visible) {
       publishForm.setFieldsValue({
         resourceID: pageId,
         private: '1',
         resourceType: 'page',
       })
+      generateThumbnail()
     } else {
       publishForm.resetFields()
     }
-  }, [publishForm, pageId, visible])
+  }, [generateThumbnail, publishForm, visible, pageId])
 
   return (
     <Modal title="发布" visible={visible} onConfirm={hanldeConfirm} {...rest}>
@@ -87,6 +108,9 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
         </FormItem>
         <FormItem shouldUpdate noStyle>
           {privateSelectRenderer}
+        </FormItem>
+        <FormItem label="缩略图" field="thumbnailUrl">
+          <CustomImage src={thumbnail} width={200} />
         </FormItem>
       </Form>
     </Modal>

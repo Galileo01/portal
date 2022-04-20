@@ -80,7 +80,7 @@ export const useDragAndDrop = (params: useDragAndDropParams) => {
   const handleDrop: React.DragEventHandler<HTMLElement> = (e) => {
     e.preventDefault()
     e.stopPropagation()
-
+    const newComponentDataList = [...componentDataList]
     // 获取 组件key
     const componentKey = e.dataTransfer.getData(
       DATASET_KEY_RESOURCE_COMPONENT_KEY
@@ -100,16 +100,16 @@ export const useDragAndDrop = (params: useDragAndDropParams) => {
     // 否则 -- 来自 previewer 内 已有的 RCR元素 拖拽
     else if (currentDragingRCRRef.current!) {
       const preIndex = getComponentDataIndexFromElement(
-        componentDataList,
+        newComponentDataList,
         currentDragingRCRRef.current
       )
       // 截取/删除 并返回
       // eslint-disable-next-line prefer-destructuring
-      insertComponentDataItem = componentDataList.splice(preIndex, 1)[0]
+      insertComponentDataItem = newComponentDataList.splice(preIndex, 1)[0]
     }
 
     const insertIndex = getComponentDataIndexFromElement(
-      componentDataList,
+      newComponentDataList,
       e.target as HTMLElement
     )
     devLogger(
@@ -125,13 +125,13 @@ export const useDragAndDrop = (params: useDragAndDropParams) => {
     )
 
     // 插入 指定位置 或者末尾
-    componentDataList.splice(
-      insertIndex > -1 ? insertIndex : componentDataList.length,
+    newComponentDataList.splice(
+      insertIndex > -1 ? insertIndex : newComponentDataList.length,
       0,
       insertComponentDataItem as ComponentDataItem
     )
 
-    updateComponenDataList(componentDataList)
+    updateComponenDataList(newComponentDataList)
     removePlaceHolder()
     currentDragingRCRRef.current = null
   }

@@ -69,8 +69,7 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
     globalConfig,
   } = state
   const { type, payload } = action
-
-  devLogger('reducer of  editer-data :', 'action', action)
+  devLogger('reducer editer-data ', type, payload)
 
   let newIndex = preIndex
   let newSnapshotList = []
@@ -119,6 +118,7 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
       newSnapshotList = newSnapshotList.slice(
         spliceStart >= 0 ? spliceStart : 0
       )
+
       return {
         ...state,
         snapshotList: newSnapshotList,

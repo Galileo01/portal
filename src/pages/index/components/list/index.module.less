@@ -1,0 +1,55 @@
+.page_list_container {
+  width: 1300px;
+  margin: 50px auto;
+}
+
+.title {
+  text-align: center;
+}
+
+.resource_item {
+  cursor: pointer;
+  width: 200px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  margin-right: calc((100% - 6 * 200px) / 5);
+
+  :global(.arco-image-img) {
+    object-fit: contain;
+    display: block;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  :global(.arco-image-img:hover) {
+    transform: scale(1.5);
+  }
+
+  :global(.arco-card-actions-item) {
+    margin-right: 0;
+  }
+
+  &:nth-of-type(6n + 6) {
+    margin-right: 0;
+  }
+}
+
+.action_btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+
+  &:hover {
+    background-color: rgb(var(--gray-2));
+  }
+}
+
+.delete_icon:hover {
+  color: rgb(var(--danger-6));
+}
+
+.template_spin {
+  margin-top: 20px;
+}

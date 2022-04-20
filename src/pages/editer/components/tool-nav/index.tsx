@@ -1,6 +1,12 @@
 import * as React from 'react'
 
-import { Button, Space, Popover, Message, Modal } from '@arco-design/web-react'
+import {
+  Button,
+  Space,
+  Popover,
+  Message,
+  Popconfirm,
+} from '@arco-design/web-react'
 import { IconRedo, IconUndo, IconInfoCircle } from '@arco-design/web-react/icon'
 import clsx from 'clsx'
 import { Link } from 'react-router-dom'
@@ -23,10 +29,6 @@ import styles from './index.module.less'
 import PageManage from './components/page-manage'
 import PublishModal, { PublishModalProps } from './components/publish-modal'
 import { devLogger } from '@/common/utils'
-
-/* TODO: 
-3. 发布时 对预览容器进行截图
-*/
 
 export type ToolNavProps = {
   pageId: string
@@ -80,19 +82,15 @@ const ToolNav: React.FC<ToolNavProps> = ({ pageId, editType }) => {
     Message.success('保存成功')
   }
 
-  const handleClearClick = () => {
-    Modal.confirm({
-      title: '此操作会清空当前页面的配置数据，确认要清空么？',
-      onOk: () => {
-        editerDataDispatch({
-          type: EditerDataActionEnum.CLEAR,
-        })
-        clearPageConfig(pageId)
-        restorePreviewColorVariable()
-        removeFontStyleNode()
-        setIsBlocking(false)
-      },
+  const handleClearConfirm = () => {
+    editerDataDispatch({
+      type: EditerDataActionEnum.CLEAR,
     })
+    clearPageConfig(pageId)
+    restorePreviewColorVariable()
+    removeFontStyleNode()
+    setIsBlocking(false)
+    Message.success('清空成功')
   }
 
   const showPublishModal = () => {
@@ -108,6 +106,9 @@ const ToolNav: React.FC<ToolNavProps> = ({ pageId, editType }) => {
     devLogger('handlePagePublish', values)
     hidePublishModal()
   }
+  React.useEffect(() => {
+    devLogger('componentDataList', componentDataList)
+  }, [componentDataList])
 
   return (
     <section className={styles.tool_bar}>
@@ -147,7 +148,12 @@ const ToolNav: React.FC<ToolNavProps> = ({ pageId, editType }) => {
           </Link>
         </Button>
         <Button onClick={handleSaveClick}>保存</Button>
-        <Button onClick={handleClearClick}>清空</Button>
+        <Popconfirm
+          onOk={handleClearConfirm}
+          title="确定清空当前页面的配置数据?"
+        >
+          <Button>清空</Button>
+        </Popconfirm>
         <Button type="outline">出码</Button>
         <Button type="primary" onClick={showPublishModal}>
           发布
