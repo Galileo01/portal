@@ -1,10 +1,17 @@
+.resource_list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .page_list_container {
   width: 1300px;
   margin: 50px auto;
+  background-color: var(--color-bg-1);
 }
 
 .title {
   text-align: center;
+  color: var(--color-text-1);
 }
 
 .resource_item {
@@ -30,6 +37,30 @@
 
   &:nth-of-type(6n + 6) {
     margin-right: 0;
+  }
+}
+
+.align_center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.function_item {
+  :global(.arco-card-body) {
+    .align_center();
+  }
+}
+
+.function_item_cover {
+  .align_center();
+  height: 120px;
+
+  :global(.arco-icon) {
+    width: 50px;
+    height: 50px;
+    transition: transform 0.2s ease-in-out;
+    color: var(--color-text-1);
   }
 }
 

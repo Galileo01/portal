@@ -194,7 +194,7 @@ Ps: all:revert 会重置 svg 的 fill 属性，这一点可能会造成较大的
 
 1. 封装 pageInit hook 完成 editer 和 page 页面 从 localstorage 恢复/网络请求的初步封装
 
-2. 修复 toolbox 获取 currentClickElement offsetxxx 值的问题
+2. 修复 toolbox 获取 currentClickElement offsetxxx 值 存在差值，修复定位问题
 
    Offsetxxx 获取的是相对于定位父级/body 的距离数值，需要 设置特定父级 的 position 属性
 
@@ -204,3 +204,65 @@ Ps: all:revert 会重置 svg 的 fill 属性，这一点可能会造成较大的
 
 1. 完成 editer 页面前端部分基本功能
 2. 开始设计首页
+2. 
+
+
+
+## 0418
+
+1. useEditerParams hook封装 ，处理 编辑页的 searchParams 获取
+2. 
+
+## 0419
+
+1. React-transition-group  组件引入，为 元素的 创建和小时 添加过渡
+2. icon 还有待商榷
+
+## 0420
+
+1. 首页 布局 大致完成
+
+## 0421
+
+1. 创建 user-info  store/上下文 
+
+2. User 组件实现完成
+   - 借助 Popover 组件
+   - 依赖React.FC 的children 属性 设置插槽 特性
+
+
+
+## 0422
+
+1. 使用 MutationObserve  api，在propconfig的更变引起dom变更时重新获取样式信息，更新toolbox 位置
+2. 开始设计 nav_aside 侧边导航组件
+
+nav_aside 利用 a标签 #锚点的特性，实现点击 进行页面滚动功能
+
+
+
+## 0423
+
+1. 实现 nav_aside 侧边导航组件
+
+   nav_aside 利用 a标签 #锚点的特性，实现点击 进行页面滚动功能
+
+   - 支持 填入元素的id 进行跳转
+
+   - 支持 开启平滑滚动
+
+2. click-element-info 组件同时 新增展示 + 复制选中元素的 id
+
+3. 追加 observe options 参数，完善 toolbox 更新重新计算样式的时机
+
+   - childList 观察 添加或删除新的子节点
+   - subtree 以将监视范围扩展至目标节点整个节点树中的所有节点，子孙结点
+   - characterData 观察节点的文本字符数据 的变化
+
+4. 对于 sticky 定位的元素 需要在previewer 容器滚动的时候重新计算样式
+
+
+
+## 0424
+
+1. 对于可能为sticky 的targetElement 开始滚动事件的监听

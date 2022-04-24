@@ -33,7 +33,6 @@ class ErrorBoundary extends React.Component {
   render() {
     // eslint-disable-next-line react/destructuring-assignment
     if (this.state.hasError) {
-      // 你可以自定义降级后的 UI 并渲染
       return <Error />
     }
 

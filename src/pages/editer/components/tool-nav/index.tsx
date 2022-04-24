@@ -107,8 +107,8 @@ const ToolNav: React.FC<ToolNavProps> = ({ pageId, editType }) => {
     hidePublishModal()
   }
   React.useEffect(() => {
-    devLogger('componentDataList', componentDataList)
-  }, [componentDataList])
+    devLogger('currentSnapshotIndex', currentSnapshotIndex)
+  }, [currentSnapshotIndex])
 
   return (
     <section className={styles.tool_bar}>
@@ -135,18 +135,16 @@ const ToolNav: React.FC<ToolNavProps> = ({ pageId, editType }) => {
           )}
           onClick={handleSnapshotForward}
         />
-        <Button type="primary">
-          <Link
-            to={{
-              pathname: ROUTE_PAGE,
-              search: `page_id=${pageId}&is_preview=1`,
-            }}
-            target="_blank"
-            className={styles.preview_link}
-          >
-            预览
-          </Link>
-        </Button>
+        <Link
+          to={{
+            pathname: ROUTE_PAGE,
+            search: `page_id=${pageId}&is_preview=1`,
+          }}
+          target="_blank"
+          className={styles.preview_link}
+        >
+          <Button type="primary">预览</Button>
+        </Link>
         <Button onClick={handleSaveClick}>保存</Button>
         <Popconfirm
           onOk={handleClearConfirm}

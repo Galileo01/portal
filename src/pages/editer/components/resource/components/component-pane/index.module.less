@@ -31,5 +31,11 @@
   }
 }
 
-.component_cover {
+.component_cover img {
+  object-fit: contain;
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(2);
+  }
 }

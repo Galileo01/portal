@@ -31,12 +31,11 @@ const RCListRenderer: React.FC<RCListRendererProps> = ({
       if (IS_ROUTE_EDITER) {
         restProps = {
           ...restProps,
-          id,
           draggable: true,
           onDragStart,
         }
       }
-      return <Component key={id} {...restProps} />
+      return <Component key={id} id={id} {...restProps} />
     })}
   </>
 )

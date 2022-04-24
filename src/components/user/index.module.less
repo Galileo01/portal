@@ -1,0 +1,41 @@
+.user {
+}
+
+.avatar_wrapper {
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.submit_btn_wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.user_info_pop {
+  :global(.arco-form-item) {
+    margin-bottom: 10px;
+  }
+
+  :global(.arco-form-item):last-of-type {
+    margin-bottom: 0px;
+  }
+}
+
+.item_inner_wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  :global(.arco-icon):hover {
+    color: rgb(var(--primary-6));
+  }
+
+  :global(.arco-input-inner-wrapper) {
+    width: 84%;
+  }
+}
+
+.submit_edit_btn_wrapper {
+  .submit_btn_wrapper();
+  margin-top: 10px;
+}

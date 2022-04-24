@@ -6,6 +6,7 @@ import { ComponentDataItem } from '@/typings/common/editer'
 
 import { ConfigPaneBaseProps, ConfigPaneNameEnum } from '../../config'
 import { generatePropFormItems } from './utils'
+import { devLogger } from '@/common/utils'
 
 const { Item: CollapseItem } = Collapse
 
@@ -21,14 +22,18 @@ const PropConfig: React.FC<PropConfigProps> = (props) => {
 
   const [formItems, setList] = React.useState<JSX.Element[]>([])
 
-  const handlePropsChange: FormProps['onValuesChange'] = (value, values) => {
+  const handlePropsChange: FormProps['onChange'] = (value, values) => {
+    devLogger('PropConfig handlePropsChange', values)
     updateComponentProps(values)
   }
 
   React.useEffect(() => {
     if (componentData) {
       const elements = generatePropFormItems(componentData)
+      devLogger('generatePropFormItems', elements, componentData)
       setList(elements)
+      // 先重置
+      form.resetFields()
       // 更新 表单数据
       form.setFieldsValue(componentData?.resourceComponent.props)
     }
@@ -44,14 +49,14 @@ const PropConfig: React.FC<PropConfigProps> = (props) => {
         form={form}
         size="small"
         labelCol={{
-          span: 7,
+          span: 8,
         }}
         wrapperCol={{
           span: 16,
         }}
         labelAlign="left"
         initialValues={componentData?.resourceComponent.props}
-        onValuesChange={handlePropsChange}
+        onChange={handlePropsChange}
       >
         {formItems}
       </Form>

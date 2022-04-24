@@ -1,14 +1,15 @@
 import { ROUTE_EDITER } from '@/common/constant/route'
 import { StringKeyValueObject } from '@/typings/common/editer-config-data'
+import { getUniqueId } from './index'
 
-export type EditerPathGenerateParams = {
+export type EditerSearchGenerateParams = {
   page_id: string
   edit_type?: string
   use_local?: boolean
   title?: string
 }
 
-export const generateEditerPath = (params: EditerPathGenerateParams) => {
+export const generateEditerSearch = (params: EditerSearchGenerateParams) => {
   const { edit_type, use_local, ...rest } = params
   const transformedParams: StringKeyValueObject = {
     ...rest,
@@ -22,5 +23,15 @@ export const generateEditerPath = (params: EditerPathGenerateParams) => {
     if (value) return `${preValue}${preValue ? '&' : '?'}${curKey}=${value}`
     return preValue
   }, '')
+  return search
+}
+
+export const generateEditerPath = (params: EditerSearchGenerateParams) => {
+  const search = generateEditerSearch(params)
   return ROUTE_EDITER + search
+}
+
+export const createNewEditerPath = () => {
+  const pageId = getUniqueId()
+  return generateEditerPath({ page_id: pageId, edit_type: 'create' })
 }

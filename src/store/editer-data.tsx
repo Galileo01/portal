@@ -89,14 +89,15 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
       newIndex = preIndex - 1
       return {
         ...state,
+        // currentClickElement: undefined, // 重置 currentClickElement 隐藏toolbox
         currentSnapshotIndex: newIndex,
         componentDataList: snapshotList[newIndex],
       }
     // 前进 - 下标 增大
     case EditerDataActionEnum.FORWARD:
-      newIndex = preIndex + 1
       return {
         ...state,
+        // currentClickElement: undefined,
         currentSnapshotIndex: newIndex,
         componentDataList: snapshotList[newIndex],
       }

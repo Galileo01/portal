@@ -2,14 +2,14 @@ import * as React from 'react'
 
 import clsx from 'clsx'
 
-import { RESOURCE_COMPONENT_RENDERED_COMMON_CLASS } from '@/common/constant'
+import { RESOURCE_COMPONENT_COMMON_CLASS } from '@/common/constant'
 import { CommonProps } from '@/typings/common/resosurce-component'
 
 import styles from './index.module.less'
 
 const Example: React.FC<CommonProps> = (props) => (
   <div
-    className={clsx(styles.example, RESOURCE_COMPONENT_RENDERED_COMMON_CLASS)}
+    className={clsx(styles.example, RESOURCE_COMPONENT_COMMON_CLASS)}
     // eslint-disable-next-line react/jsx-props-no-spreading
     {...props}
   >

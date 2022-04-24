@@ -1,10 +1,10 @@
 import * as React from 'react'
 
 import { Layout } from '@arco-design/web-react'
-import clsx from 'clsx'
 
-import { RESOURCE_COMPONENT_RENDERED_COMMON_CLASS } from '@/common/constant'
+import { RESOURCE_COMPONENT_WILL_STICKY_CLASS } from '@/common/constant'
 import { CommonProps } from '@/typings/common/resosurce-component'
+import { RCClassnameComputer } from '@/common/utils/element'
 import CustomImage from '@/components/custom-image'
 
 import styles from './index.module.less'
@@ -15,31 +15,31 @@ const DEFAULT_NAV_HEIGHT = 60
 
 export type NavProps = {
   logoSrc: string
+  height?: number
+  className?: string
+  isSticky?: boolean
   navList: Array<{
     title: string
     href: string
   }>
-  height?: number
-  className?: string
 } & CommonProps
-
-// TEST: 用于 从测试的 源组件
-// TODO: 使用栅格系统 ，并暴露组件
 
 const Nav: React.FC<NavProps> = (props) => {
   const {
     logoSrc,
     navList,
     className,
+    isSticky,
     height = DEFAULT_NAV_HEIGHT,
     ...restProps
   } = props
   return (
     <Header
-      className={clsx(
+      className={RCClassnameComputer(
+        RESOURCE_COMPONENT_WILL_STICKY_CLASS,
         styles.nav,
         className,
-        RESOURCE_COMPONENT_RENDERED_COMMON_CLASS
+        isSticky && styles.sticky
       )}
       style={{
         height,

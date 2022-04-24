@@ -1,17 +1,21 @@
 import * as React from 'react'
 
-import { Grid, Avatar, Button } from '@arco-design/web-react'
+import { Grid } from '@arco-design/web-react'
 
-import { ROUTE_EDITER, ROUTE_LOGIN } from '@/common/constant/route'
-import { getUniqueId } from '@/common/utils'
+import { createNewEditerPath } from '@/common/utils/route'
+import {
+  useUserInfo,
+  useUserInfoDispatch,
+  UserActionEnum,
+} from '@/store/user-info'
 import Logo from '@/components/logo'
 import ThemeSwitch from '@/components/theme-switch'
+import User, { UserProps } from '@/components/user'
+import mockUserInfo from '@/mock/user'
 
 import styles from './index.module.less'
 
 const { Row, Col } = Grid
-// 4.17-1 TODO: 创建 新页面的逻辑放到 index
-const newUniquePageId = getUniqueId()
 
 const navLinks = [
   {
@@ -20,7 +24,7 @@ const navLinks = [
   },
   {
     title: '编辑器',
-    link: `${ROUTE_EDITER}?page_id=${newUniquePageId}&edite_type=create`,
+    link: createNewEditerPath(),
   },
   {
     title: 'Github',
@@ -30,7 +34,15 @@ const navLinks = [
 ]
 
 const NavHeader = () => {
-  const isLogin = false
+  const userInfo = useUserInfo()
+  const dispatch = useUserInfoDispatch()
+
+  const updateUserInfo: UserProps['updateUserInfo'] = (newUserInfo) => {
+    dispatch({
+      type: UserActionEnum.SET_STATE,
+      payload: newUserInfo,
+    })
+  }
 
   return (
     <Row className={styles.nav_header} align="center">
@@ -50,13 +62,10 @@ const NavHeader = () => {
             <ThemeSwitch />
           </Col>
           <Col span={8} offset={1}>
-            {isLogin ? (
-              <Avatar />
-            ) : (
-              <Button type="text" size="small">
-                <a href={ROUTE_LOGIN}>登陆</a>
-              </Button>
-            )}
+            <User
+              userInfo={userInfo || mockUserInfo}
+              updateUserInfo={updateUserInfo}
+            />
           </Col>
         </Row>
       </Col>

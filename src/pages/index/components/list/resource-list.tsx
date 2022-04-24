@@ -1,13 +1,17 @@
 import * as React from 'react'
 
 import { Card, Button } from '@arco-design/web-react'
-import { IconMore } from '@arco-design/web-react/icon'
+import { IconMore, IconPlus } from '@arco-design/web-react/icon'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
+import { useNavigate } from 'react-router-dom'
+import clsx from 'clsx'
 import {
   ResourceBaseInfoList,
   TemplateBaseInfo,
   PageBaseInfo,
 } from '@/@types/portal-network'
+
+import { createNewEditerPath } from '@/common/utils/route'
 
 import styles from './index.module.less'
 
@@ -25,11 +29,39 @@ export type ResourceListProps = {
 }
 
 const ResourceList: React.FC<ResourceListProps> = (props) => {
-  const { resourceList, hasMore, itemRenderer, onLoadMore, className } = props
+  const { className, resourceList, hasMore, itemRenderer, onLoadMore } = props
+
+  const navigator = useNavigate()
+
+  const handleCreateClick = () => {
+    const newEditerPath = createNewEditerPath()
+    navigator(newEditerPath)
+  }
 
   return (
     <div className={className}>
       <TransitionGroup className={styles.resource_list}>
+        <CSSTransition
+          key="create"
+          timeout={{
+            enter: 400,
+            exit: 300,
+          }}
+        >
+          <Card
+            hoverable
+            className={clsx(styles.resource_item, styles.function_item)}
+            cover={
+              <div className={styles.function_item_cover}>
+                <IconPlus />
+              </div>
+            }
+          >
+            <Button onClick={handleCreateClick} type="primary">
+              创建
+            </Button>
+          </Card>
+        </CSSTransition>
         {resourceList.map((resource, index) => (
           <CSSTransition
             key={resource.resourceId}
@@ -51,9 +83,9 @@ const ResourceList: React.FC<ResourceListProps> = (props) => {
           >
             <Card
               hoverable
-              className={styles.load_more}
+              className={clsx(styles.resource_item, styles.function_item)}
               cover={
-                <div className={styles.load_more_cover}>
+                <div className={styles.function_item_cover}>
                   <IconMore />
                 </div>
               }

@@ -61,7 +61,7 @@ const foformItemsLinkRenderer = (values: any) => {
                 </span>
               }
             >
-              <IconQuestionCircle />
+              <IconQuestionCircle className="question_icon" />
             </Tooltip>
           </span>
         }
@@ -209,7 +209,7 @@ const BackgroundForm: React.FC<BackgroundFormProps> = (props) => {
           <span>
             保存变更
             <Tooltip content="更新背景后需要手动保存">
-              <IconQuestionCircle />
+              <IconQuestionCircle className="question_icon" />
             </Tooltip>
           </span>
         }

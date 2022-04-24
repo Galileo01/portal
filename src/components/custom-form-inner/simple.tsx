@@ -201,7 +201,7 @@ export const BACKGROUND_CLIP_OPTIONS = [
       <span>
         文字
         <Tooltip content="部分浏览器可能不生效">
-          <IconQuestionCircle style={{ marginLeft: 5 }} />
+          <IconQuestionCircle className="question_icon" />
         </Tooltip>
       </span>
     ),

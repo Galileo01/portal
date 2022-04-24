@@ -106,7 +106,7 @@ const StyleConfig: React.FC<StyleConfigProps> = ({ active }) => {
     }
   }
 
-  const handleClearStyle = () => {
+  const handleResetStyle = () => {
     styleConfigForm.resetFields()
 
     removeStyleNode(targetElementInfo.styleNodeId)
@@ -183,10 +183,10 @@ const StyleConfig: React.FC<StyleConfigProps> = ({ active }) => {
       <Divider className={styles.divider} />
       <Button
         type="secondary"
-        onClick={handleClearStyle}
+        onClick={handleResetStyle}
         style={{ width: '100%' }}
       >
-        清除样式
+        重置样式
       </Button>
     </CollapseItem>
   )

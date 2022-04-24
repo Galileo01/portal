@@ -1,11 +1,19 @@
 import * as React from 'react'
 
-import { Form, Input, Switch, Button, Select } from '@arco-design/web-react'
+import {
+  Form,
+  Input,
+  Switch,
+  Button,
+  Select,
+  Popover,
+} from '@arco-design/web-react'
 import {
   IconDelete,
   IconArrowRise,
   IconArrowFall,
   IconPlus,
+  IconQuestionCircle,
 } from '@arco-design/web-react/icon'
 
 import { ComponentDataItem } from '@/typings/common/editer'
@@ -19,6 +27,8 @@ import {
 import styles from './index.module.less'
 
 const { Item: FormItem } = Form
+
+const nullableTransformer = (value: any) => value || undefined
 
 // 处理 简单 类型的  表单生成
 export const generateFormItemInner = (
@@ -39,7 +49,7 @@ export const generateFormItemInner = (
       element = <Input placeholder={label} allowClear />
       break
     case PropTypeEnum.NUMBER:
-      element = <Input type="number" />
+      element = <Input type="number" placeholder={label} />
       break
     case PropTypeEnum.BOOLEAN:
       element = <Switch />
@@ -51,7 +61,7 @@ export const generateFormItemInner = (
 }
 
 // 生成 个数的 描述文案
-export const generateFormListTitle = (
+export const computeFormListTitle = (
   label: string,
   minItems: number,
   maxItems: number
@@ -62,6 +72,18 @@ export const generateFormListTitle = (
   }
   return `${label} (${minItems} - ${maxItems}项)`
 }
+// 生成 带 help 帮助信息的label
+export const computeEnhancedLabel = (label: string, help?: string) =>
+  help ? (
+    <span>
+      {label}
+      <Popover content={help} style={{ marginLeft: 5 }}>
+        <IconQuestionCircle className="question_icon" />
+      </Popover>
+    </span>
+  ) : (
+    label
+  )
 
 // 处理  数组 类型的 表单生成  ：Form.List
 export const generateFormList = (
@@ -69,7 +91,8 @@ export const generateFormList = (
   key: string,
   item?: PropsTypeDesc['item'],
   minItems?: number,
-  maxItems?: number
+  maxItems?: number,
+  help?: string
 ) => (
   <Form.List field={key} key={key}>
     {(fields, { add, remove, move }) => {
@@ -79,13 +102,13 @@ export const generateFormList = (
       const canMove = fields.length > 1
 
       const canEdit = canAdd || canDelete
-      const title = generateFormListTitle(label, minItems!, maxItems!)
+      const title = computeFormListTitle(label, minItems!, maxItems!)
 
       return (
         <div className={styles.form_list}>
           <div className={styles.list_title} key={`${key}_title`}>
             <FormItem
-              label={title}
+              label={computeEnhancedLabel(title, help)}
               labelCol={{
                 span: 24,
               }}
@@ -105,6 +128,7 @@ export const generateFormList = (
                   labelCol={{
                     span: 3,
                   }}
+                  normalize={nullableTransformer}
                 >
                   {generateFormItemInner(label, item.type)}
                 </FormItem>
@@ -127,6 +151,7 @@ export const generateFormList = (
                     wrapperCol={{
                       span: 23,
                     }}
+                    normalize={nullableTransformer}
                   >
                     {generateFormItemInner(subLabel, subType)}
                   </FormItem>
@@ -179,21 +204,32 @@ export const generatePropFormItems = (componentData: ComponentDataItem) => {
     resourceComponent: { propsSchema },
   } = componentData
   const elementList: JSX.Element[] = []
-  const keys = Object.keys(propsSchema)
+  const props = Object.keys(propsSchema)
 
-  keys.forEach((key) => {
-    const { label, type, minItems, maxItems, item, enums } = propsSchema[key]
+  props.forEach((prop) => {
+    const { label, type, minItems, maxItems, item, enums, help } =
+      propsSchema[prop]
     let newElement: JSX.Element | null = null
     // 普通类型
     if (PLAIN_TYPE_LIST.includes(type)) {
       newElement = (
-        <FormItem label={label} field={key} key={key}>
+        <FormItem
+          label={computeEnhancedLabel(label, help)}
+          field={prop}
+          key={prop}
+          normalize={nullableTransformer}
+          // boolean 类型的 Switch 组件对应 表单值 为checked
+          triggerPropName={
+            type === PropTypeEnum.BOOLEAN ? 'checked' : undefined
+          }
+        >
           {generateFormItemInner(label, type, enums)}
         </FormItem>
       )
     }
     if (type === PropTypeEnum.ARRAY) {
-      newElement = generateFormList(label, key, item, minItems, maxItems)
+      // NOTE: 假定对于 Array 类型的属性 必须传递 minItems 和 maxItems
+      newElement = generateFormList(label, prop, item, minItems, maxItems, help)
     }
 
     if (newElement) {

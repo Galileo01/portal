@@ -3,9 +3,9 @@ import * as React from 'react'
 import { Modal, Form, Input, Radio, ModalProps } from '@arco-design/web-react'
 import domtoimage from 'dom-to-image'
 
-import { PREVIEWER_CLASS } from '@/common/constant'
 import CustomImage from '@/components/custom-image'
 import { devLogger } from '@/common/utils'
+import { getPreviewerElement } from '@/common/utils/element'
 
 export type PublishForm = {
   resourceID: string
@@ -45,7 +45,7 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
 
   // 展示  设置默认值
   const generateThumbnail = React.useCallback(() => {
-    const previewerElement = document.querySelector(`.${PREVIEWER_CLASS}`)
+    const previewerElement = getPreviewerElement()
     if (previewerElement) {
       domtoimage.toPng(previewerElement).then((imgUrl) => {
         devLogger('domtoimage imgUrl', imgUrl)

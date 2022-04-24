@@ -1,16 +1,18 @@
 .tool_box {
   position: absolute;
+  z-index: 3;
+  box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   border: 2px solid rgb(var(--arcoblue-5));
-  box-sizing: border-box;
   will-change: height, width, left, top;
   transition: height, width 0.25s ease-in;
   pointer-events: none;
 }
 
 .tool_btns {
+  min-width: 72px; // 3 * 24
   display: inline-flex;
   justify-content: center;
   border-radius: 2px;

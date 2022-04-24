@@ -10,7 +10,7 @@ import CustomImage from '@/components/custom-image'
 import { devLogger } from '@/common/utils'
 
 import styles from './index.module.less'
-import ResourceList, { ResourceListProps } from '../resource-list'
+import ResourceList, { ResourceListProps } from './resource-list'
 
 const { Meta } = Card
 
