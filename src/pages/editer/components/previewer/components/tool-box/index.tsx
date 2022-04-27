@@ -8,7 +8,6 @@ import {
 } from '@arco-design/web-react/icon'
 
 import { isPreviewerElement, isRCRenderedElement } from '@/common/utils/element'
-import { devLogger } from '@/common/utils'
 import {
   ARCO_LAYOUT_SIDER_CLASS,
   ARCO_LAYOUT_CONTENT_CLASS,
@@ -76,7 +75,6 @@ const ToolBox: React.FC<ToolBoxProps> = (props) => {
       return
     }
     setStyle(calculateStyle(targetElement))
-    devLogger('updateStyle', calculateStyle(targetElement))
     // 非 previewer 情况下 展示
     setVisible(!isPreviewerElement(targetElement))
     // 满足  RCRendered  才展示 工具按钮

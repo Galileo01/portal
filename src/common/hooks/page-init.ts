@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { FontList } from '@/@types/portal-network'
+import { FontList } from '@/typings/network'
 
 import { PageConfig, ComponentDataList } from '@/typings/common/editer'
 import { devLogger } from '@/common/utils'
@@ -22,8 +22,8 @@ export type usePageInitParams = {
   initType: InitType
   /**
    * @isEditer : 是否是编辑器 页面 , 编辑器 更新 store
-   * @true : 会将 config 全量更新到 store
-   * @false : 会更新 将config.componentDataList 更新到 返回的 componentDataList
+   * @true : 会将 config 全量更新到 context store
+   * @false : 会更新 将 config.componentDataList 更新到 返回的 componentDataList
    */
   isEditer: boolean
 }

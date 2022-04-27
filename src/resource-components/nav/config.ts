@@ -1,5 +1,3 @@
-import * as React from 'react'
-
 import { PLATFORM_LOGO_PUBLIC_URL } from '@/common/constant'
 import {
   ResourceComponent,
@@ -29,13 +27,13 @@ const initProps: NavProps = {
   height: 60,
 }
 
-export const componentConfig: ResourceComponent = {
+export const componentConfig: ResourceComponent<NavProps> = {
   name: '导航',
   key: 'nav',
   previewImg:
     'https://cos-01-1303103441.cos.ap-chengdu.myqcloud.com/img/portal/nav_preview.png',
   category: ComponentCategoryEnum.NAVIGATION,
-  component: Nav as React.FC<unknown>,
+  component: Nav,
   props: initProps,
   propsSchema: {
     logoSrc: {
@@ -44,8 +42,9 @@ export const componentConfig: ResourceComponent = {
     },
     height: {
       label: '高度',
-      help: '单位px/为空时传入60px',
+      unit: 'px',
       type: PropTypeEnum.NUMBER,
+      emptyHint: '默认值60px',
     },
     isSticky: {
       label: '吸顶模式',

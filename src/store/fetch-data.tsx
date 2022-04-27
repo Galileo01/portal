@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { FontList } from '@/@types/portal-network'
+import { FontList } from '@/typings/network'
 
 import { devLogger } from '@/common/utils'
 

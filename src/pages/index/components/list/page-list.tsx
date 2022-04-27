@@ -3,7 +3,7 @@ import * as React from 'react'
 import { Card, Popconfirm, Spin } from '@arco-design/web-react'
 import { IconLaunch, IconDelete, IconEdit } from '@arco-design/web-react/icon'
 import clsx from 'clsx'
-import { PageBaseInfoList } from '@/@types/portal-network'
+import { PageBaseInfoList } from '@/typings/network'
 
 import mockPageList from '@/mock/page-list'
 import CustomImage from '@/components/custom-image'

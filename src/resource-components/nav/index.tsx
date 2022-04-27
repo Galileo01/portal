@@ -2,11 +2,10 @@ import * as React from 'react'
 
 import { Layout } from '@arco-design/web-react'
 
-import { RESOURCE_COMPONENT_WILL_STICKY_CLASS } from '@/common/constant'
 import { CommonProps } from '@/typings/common/resosurce-component'
-import { RCClassnameComputer } from '@/common/utils/element'
 import CustomImage from '@/components/custom-image'
 
+import { RCClassnameComputer } from '../utils'
 import styles from './index.module.less'
 
 const { Header } = Layout
@@ -36,7 +35,7 @@ const Nav: React.FC<NavProps> = (props) => {
   return (
     <Header
       className={RCClassnameComputer(
-        RESOURCE_COMPONENT_WILL_STICKY_CLASS,
+        { willSticky: true },
         styles.nav,
         className,
         isSticky && styles.sticky

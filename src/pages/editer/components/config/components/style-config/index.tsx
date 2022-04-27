@@ -36,6 +36,8 @@ export type StyleConfigProps = {
   active: boolean
 }
 
+// TODO: 4.25-1 添加元素  hover 时的样式填入 增加切换还是什么？
+
 // NOTE: 新添字段 需要同步到  @/common/constant/style-config EDITABLE_FIELD
 
 const StyleConfig: React.FC<StyleConfigProps> = ({ active }) => {

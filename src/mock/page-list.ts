@@ -1,4 +1,4 @@
-import { PageBaseInfoList } from '@/@types/portal-network'
+import { PageBaseInfoList } from '@/typings/network'
 
 const mockPageList: PageBaseInfoList = [
   {

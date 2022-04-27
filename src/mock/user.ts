@@ -1,4 +1,4 @@
-import { UserInfo } from '@/@types/portal-network'
+import { UserInfo } from '@/typings/network'
 
 const mockUserInfo: UserInfo = {
   name: 'Admin',

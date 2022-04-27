@@ -1,10 +1,9 @@
 import * as React from 'react'
 
-import { RCClassnameComputer } from '@/common/utils/element'
-import { RESOURCE_COMPONENT_ABSOLUTE_CONTAINER_CLASS } from '@/common/constant'
 import { CommonProps } from '@/typings/common/resosurce-component'
 import CustomImage from '@/components/custom-image'
 
+import { RCClassnameComputer } from '../utils'
 import styles from './index.module.less'
 
 export type NavAsideProps = CommonProps & {
@@ -38,7 +37,7 @@ const NavAside: React.FC<NavAsideProps> = (props) => {
   return (
     <div
       className={RCClassnameComputer(
-        RESOURCE_COMPONENT_ABSOLUTE_CONTAINER_CLASS,
+        { absolute: true },
         styles.nav_aside,
         styles[position]
       )}

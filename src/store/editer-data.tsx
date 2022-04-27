@@ -69,6 +69,7 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
     globalConfig,
   } = state
   const { type, payload } = action
+
   devLogger('reducer editer-data ', type, payload)
 
   let newIndex = preIndex

@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { Button, Avatar, Message } from '@arco-design/web-react'
 import clsx from 'clsx'
-import { UserInfo } from '@/@types/portal-network'
+import { UserInfo } from '@/typings/network'
 
 import { devLogger } from '@/common/utils'
 
@@ -42,7 +42,6 @@ const User: React.FC<UserProps> = (props) => {
   const hanldeEditSubmitClick: UserInfoPopoverProps['onSubmitClick'] = (
     values
   ) => {
-    // @ts-ignore
     updateUserInfo(values)
   }
 

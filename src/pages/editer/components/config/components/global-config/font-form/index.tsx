@@ -11,7 +11,7 @@ import {
   FormProps,
 } from '@arco-design/web-react'
 import { IconQuestionCircle, IconSave } from '@arco-design/web-react/icon'
-import { FontList } from '@/@types/portal-network'
+import { FontList } from '@/typings/network'
 
 import FontCascader from '@/components/custom-form-inner/font-cascader'
 import { FontFormData } from '@/typings/common/editer-config-data'

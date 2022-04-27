@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { UserInfo } from '@/@types/portal-network'
+import { UserInfo } from '@/typings/network'
 
 import { devLogger } from '@/common/utils'
 

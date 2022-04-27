@@ -12,7 +12,7 @@ import {
 } from '@arco-design/web-react'
 import { UploadItem } from '@arco-design/web-react/es/Upload/interface'
 import { IconEdit } from '@arco-design/web-react/icon'
-import { UserInfo } from '@/@types/portal-network'
+import { UserInfo } from '@/typings/network'
 
 import { devLogger } from '@/common/utils'
 import CustomImage from '../custom-image'
@@ -28,8 +28,8 @@ export type EditField = {
 }
 
 export type UserInfoPopoverProps = {
-  userInfo?: UserInfo
-  onSubmitClick: (values: Partial<EditField>) => void
+  userInfo: UserInfo
+  onSubmitClick: (values: UserInfo) => void
 }
 
 const initEditedMap = {
@@ -43,7 +43,7 @@ const UserInfoPopover: React.FC<UserInfoPopoverProps> = (props) => {
 
   const [imgFile, setImgFile] = React.useState<UploadItem>({
     uid: 'init',
-    url: userInfo?.avatar,
+    url: userInfo.avatar,
   })
 
   const [editForm] = Form.useForm<EditField>()
@@ -92,7 +92,7 @@ const UserInfoPopover: React.FC<UserInfoPopoverProps> = (props) => {
       setEdited(initEditedMap)
       setImgFile({
         uid: 'init',
-        url: userInfo?.avatar,
+        url: userInfo.avatar,
       })
     }
   }
@@ -100,7 +100,10 @@ const UserInfoPopover: React.FC<UserInfoPopoverProps> = (props) => {
   const handleSubmitClick = () => {
     const values = editForm.getFieldsValue()
     devLogger('handleSubmitClick', values)
-    onSubmitClick(values)
+    onSubmitClick({
+      ...userInfo,
+      ...values,
+    })
   }
 
   return (
@@ -139,7 +142,7 @@ const UserInfoPopover: React.FC<UserInfoPopoverProps> = (props) => {
                     <Input allowClear />
                   </FormItem>
                 ) : (
-                  <span>{userInfo?.name}</span>
+                  <span>{userInfo.name}</span>
                 )}
                 <IconEdit
                   className="cursor_pointer"

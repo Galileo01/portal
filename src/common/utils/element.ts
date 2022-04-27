@@ -1,4 +1,3 @@
-import clsx, { ClassValue } from 'clsx'
 import { ComponentDataList } from '@/typings/common/editer'
 
 import {
@@ -58,10 +57,6 @@ export const getComponentDataIndexFromElement: (
     : -1
   return index
 }
-
-// RC 组件的类名 计算器
-export const RCClassnameComputer = (...classes: ClassValue[]) =>
-  clsx(([RESOURCE_COMPONENT_COMMON_CLASS] as ClassValue[]).concat(classes))
 
 const getIndexInParent = (element: HTMLElement) => {
   const tagName = element.tagName.toLowerCase()

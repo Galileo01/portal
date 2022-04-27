@@ -17,6 +17,8 @@ export type ClickElementInfoProps = {
   onReset: () => void
 }
 
+// TODO:  4.25-2  展示组件列表
+
 const ClickElementInfo: React.FC<ClickElementInfoProps> = (props) => {
   const {
     isPreviwer,

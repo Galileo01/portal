@@ -1,4 +1,4 @@
-import { TemplateBaseInfoList } from '@/@types/portal-network'
+import { TemplateBaseInfoList } from '@/typings/network'
 
 const mockTemplateList: TemplateBaseInfoList = [
   {

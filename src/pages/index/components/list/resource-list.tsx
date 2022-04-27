@@ -9,7 +9,7 @@ import {
   ResourceBaseInfoList,
   TemplateBaseInfo,
   PageBaseInfo,
-} from '@/@types/portal-network'
+} from '@/typings/network'
 
 import { createNewEditerPath } from '@/common/utils/route'
 

@@ -10,7 +10,7 @@ import {
 } from '@arco-design/web-react'
 import { IconLaunch, IconDelete, IconEdit } from '@arco-design/web-react/icon'
 import clsx from 'clsx'
-import { TemplateBaseInfo, TemplateBaseInfoList } from '@/@types/portal-network'
+import { TemplateBaseInfo, TemplateBaseInfoList } from '@/typings/network'
 
 import mockTemplateList from '@/mock/template-list'
 import CustomImage from '@/components/custom-image'

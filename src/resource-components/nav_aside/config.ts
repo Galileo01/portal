@@ -7,7 +7,6 @@ import {
 import NavAside, { NavAsideProps } from './index'
 
 const initProps: NavAsideProps = {
-  top: '50%',
   position: 'right',
   scrollSmooth: false,
   titleMode: 'text',
@@ -27,19 +26,20 @@ const initProps: NavAsideProps = {
   ],
 }
 
-export const componentConfig: ResourceComponent = {
+export const componentConfig: ResourceComponent<NavAsideProps> = {
   name: '侧边导航',
   key: 'nav_aside',
   previewImg:
     'https://cos-01-1303103441.cos.ap-chengdu.myqcloud.com/img/portal/nav_aside_preview.png',
   category: ComponentCategoryEnum.NAVIGATION,
-  component: NavAside as React.FC<unknown>,
+  component: NavAside,
   props: initProps,
   propsSchema: {
     top: {
-      type: PropTypeEnum.STRING,
+      type: PropTypeEnum.NUMBER,
       label: '顶部距离',
-      help: '为空默认传入50%',
+      unit: 'px',
+      emptyHint: '默认值父元素50%',
     },
     position: {
       type: PropTypeEnum.STRING,
@@ -58,7 +58,7 @@ export const componentConfig: ResourceComponent = {
     titleMode: {
       type: PropTypeEnum.STRING,
       label: '标题模式',
-      help: '导航项显示为文字or图片',
+      help: '导航项显示为文字还是图片',
       enums: [
         {
           label: '文本',

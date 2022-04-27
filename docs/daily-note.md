@@ -204,18 +204,16 @@ Ps: all:revert 会重置 svg 的 fill 属性，这一点可能会造成较大的
 
 1. 完成 editer 页面前端部分基本功能
 2. 开始设计首页
-2. 
-
-
+3.
 
 ## 0418
 
-1. useEditerParams hook封装 ，处理 编辑页的 searchParams 获取
-2. 
+1. useEditerParams hook 封装 ，处理 编辑页的 searchParams 获取
+2.
 
 ## 0419
 
-1. React-transition-group  组件引入，为 元素的 创建和小时 添加过渡
+1. React-transition-group 组件引入，为 元素的 创建和小时 添加过渡
 2. icon 还有待商榷
 
 ## 0420
@@ -224,30 +222,26 @@ Ps: all:revert 会重置 svg 的 fill 属性，这一点可能会造成较大的
 
 ## 0421
 
-1. 创建 user-info  store/上下文 
+1. 创建 user-info store/上下文
 
 2. User 组件实现完成
    - 借助 Popover 组件
-   - 依赖React.FC 的children 属性 设置插槽 特性
-
-
+   - 依赖 React.FC 的 children 属性 设置插槽 特性
 
 ## 0422
 
-1. 使用 MutationObserve  api，在propconfig的更变引起dom变更时重新获取样式信息，更新toolbox 位置
+1. 使用 MutationObserve api，在 propconfig 的更变引起 dom 变更时重新获取样式信息，更新 toolbox 位置
 2. 开始设计 nav_aside 侧边导航组件
 
-nav_aside 利用 a标签 #锚点的特性，实现点击 进行页面滚动功能
-
-
+nav_aside 利用 a 标签 #锚点的特性，实现点击 进行页面滚动功能
 
 ## 0423
 
 1. 实现 nav_aside 侧边导航组件
 
-   nav_aside 利用 a标签 #锚点的特性，实现点击 进行页面滚动功能
+   nav_aside 利用 a 标签 #锚点的特性，实现点击 进行页面滚动功能
 
-   - 支持 填入元素的id 进行跳转
+   - 支持 填入元素的 id 进行跳转
 
    - 支持 开启平滑滚动
 
@@ -259,10 +253,64 @@ nav_aside 利用 a标签 #锚点的特性，实现点击 进行页面滚动功�
    - subtree 以将监视范围扩展至目标节点整个节点树中的所有节点，子孙结点
    - characterData 观察节点的文本字符数据 的变化
 
-4. 对于 sticky 定位的元素 需要在previewer 容器滚动的时候重新计算样式
+4. 对于 sticky 定位的元素 需要在 previewer 容器滚动的时候重新计算样式
 
-
+   - 监听目标是 arco-layout-cotent 组件，因为滚动条是该元素产生的  ，只有他才会触发滚动事件
 
 ## 0424
 
-1. 对于可能为sticky 的targetElement 开始滚动事件的监听
+1. 对于可能为 sticky 的 targetElement 开始滚动事件的监听
+1. 完善 侧边导航
+3. PropsSchema  新增
+   - help 字段 用于帮助 解释label
+   - emptyHint 字段 用于 表单值为空 时 日式默认值 (placeholder)
+4. 开始 设置及 KVImg 组件，剩余 object-fit 属性的设计
+5. 预留 nav_dropdown 下拉导航 组件
+
+
+
+## 0425
+
+1. KV_Img 组件 done 
+
+2. 新增todo： current-click-info 增加 显示组件列表，支持用户通过该列表选择RC组件
+
+   或者 增加辅助选中的feature ，智能 查找 离当前点击元素 最近的一个父级RC组件
+
+3. video 组件
+
+   - 自动生成 封面? 由于 canvas 对于跨域资源无法访问，停止尝试
+
+   - 添加textList prop 渲染视频的 文本信息 todo
+
+   - 
+
+     
+
+## 0426
+
+Finish:
+
+1. 类型保护函数 - 只能使用 普通函数  来定义
+2. video 组件完成
+3. swiper 组件设计并完成
+4. feature: page 路由在使用localStorage 预览页面时 主动刷新
+5. 修复 Previewer 底部 背景色 露出问题
+
+## 0427
+
+Pre-TODO:
+
+- [x] 更新 swiper 的previewImg
+- [ ] 开始设计 content 组件
+
+TODO:
+
+- [ ] 源组件 resource-components 封装为npm库？
+
+Finish:
+
+1. 取消 对 @types/portal-network  库的抽离，转为 提取到 本地@typings/network 库
+2. 
+
+ 
