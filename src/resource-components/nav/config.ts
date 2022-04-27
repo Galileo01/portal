@@ -1,5 +1,4 @@
-import * as React from 'react'
-
+import { PLATFORM_LOGO_PUBLIC_URL } from '@/common/constant'
 import {
   ResourceComponent,
   ComponentCategoryEnum,
@@ -9,40 +8,52 @@ import {
 import Nav, { NavProps } from './index'
 
 const initProps: NavProps = {
-  logoSrc: 'https://zos.alipayobjects.com/rmsportal/chnhazooyzrjWSv.jpg',
+  logoSrc: PLATFORM_LOGO_PUBLIC_URL,
+  isSticky: false,
   navList: [
     {
-      title: 'Baidu-百度',
+      title: '导航1',
       href: 'https://www.baidu.com',
     },
     {
-      title: 'Github',
-      href: 'https://github.com/',
+      title: '导航2',
+      href: 'https://www.baidu.com',
     },
     {
-      title: 'Google-谷歌',
-      href: 'https://www.google.com/',
+      title: '导航3',
+      href: 'https://www.baidu.com',
     },
   ],
   height: 60,
 }
 
-export const componentConfig: ResourceComponent = {
+export const componentConfig: ResourceComponent<NavProps> = {
   name: '导航',
   key: 'nav',
-  previewImg: 'https://zos.alipayobjects.com/rmsportal/chnhazooyzrjWSv.jpg',
+  previewImg:
+    'https://cos-01-1303103441.cos.ap-chengdu.myqcloud.com/img/portal/nav_preview.png',
   category: ComponentCategoryEnum.NAVIGATION,
-  component: Nav as React.FC<unknown>,
+  component: Nav,
   props: initProps,
   propsSchema: {
     logoSrc: {
       label: 'logo 地址',
       type: PropTypeEnum.STRING,
     },
+    height: {
+      label: '高度',
+      unit: 'px',
+      type: PropTypeEnum.NUMBER,
+      emptyHint: '默认值60px',
+    },
+    isSticky: {
+      label: '吸顶模式',
+      type: PropTypeEnum.BOOLEAN,
+    },
     navList: {
       type: PropTypeEnum.ARRAY,
       label: '导航列表',
-      maxItems: 4,
+      maxItems: 10,
       minItems: 1,
       item: {
         type: PropTypeEnum.OBJECT,
@@ -57,10 +68,6 @@ export const componentConfig: ResourceComponent = {
           },
         },
       },
-    },
-    height: {
-      label: '高度',
-      type: PropTypeEnum.NUMBER,
     },
   },
 }

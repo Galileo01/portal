@@ -70,6 +70,7 @@ export const setColorVariableValue = (
   }
 }
 
+// 恢复 previewer 的 颜色变为 为 body 上的 初始值
 export const restorePreviewColorVariable = () => {
   const bodyValue = getColorVariableValue('body')
   setColorVariableValue(bodyValue, true)

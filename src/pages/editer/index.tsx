@@ -1,11 +1,11 @@
 import * as React from 'react'
 
 import { Layout } from '@arco-design/web-react'
-import { useSearchParams } from 'react-router-dom'
 
 import { EditerDataProvider } from '@/store/editer-data'
 import { FetchDataProvider } from '@/store/fetch-data'
 import { usePageInit } from '@/common/hooks/page-init'
+import { useEditerParams } from '@/common/hooks/route'
 
 import ToolNav from './components/tool-nav'
 import Resource from './components/resource'
@@ -16,24 +16,24 @@ import styles from './index.module.less'
 const { Header, Content, Sider } = Layout
 // TODO: 结合 服务端 完成出码能力
 const Editer = () => {
-  const [params] = useSearchParams()
-
-  const searchParamsRef = React.useRef({
-    page_id: params.get('page_id'),
-    edit_type: params.get('edit_type') || 'create',
-  })
+  const { searchParams } = useEditerParams()
 
   usePageInit({
-    pageId: searchParamsRef.current.page_id,
+    pageId: searchParams.page_id,
     isEditer: true,
     initType:
-      searchParamsRef.current.edit_type === 'create' ? 'restore' : 'fetch',
+      searchParams.use_local === true || searchParams.edit_type === 'create'
+        ? 'restore'
+        : 'fetch',
   })
 
   return (
     <Layout className={styles.editer_layout}>
       <Header>
-        <ToolNav />
+        <ToolNav
+          pageId={searchParams.page_id}
+          editType={searchParams.edit_type}
+        />
       </Header>
       <Layout className={styles.content_layout}>
         <Resource />

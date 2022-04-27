@@ -4,6 +4,7 @@ import {
   PageConfigStorageValue,
 } from '@/typings/common/storage'
 import { PageConfig } from '@/typings/common/editer'
+
 import { customJsonParse } from './index'
 
 export const getLocalStorage: GetLocalStorageFun = (key, defaultValue) =>

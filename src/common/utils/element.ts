@@ -1,13 +1,16 @@
 import { ComponentDataList } from '@/typings/common/editer'
+
 import {
-  RESOURCE_COMPONENT_RENDERED_COMMON_CLASS,
+  RESOURCE_COMPONENT_COMMON_CLASS,
   PREVIEWER_CLASS,
 } from '@/common/constant'
 import { devLogger, IS_DEV } from '@/common/utils'
 
+// RC组件相关工具
+
 // 判断  元素 是否是 和 源组件直接渲染的 (最外层 容器 的 class)
 export const isRCRenderedElement = (element: HTMLElement) =>
-  element.classList.contains(RESOURCE_COMPONENT_RENDERED_COMMON_CLASS)
+  element.classList.contains(RESOURCE_COMPONENT_COMMON_CLASS)
 
 export const isPreviewerElement = (element: HTMLElement) =>
   element.classList.contains(PREVIEWER_CLASS)
@@ -139,4 +142,13 @@ export const removeStyleNode = (styleNodeId: string) => {
   if (styleNode) {
     document.head.removeChild(styleNode)
   }
+}
+
+let previewerElement: HTMLElement | null = null
+
+export const getPreviewerElement = () => {
+  if (!previewerElement) {
+    previewerElement = document.querySelector(`.${PREVIEWER_CLASS}`)
+  }
+  return previewerElement
 }

@@ -1,6 +1,4 @@
 export const ROUTE_INDEX = '/'
 export const ROUTE_PAGE = '/page'
 export const ROUTE_EDITER = '/editer'
-export const ROUTE_TEMPLATE = '/template'
-
-export const IS_ROUTE_EDITER = window.location.pathname === ROUTE_EDITER
+export const ROUTE_LOGIN = '/login'

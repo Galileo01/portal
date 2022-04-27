@@ -3,10 +3,7 @@ import * as React from 'react'
 import { throttle } from 'lodash-es'
 
 import { ComponentDataItem, ComponentDataList } from '@/typings/common/editer'
-import {
-  DATASET_KEY_RESOURCE_COMPONENT_KEY,
-  ARCO_LAYOUT_SIDER_CLASS,
-} from '@/common/constant'
+import { DATASET_KEY_RESOURCE_COMPONENT_KEY } from '@/common/constant'
 import { devLogger, getUniqueId } from '@/common/utils'
 import {
   isPreviewerElement,
@@ -80,7 +77,7 @@ export const useDragAndDrop = (params: useDragAndDropParams) => {
   const handleDrop: React.DragEventHandler<HTMLElement> = (e) => {
     e.preventDefault()
     e.stopPropagation()
-
+    const newComponentDataList = [...componentDataList]
     // 获取 组件key
     const componentKey = e.dataTransfer.getData(
       DATASET_KEY_RESOURCE_COMPONENT_KEY
@@ -100,16 +97,16 @@ export const useDragAndDrop = (params: useDragAndDropParams) => {
     // 否则 -- 来自 previewer 内 已有的 RCR元素 拖拽
     else if (currentDragingRCRRef.current!) {
       const preIndex = getComponentDataIndexFromElement(
-        componentDataList,
+        newComponentDataList,
         currentDragingRCRRef.current
       )
       // 截取/删除 并返回
       // eslint-disable-next-line prefer-destructuring
-      insertComponentDataItem = componentDataList.splice(preIndex, 1)[0]
+      insertComponentDataItem = newComponentDataList.splice(preIndex, 1)[0]
     }
 
     const insertIndex = getComponentDataIndexFromElement(
-      componentDataList,
+      newComponentDataList,
       e.target as HTMLElement
     )
     devLogger(
@@ -121,17 +118,19 @@ export const useDragAndDrop = (params: useDragAndDropParams) => {
       'componentKey',
       componentKey,
       'insertIndex',
-      insertIndex
+      insertIndex,
+      'insertComponentDataItem',
+      insertComponentDataItem
     )
 
     // 插入 指定位置 或者末尾
-    componentDataList.splice(
-      insertIndex > -1 ? insertIndex : componentDataList.length,
+    newComponentDataList.splice(
+      insertIndex > -1 ? insertIndex : newComponentDataList.length,
       0,
       insertComponentDataItem as ComponentDataItem
     )
 
-    updateComponenDataList(componentDataList)
+    updateComponenDataList(newComponentDataList)
     removePlaceHolder()
     currentDragingRCRRef.current = null
   }
@@ -229,22 +228,6 @@ export const useToolBox = (params: useToolBoxParams) => {
     hiddenToolBox()
     updateComponenDataList(tempList)
   }
-
-  // 观察 sider 由于折叠 产生的DOM变化 ，重新 计算宽度位置
-  React.useEffect(() => {
-    const asiderElement = document.querySelector(`.${ARCO_LAYOUT_SIDER_CLASS}`)
-
-    const observer = new MutationObserver(() => {
-      toolBoxRef.current?.updateStyle()
-    })
-    // asider 监听 width(attributes 属性) 变化
-    if (asiderElement) observer.observe(asiderElement, { attributes: true })
-    // 停止 观察
-    // eslint-disable-next-line consistent-return
-    return () => {
-      observer.disconnect()
-    }
-  }, [])
 
   return {
     toolBoxRef,

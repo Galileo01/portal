@@ -8,7 +8,7 @@ import style from './index.module.less'
 const RouterFallback = () => (
   <Spin loading className={style.fallback}>
     <div className={style.content}>
-      <Logo className={style.logo_wrapper} />
+      <Logo className={style.logo_wrapper} showText={false} />
     </div>
   </Spin>
 )

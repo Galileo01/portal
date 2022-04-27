@@ -3,15 +3,17 @@ import * as React from 'react'
 import { Collapse, Form, FormProps } from '@arco-design/web-react'
 
 import { ComponentDataItem } from '@/typings/common/editer'
+import { CommonProps } from '@/typings/common/resosurce-component'
 
 import { ConfigPaneBaseProps, ConfigPaneNameEnum } from '../../config'
 import { generatePropFormItems } from './utils'
+import { devLogger } from '@/common/utils'
 
 const { Item: CollapseItem } = Collapse
 
 export type PropConfigProps = ConfigPaneBaseProps & {
   componentData?: ComponentDataItem
-  updateComponentProps: (newProps: object) => void
+  updateComponentProps: (newProps: CommonProps) => void
 }
 
 const PropConfig: React.FC<PropConfigProps> = (props) => {
@@ -21,7 +23,8 @@ const PropConfig: React.FC<PropConfigProps> = (props) => {
 
   const [formItems, setList] = React.useState<JSX.Element[]>([])
 
-  const handlePropsChange: FormProps['onValuesChange'] = (value, values) => {
+  const handlePropsChange: FormProps['onChange'] = (value, values) => {
+    devLogger('PropConfig handlePropsChange', values)
     updateComponentProps(values)
   }
 
@@ -29,6 +32,8 @@ const PropConfig: React.FC<PropConfigProps> = (props) => {
     if (componentData) {
       const elements = generatePropFormItems(componentData)
       setList(elements)
+      // 先清空数据
+      form.clearFields()
       // 更新 表单数据
       form.setFieldsValue(componentData?.resourceComponent.props)
     }
@@ -44,14 +49,13 @@ const PropConfig: React.FC<PropConfigProps> = (props) => {
         form={form}
         size="small"
         labelCol={{
-          span: 7,
+          span: 8,
         }}
         wrapperCol={{
           span: 16,
         }}
         labelAlign="left"
-        initialValues={componentData?.resourceComponent.props}
-        onValuesChange={handlePropsChange}
+        onChange={handlePropsChange}
       >
         {formItems}
       </Form>

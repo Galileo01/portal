@@ -1,0 +1,54 @@
+.nav_header {
+  height: var(--header-height);
+  padding: 0 30px;
+  background-color: var(--color-bg-1);
+  box-shadow: 0 2px 5px 0 rgb(var(--gray-3));
+  // TODO: 完善背景色
+  // background-color: rgb(var(--primary-6));
+  // color: var(--color-bg-1);
+
+  a {
+    color: var(--color-text-1);
+    text-decoration: none;
+  }
+}
+
+.navs {
+  height: var(--header-height);
+  display: flex;
+  justify-content: space-between;
+  line-height: var(--header-height);
+}
+
+.nav_item {
+  display: block;
+  position: relative;
+  transition: color 0.2s linear;
+
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: rgb(var(--primary-6));
+    opacity: 0;
+    transition: opacity 0.2s linear;
+  }
+
+  &:hover {
+    color: rgb(var(--primary-6));
+    &::before {
+      opacity: 1;
+    }
+  }
+  // 默认始终展示  首页的active 状态
+  &:first-of-type {
+    color: rgb(var(--primary-6));
+    &::before {
+      opacity: 1;
+    }
+  }
+}

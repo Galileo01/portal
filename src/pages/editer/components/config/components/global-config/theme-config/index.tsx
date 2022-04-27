@@ -45,10 +45,7 @@ const ThemeConfig = () => {
     hidePaletteModal()
   }
 
-  const handleColorConfigFormChange: FormProps['onValuesChange'] = (
-    _,
-    values
-  ) => {
+  const handleColorConfigFormChange: FormProps['onChange'] = (_, values) => {
     setColorVariableValue(values, true)
     updateGlobalConfig({
       themeConfig: values,
@@ -79,7 +76,7 @@ const ThemeConfig = () => {
         }}
         labelAlign="left"
         initialValues={configData?.themeConfig || getColorVariableValue('body')}
-        onValuesChange={handleColorConfigFormChange}
+        onChange={handleColorConfigFormChange}
       >
         {colorFormItems}
       </Form>

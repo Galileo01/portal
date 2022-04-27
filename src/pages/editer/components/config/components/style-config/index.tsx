@@ -36,6 +36,8 @@ export type StyleConfigProps = {
   active: boolean
 }
 
+// TODO: 4.25-1 添加元素  hover 时的样式填入 增加切换还是什么？
+
 // NOTE: 新添字段 需要同步到  @/common/constant/style-config EDITABLE_FIELD
 
 const StyleConfig: React.FC<StyleConfigProps> = ({ active }) => {
@@ -106,7 +108,7 @@ const StyleConfig: React.FC<StyleConfigProps> = ({ active }) => {
     }
   }
 
-  const handleClearStyle = () => {
+  const handleResetStyle = () => {
     styleConfigForm.resetFields()
 
     removeStyleNode(targetElementInfo.styleNodeId)
@@ -183,10 +185,10 @@ const StyleConfig: React.FC<StyleConfigProps> = ({ active }) => {
       <Divider className={styles.divider} />
       <Button
         type="secondary"
-        onClick={handleClearStyle}
+        onClick={handleResetStyle}
         style={{ width: '100%' }}
       >
-        清除样式
+        重置样式
       </Button>
     </CollapseItem>
   )

@@ -14,6 +14,7 @@ import RCListRenderer from '@/components/rclist-renderer'
 import ToolBox from './components/tool-box'
 import { useDragAndDrop, useToolBox } from './hooks'
 import styles from './index.module.less'
+import { devLogger } from '@/common/utils'
 
 /**
  * FIXME:
@@ -69,6 +70,9 @@ const Previewer = () => {
     e.preventDefault()
     updateClickElement(e.target as HTMLElement)
   }
+  React.useEffect(() => {
+    devLogger('Previewer componentDataList', componentDataList)
+  }, [componentDataList])
 
   return (
     <section

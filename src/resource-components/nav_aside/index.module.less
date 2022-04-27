@@ -1,0 +1,29 @@
+.nav_aside {
+  position: fixed;
+  z-index: 1;
+  padding: 10px 5px;
+  border-radius: 2px;
+  background-color: var(--color-bg-4);
+  box-shadow: 0 2px 2px 0 rgb(var(--gray-3));
+  display: flex;
+  flex-direction: column;
+
+  :global(html, body) {
+    scroll-behavior: smooth;
+  }
+}
+
+.left {
+  left: 10px;
+}
+
+.right {
+  right: 10px;
+}
+
+.nav_item {
+  color: var(--color-text-1);
+  text-decoration: none;
+  text-align: center;
+  margin: 5px 0;
+}

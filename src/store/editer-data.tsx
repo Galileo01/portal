@@ -70,7 +70,7 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
   } = state
   const { type, payload } = action
 
-  devLogger('reducer of  editer-data :', 'action', action)
+  devLogger('reducer editer-data ', type, payload)
 
   let newIndex = preIndex
   let newSnapshotList = []
@@ -90,14 +90,15 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
       newIndex = preIndex - 1
       return {
         ...state,
+        // currentClickElement: undefined, // 重置 currentClickElement 隐藏toolbox
         currentSnapshotIndex: newIndex,
         componentDataList: snapshotList[newIndex],
       }
     // 前进 - 下标 增大
     case EditerDataActionEnum.FORWARD:
-      newIndex = preIndex + 1
       return {
         ...state,
+        // currentClickElement: undefined,
         currentSnapshotIndex: newIndex,
         componentDataList: snapshotList[newIndex],
       }
@@ -119,6 +120,7 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
       newSnapshotList = newSnapshotList.slice(
         spliceStart >= 0 ? spliceStart : 0
       )
+
       return {
         ...state,
         snapshotList: newSnapshotList,

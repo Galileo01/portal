@@ -51,13 +51,17 @@ const foformItemsLinkRenderer = (values: any) => {
               content={
                 <span>
                   多个图片、背景色之间重叠时如何计算色值
-                  <Link href={BLEND_MODE_DOC_HREF} target="_blank">
+                  <Link
+                    href={BLEND_MODE_DOC_HREF}
+                    target="_blank"
+                    hoverable={false}
+                  >
                     更多
                   </Link>
                 </span>
               }
             >
-              <IconQuestionCircle />
+              <IconQuestionCircle className="question_icon" />
             </Tooltip>
           </span>
         }
@@ -205,7 +209,7 @@ const BackgroundForm: React.FC<BackgroundFormProps> = (props) => {
           <span>
             保存变更
             <Tooltip content="更新背景后需要手动保存">
-              <IconQuestionCircle />
+              <IconQuestionCircle className="question_icon" />
             </Tooltip>
           </span>
         }

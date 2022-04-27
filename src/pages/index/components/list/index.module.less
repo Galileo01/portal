@@ -1,0 +1,86 @@
+.resource_list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.page_list_container {
+  width: 1300px;
+  margin: 50px auto;
+  background-color: var(--color-bg-1);
+}
+
+.title {
+  text-align: center;
+  color: var(--color-text-1);
+}
+
+.resource_item {
+  cursor: pointer;
+  width: 200px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  margin-right: calc((100% - 6 * 200px) / 5);
+
+  :global(.arco-image-img) {
+    object-fit: contain;
+    display: block;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  :global(.arco-image-img:hover) {
+    transform: scale(1.5);
+  }
+
+  :global(.arco-card-actions-item) {
+    margin-right: 0;
+  }
+
+  &:nth-of-type(6n + 6) {
+    margin-right: 0;
+  }
+}
+
+.align_center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.function_item {
+  :global(.arco-card-body) {
+    .align_center();
+  }
+}
+
+.function_item_cover {
+  .align_center();
+  height: 120px;
+
+  :global(.arco-icon) {
+    width: 50px;
+    height: 50px;
+    transition: transform 0.2s ease-in-out;
+    color: var(--color-text-1);
+  }
+}
+
+.action_btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+
+  &:hover {
+    background-color: rgb(var(--gray-2));
+  }
+}
+
+.delete_icon:hover {
+  color: rgb(var(--danger-6));
+}
+
+.template_spin {
+  margin-top: 20px;
+}

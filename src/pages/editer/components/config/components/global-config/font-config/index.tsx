@@ -3,7 +3,7 @@ import * as React from 'react'
 import { Collapse, Form, Input, Button, Popover } from '@arco-design/web-react'
 import { IconPlusCircle } from '@arco-design/web-react/icon'
 import clsx from 'clsx'
-import { FontFamily } from '@/@types/portal-network'
+import { FontFamily } from '@/typings/network'
 
 import { FontLanguageSelect } from '@/components/custom-form-inner/simple'
 import { useFetchDataStore } from '@/store/fetch-data'

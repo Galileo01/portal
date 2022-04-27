@@ -11,7 +11,7 @@ import {
   FormProps,
 } from '@arco-design/web-react'
 import { IconQuestionCircle, IconSave } from '@arco-design/web-react/icon'
-import { FontList } from '@/@types/portal-network'
+import { FontList } from '@/typings/network'
 
 import FontCascader from '@/components/custom-form-inner/font-cascader'
 import { FontFormData } from '@/typings/common/editer-config-data'
@@ -46,7 +46,7 @@ const FontForm: React.FC<FontFormProps> = ({ fontList }) => {
     [fontList]
   )
 
-  const handleFormChangeHandler: FormProps<FontFormData>['onValuesChange'] = (
+  const handleFormChangeHandler: FormProps<FontFormData>['onChange'] = (
     value,
     values
   ) => {
@@ -98,7 +98,7 @@ const FontForm: React.FC<FontFormProps> = ({ fontList }) => {
             <span>
               使用的字体
               <Tooltip content="包含全局字体和单个元素个性化字体">
-                <IconQuestionCircle className={styles.ques_icon} />
+                <IconQuestionCircle className="question_icon" />
               </Tooltip>
             </span>
           }
