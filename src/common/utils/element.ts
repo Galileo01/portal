@@ -4,7 +4,7 @@ import {
   RESOURCE_COMPONENT_COMMON_CLASS,
   PREVIEWER_CLASS,
 } from '@/common/constant'
-import { devLogger, IS_DEV } from '@/common/utils'
+import { devLogger, devTimer } from '@/common/utils'
 
 // RC组件相关工具
 
@@ -15,18 +15,19 @@ export const isRCRenderedElement = (element: HTMLElement) =>
 export const isPreviewerElement = (element: HTMLElement) =>
   element.classList.contains(PREVIEWER_CLASS)
 
-// 获取 元素 符合 RCRendered 的 父元素 /或者 它本身 就符合
-export const getRCRenderedParentElement = (element: HTMLElement) => {
+// 获取 元素 最近的 符合 RCRendered 的 父元素 /或者 它本身 就符合
+export const getClosedRCRenderedElement = (element: HTMLElement) => {
   let ele = element
   let isRCRendered = isRCRenderedElement(ele)
 
   if (isRCRendered) {
-    devLogger('getRCRenderedParentElement', 'return directly')
+    devLogger('getClosedRCRenderedElement', 'return directly')
     return ele
   }
 
   let isPreviewer = isPreviewerElement(ele)
-  const start = IS_DEV ? Date.now() : 0
+  // 开发环境下  计时
+  devTimer.time('getClosedRCRenderedElement')
 
   // 一直 向上查找 直到  找到  RCRendered  或者  遇到  previewer 容器
   while (!isRCRendered && !isPreviewer && ele.parentElement) {
@@ -35,15 +36,22 @@ export const getRCRenderedParentElement = (element: HTMLElement) => {
     isPreviewer = isPreviewerElement(ele)
   }
 
-  devLogger('getRCRenderedParentElement cust-time', Date.now() - start, 'ms')
+  devTimer.timeEnd('getClosedRCRenderedElement')
   return isRCRendered ? ele : undefined
 }
 
 // 获取 RCRendered id
 export const getIdFromElementOrParent = (element: HTMLElement) => {
-  const ele = getRCRenderedParentElement(element)
+  const ele = getClosedRCRenderedElement(element)
   return ele?.id
 }
+
+// 获取 previewer 子元素 父元素 对应 RCR 的 下标
+export const getComponentDataIndexFromID: (
+  componentDataList: ComponentDataList,
+  id: string
+) => number = (componentDataList, id) =>
+  componentDataList.findIndex((component) => component.id === id)
 
 // 获取 previewer 子元素 父元素 对应 RCR 的 下标
 export const getComponentDataIndexFromElement: (
@@ -52,9 +60,7 @@ export const getComponentDataIndexFromElement: (
 ) => number = (componentDataList, element) => {
   const id = getIdFromElementOrParent(element)
 
-  const index = id
-    ? componentDataList.findIndex((component) => component.id === id)
-    : -1
+  const index = id ? getComponentDataIndexFromID(componentDataList, id) : -1
   return index
 }
 
@@ -88,10 +94,15 @@ export const generateSelector = (element: HTMLElement) => {
 
   // 顺着 DOM树 回溯 到RCRendered
   while (!isRCRenderedElement(ele) && ele.parentElement) {
-    const { className, id, localName } = ele
+    const { classList, id, localName } = ele
+    // 拼接类名
+    const className = [...classList].reduce(
+      (preValue, curClass) => `${preValue}.${curClass}`,
+      ''
+    )
     selector =
       localName +
-      (className ? `.${className}` : '') +
+      (className ? `${className}` : '') +
       (id ? `#{${id}}` : '') +
       (selector ? `>${selector}` : '')
     ele = ele.parentElement

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { nanoid } from 'nanoid'
 
 import { NANO_ID_LENGTH } from '@/common/constant'
@@ -18,9 +19,26 @@ export const IS_ROUTE_EDITER = window.location.pathname === ROUTE_EDITER
 
 export const devLogger = (...args: unknown[]) => {
   if (IS_DEV) {
-    // eslint-disable-next-line no-console
     console.log('[devLogger]', ...args)
   }
+}
+
+export const devTimer = {
+  time: (label?: string | undefined) => {
+    if (IS_DEV) {
+      console.time(`[devTimer] ${label}`)
+    }
+  },
+  timeLog: (label?: string | undefined, ...args: unknown[]) => {
+    if (IS_DEV) {
+      console.timeLog(`[devTimer] ${label}`, ...args)
+    }
+  },
+  timeEnd: (label?: string | undefined) => {
+    if (IS_DEV) {
+      console.timeEnd(`[devTimer] ${label}`)
+    }
+  },
 }
 
 export const getUniqueId = (preFix?: string) => {
@@ -33,7 +51,6 @@ export const customJsonParse = <T = unknown>(str: string, defaultValue?: T) => {
     return JSON.parse(str) as T
   } catch (err) {
     devLogger('customJsonParse failed err:', err)
-    // eslint-disable-next-line no-console
     console.warn('customJsonParse failed err:', err)
     return defaultValue
   }

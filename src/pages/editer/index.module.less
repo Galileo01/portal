@@ -14,11 +14,6 @@
     -webkit-user-drag: none;
   }
 
-  // 防止 成为点击事件的 目标 影响  tool-box 定位
-  :global(.previewer .arco-image-img) {
-    pointer-events: none;
-  }
-
   // 关闭 arco-layout-sider 的 过渡， 使 tool-box 的MutationObserver 及时更新
   :global(.arco-layout-sider) {
     transition: revert;
@@ -41,5 +36,6 @@
   //溢出 滚动
   .max_height();
   background-color: var(--color-text-4);
-  padding: 20px 10px 0px;
+  padding: 30px 10px 0px;
+  box-sizing: border-box;
 }

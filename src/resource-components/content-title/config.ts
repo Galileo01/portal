@@ -15,7 +15,7 @@ const config: ResourceComponent<ContentTitleProps> = {
   name: '内容标题',
   key: 'conent_title',
   previewImg:
-    'https://cos-01-1303103441.cos.ap-chengdu.myqcloud.com/img/portal/video_preview.png',
+    'https://cos-01-1303103441.cos.ap-chengdu.myqcloud.com/img/portal/content_title_preview.png',
   category: ComponentCategoryEnum.CONTENT,
   component: ContentTitle,
   props: initProps,

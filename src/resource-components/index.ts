@@ -7,12 +7,15 @@ import {
 import './common.less'
 
 import navComponentConfig from './nav/config'
-import navAsideComponentConfig from './nav_aside/config'
+import navAsideComponentConfig from './nav-aside/config'
 import KVImgComponentConfig from './kv-img/config'
-import videoBannerComponentConfig from './video_banner/config'
+import videoBannerComponentConfig from './video-banner/config'
 import swiperComponentConfig from './swiper/config'
-import contenTitleComponentConfig from './content_title/config'
-import exampleComponentCnfig from './color_example/config'
+import contenTitleComponentConfig from './content-title/config'
+import exampleComponentConfig from './color-example/config'
+import backTopComponentConfig from './back-top/config'
+import InfoHorizontalConfig from './info-horizontal/config'
+import GridBoxConfig from './gird-box/config'
 
 const navComponentList = [
   navComponentConfig,
@@ -27,10 +30,13 @@ const bannerComponentList = [
 
 const contentComponentList = [
   contenTitleComponentConfig,
+  InfoHorizontalConfig,
+  GridBoxConfig,
 ] as unknown as Array<ResourceComponent>
 
 const otherComponentList = [
-  exampleComponentCnfig,
+  exampleComponentConfig,
+  backTopComponentConfig,
 ] as unknown as Array<ResourceComponent>
 
 // 所有组件列表

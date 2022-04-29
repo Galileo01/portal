@@ -5,7 +5,7 @@ import {
 } from '@/typings/common/resosurce-component'
 
 import VideoBanner, { VideoBannerProps } from './index'
-import contenTitleComponentConfig from '../content_title/config'
+import contenTitleComponentConfig from '../content-title/config'
 
 const initProps: VideoBannerProps = {
   videoConfig: {

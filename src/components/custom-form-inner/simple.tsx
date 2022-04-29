@@ -213,7 +213,7 @@ export const BackgroundClipSelect: CustomSelectFC = (props) => (
   <Select options={BACKGROUND_CLIP_OPTIONS} allowClear {...props} />
 )
 
-export const BACKGROUND_ATTACHMENT = [
+export const BACKGROUND_ATTACHMENT_OPTIONS = [
   {
     label: '相对视口固定',
     value: 'fixed',
@@ -229,7 +229,7 @@ export const BACKGROUND_ATTACHMENT = [
 ]
 
 export const BackgroundAttachmentSelect: CustomSelectFC = (props) => (
-  <Select options={BACKGROUND_ATTACHMENT} allowClear {...props} />
+  <Select options={BACKGROUND_ATTACHMENT_OPTIONS} allowClear {...props} />
 )
 
 export const BLEND_MODE_VALUES = [

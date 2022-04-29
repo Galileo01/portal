@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import ContentTitle, { ContentTitleProps } from '../content_title'
+import ContentTitle, { ContentTitleProps } from '../content-title'
 import { RCClassnameComputer } from '../utils'
 
 import styles from './index.module.less'
@@ -35,7 +35,7 @@ const VideoBanner: React.FC<VideoBannerProps> = (props) => {
 
   return (
     <div className={RCClassnameComputer({}, styles.video_banner)} {...rest}>
-      <ContentTitle title={title} secondaryText={secondaryText} />
+      <ContentTitle title={title} secondaryText={secondaryText} isRC={false} />
       <div
         className={styles.video_wrapper}
         style={{

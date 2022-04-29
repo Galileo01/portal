@@ -10,8 +10,8 @@ import {
 } from '@/store/editer-data'
 import {
   isPreviewerElement,
-  getComponentDataIndexFromElement,
-  isRCRenderedElement,
+  getClosedRCRenderedElement,
+  getComponentDataIndexFromID,
 } from '@/common/utils/element'
 
 import styles from './index.module.less'
@@ -20,6 +20,7 @@ import StyleConfig from './components/style-config'
 import PropConfig, { PropConfigProps } from './components/props-config'
 import ClickElementInfo from './components/click-element-info'
 import { ConfigPaneNameEnum, COLLAPSE_BASE_PROPS } from './config'
+import { devLogger } from '@/common/utils'
 
 const Config = () => {
   const { currentClickElement, componentDataList } = useEditerDataStore()
@@ -33,14 +34,23 @@ const Config = () => {
   const [activeKey, setActiveKey] = React.useState('')
   const activeKeyRef = React.useRef('') // 使用ref 存储 ，防止 userEffect 重复触发
 
+  const preClosedRCRElement = React.useRef<HTMLElement | undefined>(undefined)
+
   const currentClickElementValid = Boolean(currentClickElement)
 
   // 更新 componentData  isPreviwer isRCComponent
   const refreshState = React.useCallback(() => {
-    if (currentClickElement && isRCRenderedElement(currentClickElement)) {
-      const index = getComponentDataIndexFromElement(
+    // feature 辅助选中-向上查找 最近的 RCR 元素
+    const closedRCRElement = currentClickElement
+      ? getClosedRCRenderedElement(currentClickElement)
+      : undefined
+
+    devLogger('closedRCRElement', closedRCRElement)
+    if (currentClickElement && closedRCRElement) {
+      preClosedRCRElement.current = closedRCRElement
+      const index = getComponentDataIndexFromID(
         componentDataList,
-        currentClickElement
+        closedRCRElement.id
       )
       componentDataIndexRef.current = index
       setComponentData(componentDataList[index])
@@ -49,6 +59,7 @@ const Config = () => {
       setComponentData(undefined)
       setIsRCComponent(false)
     }
+
     // 更新 isPreviwer
     setIsPreviewer(
       currentClickElement ? isPreviewerElement(currentClickElement) : true
@@ -106,8 +117,16 @@ const Config = () => {
   }, [isPreviwer, isRCComponent])
 
   React.useEffect(() => {
+    // 上一次 计算的 closedRCRElement 依然是 最新 currentClickElement 的祖先  不重新计算
+    if (
+      preClosedRCRElement.current &&
+      currentClickElement &&
+      preClosedRCRElement.current.contains(currentClickElement)
+    ) {
+      return
+    }
     refreshState()
-  }, [refreshState])
+  }, [currentClickElement, refreshState])
 
   return (
     <div className={styles.config}>
@@ -119,7 +138,6 @@ const Config = () => {
         <ClickElementInfo
           currentClickElement={currentClickElement}
           isPreviwer={isPreviwer}
-          isRCComponent={isRCComponent}
           RCComponentName={componentData?.resourceComponent.name}
           onReset={handleElementReset}
         />

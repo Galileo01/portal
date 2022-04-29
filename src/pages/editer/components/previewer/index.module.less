@@ -10,20 +10,18 @@
   :global(.resource_component) {
     cursor: pointer;
   }
+  // 全局类名 务必和 src/common/constant/index.ts 文件 NONE_POINTER_EVENTS_CONTAINER 常量  保持一致
+  :global(.none_pointer_events_container *) {
+    pointer-events: none;
+  }
 }
 
 .previewer {
   min-height: 100%;
   background-color: var(--color-bg-1);
 
-  // 防止 绝对定位元素的 子元素 成为点击事件的 目标 影响  tool-box 定位
-  // NOTE: 类名 务必和 comon/constant/index RESOURCE_COMPONENT_ABSOLUTE_CONTAINER_CLASS 变量保持一致
-  :global(.resource_component_absolute_container *) {
-    pointer-events: none;
-  }
-
   // 临时解决 方法
-  :global(.resource_component_absolute_container) {
+  :global(.resource_component_enforce_absolute_container) {
     position: absolute;
   }
 }

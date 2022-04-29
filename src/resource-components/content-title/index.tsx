@@ -5,13 +5,20 @@ import { RCClassnameComputer } from '../utils'
 export type ContentTitleProps = {
   title?: string
   secondaryText?: Array<string>
+  /**
+   * @isRC 是否作为独立的 源组件
+   */
+  isRC?: boolean
 }
 
 const ContentTitle: React.FC<ContentTitleProps> = (props) => {
-  const { title, secondaryText, ...restProps } = props
+  const { title, secondaryText, isRC = true, ...restProps } = props
 
   return (
-    <div {...restProps} className={RCClassnameComputer({})}>
+    <div
+      {...restProps}
+      className={RCClassnameComputer({ isRC }, 'content_title')}
+    >
       {title && <h2 className="section_title">{title}</h2>}
       <div className="paragraph_wrapper">
         {secondaryText?.map((text) => (

@@ -11,10 +11,10 @@ import { isPreviewerElement, isRCRenderedElement } from '@/common/utils/element'
 import {
   ARCO_LAYOUT_SIDER_CLASS,
   ARCO_LAYOUT_CONTENT_CLASS,
-  RESOURCE_COMPONENT_WILL_STICKY_CLASS,
 } from '@/common/constant'
 
 import styles from './index.module.less'
+import { computeStyle, judgeShouldListenScroll, Style } from './utils'
 
 export type ToolBoxRef = {
   updateStyle: () => void
@@ -26,40 +26,6 @@ export type ToolBoxProps = {
   toolBoxRef: React.Ref<ToolBoxRef>
   targetElement?: HTMLElement
   onOprateBtnClick: (oprateType: OprateType) => void
-}
-
-export type Style = {
-  width: number
-  height: number
-  left: number
-  top: number
-}
-
-const calculateStyle: (targetElement: HTMLElement) => Style = (
-  targetElement
-) => {
-  const { offsetHeight, offsetLeft, offsetTop, offsetWidth } = targetElement
-  return {
-    width: offsetWidth,
-    height: offsetHeight,
-    left: offsetLeft,
-    top: offsetTop,
-  }
-}
-
-// 根据 目标元素， 判断是否要监听  ARCO_LAYOUT_CONTENT_CLASS 的滚动事件来 更新
-const judgeShouldListenScroll: (targetElement: HTMLElement) => boolean = (
-  targetElement
-) => {
-  // 1.类名 包含  RESOURCE_COMPONENT_WILL_STICKY_CLASS
-  if (targetElement.classList.contains(RESOURCE_COMPONENT_WILL_STICKY_CLASS))
-    return true
-
-  // 2. position === 'sticky' 情况下需要监听
-  if (getComputedStyle(targetElement).getPropertyValue('position') === 'sticky')
-    return true
-
-  return false
 }
 
 const ToolBox: React.FC<ToolBoxProps> = (props) => {
@@ -74,7 +40,7 @@ const ToolBox: React.FC<ToolBoxProps> = (props) => {
       setVisible(false)
       return
     }
-    setStyle(calculateStyle(targetElement))
+    setStyle(computeStyle(targetElement))
     // 非 previewer 情况下 展示
     setVisible(!isPreviewerElement(targetElement))
     // 满足  RCRendered  才展示 工具按钮

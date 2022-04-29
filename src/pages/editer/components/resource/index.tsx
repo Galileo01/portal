@@ -18,7 +18,6 @@ const Resource = () => {
 
   const handleCollapse = (collapse: boolean) => {
     setCollapsed(collapse)
-    setLocalStorage(LOSTORAGE_KEY_IS_SIDER_COLLAPSE, collapse ? '1' : '')
   }
 
   const handleTabClick = (key: string) => {
@@ -33,11 +32,16 @@ const Resource = () => {
       setCollapsed(false)
     }
   }
-
+  // 初始化 collapsed
   React.useEffect(() => {
     const isCollapseInStorage = getLocalStorage(LOSTORAGE_KEY_IS_SIDER_COLLAPSE)
     setCollapsed(Boolean(isCollapseInStorage) || false)
   }, [])
+
+  // 更新同步到 localStorage
+  React.useEffect(() => {
+    setLocalStorage(LOSTORAGE_KEY_IS_SIDER_COLLAPSE, collapsed ? '1' : '')
+  }, [collapsed])
 
   return (
     <Sider
