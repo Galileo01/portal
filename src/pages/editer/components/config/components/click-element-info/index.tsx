@@ -13,28 +13,19 @@ export type ClickElementInfoProps = {
   currentClickElement?: HTMLElement
   RCComponentName?: string
   isPreviwer: boolean
-  isRCComponent: boolean
   onReset: () => void
 }
 
 // TODO:  4.25-2  展示组件列表
 
 const ClickElementInfo: React.FC<ClickElementInfoProps> = (props) => {
-  const {
-    isPreviwer,
-    isRCComponent,
-    onReset,
-    currentClickElement,
-    RCComponentName,
-  } = props
+  const { isPreviwer, onReset, currentClickElement, RCComponentName } = props
 
   const infoText = React.useMemo(() => {
-    if (isRCComponent) return `组件 - ${RCComponentName}`
     if (isPreviwer) return '全局配置'
-    if (currentClickElement)
-      return `元素 - ${currentClickElement.tagName.toLowerCase()}`
+    if (currentClickElement) return currentClickElement.tagName.toLowerCase()
     return ''
-  }, [isPreviwer, isRCComponent, currentClickElement, RCComponentName])
+  }, [isPreviwer, currentClickElement])
 
   const handleCopyClick = () => {
     if (currentClickElement?.id)
@@ -45,36 +36,39 @@ const ClickElementInfo: React.FC<ClickElementInfoProps> = (props) => {
 
   return (
     <div className={styles.element_info}>
-      <div className={styles.info_wrapper}>
-        <div>
-          <div className={styles.label}>当前选中:</div>
-          <div>
-            <span className={styles.label}>类型:</span>
+      <div>
+        <div className={styles.click_info}>
+          <div className={styles.label}>
+            选中元素:
             <span className={styles.info_text}>{infoText}</span>
           </div>
-          <div>
-            <span className={styles.label}>
-              id
-              <Tooltip content="元素id,可填入侧边导航等组件中跳转">
-                <IconQuestionCircle className="question_icon" />
-              </Tooltip>
-              :
-            </span>
-            <span className={styles.info_text}>{currentClickElement?.id}</span>
-            {currentClickElement?.id && (
-              <IconCopy className="question_icon" onClick={handleCopyClick} />
-            )}
-          </div>
+          <Tooltip content="重置当前选中">
+            <Button
+              size="mini"
+              shape="circle"
+              type="primary"
+              icon={<IconRefresh />}
+              onClick={onReset}
+            />
+          </Tooltip>
         </div>
-        <Tooltip content="重置当前选中">
-          <Button
-            size="mini"
-            shape="circle"
-            type="primary"
-            icon={<IconRefresh />}
-            onClick={onReset}
-          />
-        </Tooltip>
+        <div className={styles.label}>
+          所属组件:
+          <span className={styles.info_text}>{RCComponentName}</span>
+        </div>
+        <div>
+          <span className={styles.label}>
+            id
+            <Tooltip content="元素id,可填入侧边导航等组件中跳转">
+              <IconQuestionCircle className="question_icon" />
+            </Tooltip>
+            :
+          </span>
+          <span className={styles.info_text}>{currentClickElement?.id}</span>
+          {currentClickElement?.id && (
+            <IconCopy className="question_icon" onClick={handleCopyClick} />
+          )}
+        </div>
       </div>
     </div>
   )

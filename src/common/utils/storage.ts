@@ -22,7 +22,6 @@ export const getAllPageConfig = () =>
 export const setPageConfigById = (pageId: string, pageConfig: PageConfig) => {
   const prePageConfigs = getAllPageConfig()!
   prePageConfigs[pageId] = pageConfig
-
   setLocalStorage('page_configs', JSON.stringify(prePageConfigs))
 }
 

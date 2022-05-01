@@ -11,10 +11,11 @@ import Example from './index'
 export const componentConfig: ResourceComponent = {
   name: '颜色测试组件',
   key: 'example',
-  previewImg: 'https://s3.bmp.ovh/imgs/2022/04/03/67d8127b695f4e2b.png',
+  previewImg:
+    'https://cos-01-1303103441.cos.ap-chengdu.myqcloud.com/img/portal/example_preview.png',
   category: ComponentCategoryEnum.OTHER,
   component: Example as React.FC<unknown>,
-  props: Object,
+  props: {},
   propsSchema: {
     name: {
       type: PropTypeEnum.STRING,

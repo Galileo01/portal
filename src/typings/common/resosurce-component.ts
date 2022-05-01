@@ -11,6 +11,7 @@ export enum ComponentCategoryEnum {
   BANNER = 'banner',
   CONTENT = 'content',
   OTHER = 'other',
+  FOOTER = 'footer',
 }
 
 export const COMPONENT_CATEGORY_LABEL_MAP = {
@@ -18,6 +19,7 @@ export const COMPONENT_CATEGORY_LABEL_MAP = {
   [ComponentCategoryEnum.BANNER]: 'Banner',
   [ComponentCategoryEnum.CONTENT]: '内容',
   [ComponentCategoryEnum.OTHER]: '其他',
+  [ComponentCategoryEnum.FOOTER]: '页脚',
 }
 
 export type CategoryItem = {
@@ -32,6 +34,7 @@ export enum PropTypeEnum {
   BOOLEAN = 'boolean',
   ARRAY = 'array',
   OBJECT = 'object',
+  COLOR = 'color',
 }
 
 export const PLAIN_TYPE_LIST = [

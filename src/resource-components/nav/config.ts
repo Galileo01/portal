@@ -1,4 +1,3 @@
-import { PLATFORM_LOGO_PUBLIC_URL } from '@/common/constant'
 import {
   ResourceComponent,
   ComponentCategoryEnum,
@@ -8,7 +7,7 @@ import {
 import Nav, { NavProps } from './index'
 
 const initProps: NavProps = {
-  logoSrc: PLATFORM_LOGO_PUBLIC_URL,
+  logoSrc: 'https://s3.bmp.ovh/imgs/2022/04/03/67d8127b695f4e2b.png',
   isSticky: false,
   navList: [
     {

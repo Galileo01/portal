@@ -90,15 +90,16 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
       newIndex = preIndex - 1
       return {
         ...state,
-        // currentClickElement: undefined, // 重置 currentClickElement 隐藏toolbox
+        currentClickElement: undefined, // 重置 currentClickElement 隐藏toolbox
         currentSnapshotIndex: newIndex,
         componentDataList: snapshotList[newIndex],
       }
     // 前进 - 下标 增大
     case EditerDataActionEnum.FORWARD:
+      newIndex = preIndex + 1
       return {
         ...state,
-        // currentClickElement: undefined,
+        currentClickElement: undefined,
         currentSnapshotIndex: newIndex,
         componentDataList: snapshotList[newIndex],
       }
@@ -109,6 +110,7 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
      */
     case EditerDataActionEnum.SET_COMPONENT_DATA_LIST:
       newComponentDataList = payload as ComponentDataList
+
       // 剔除 preIndex 之后的  快照 ，保证 在后退 过程中 快照的创建 不出问题
       newSnapshotList = cloneDeep(
         snapshotList.slice(0, preIndex + 1).concat([newComponentDataList])
@@ -120,7 +122,6 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
       newSnapshotList = newSnapshotList.slice(
         spliceStart >= 0 ? spliceStart : 0
       )
-
       return {
         ...state,
         snapshotList: newSnapshotList,

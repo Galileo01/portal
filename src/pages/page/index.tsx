@@ -2,7 +2,10 @@ import * as React from 'react'
 
 import { useSearchParams } from 'react-router-dom'
 
-import { PAGE_CONTAINER_CLASS } from '@/common/constant'
+import {
+  PAGE_CONTAINER_CLASS,
+  LOSTORAGE_KEY_IS_SIDER_COLLAPSE,
+} from '@/common/constant'
 import { usePageInit } from '@/common/hooks/page-init'
 import RCListRenderer from '@/components/rclist-renderer'
 
@@ -33,9 +36,12 @@ const Page = () => {
   // eslint-disable-next-line consistent-return
   React.useEffect(() => {
     if (searchParams.is_preview) {
-      const handleStorage = () => {
-        // eslint-disable-next-line no-restricted-globals
-        location.reload()
+      const handleStorage = (e: unknown) => {
+        const { key } = e as { key: string }
+        if (key !== LOSTORAGE_KEY_IS_SIDER_COLLAPSE) {
+          // eslint-disable-next-line no-restricted-globals
+          location.reload()
+        }
       }
       window.addEventListener('storage', handleStorage)
 

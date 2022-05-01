@@ -18,6 +18,20 @@
   margin-left: 4px;
 }
 
+.line_1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.line_2 {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+}
+
 :root {
   --header-height: 54px;
   --resource-sider-width: 350px;

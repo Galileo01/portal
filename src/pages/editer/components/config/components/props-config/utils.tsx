@@ -28,7 +28,6 @@ import {
 import { isNumber } from '@/common/utils/assert'
 
 import styles from './index.module.less'
-import { devLogger } from '@/common/utils'
 
 const { Item: FormItem } = Form
 
@@ -60,6 +59,9 @@ export const generateFormItemInner = (
       break
     case PropTypeEnum.BOOLEAN:
       element = <Switch />
+      break
+    case PropTypeEnum.COLOR:
+      element = <Input type="color" allowClear />
       break
     default:
       break
@@ -113,7 +115,6 @@ export const generateFormList = (
 
       const canEdit = canAdd || canDelete
       const title = computeFormListTitle(label, minItems, maxItems)
-      devLogger('generateFormList', key, fields)
 
       return (
         <div className={styles.form_list}>

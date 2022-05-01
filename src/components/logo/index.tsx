@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import clsx from 'clsx'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import logo from '@/assets/img/logo.png'
 import { ROUTE_INDEX } from '@/common/constant/route'
@@ -39,20 +39,8 @@ const Logo: React.FC<LogoProps> = (props) => {
     jumpWhenClick = true,
   } = props
 
-  const navigater = useNavigate()
-  const location = useLocation()
-
-  const handleClick = () => {
-    if (jumpWhenClick && location.pathname !== ROUTE_INDEX) {
-      navigater(ROUTE_INDEX)
-    }
-  }
-
-  return (
-    <div
-      className={clsx(styles.logo_wrapper, className, 'cursor_pointer')}
-      onClick={handleClick}
-    >
+  const innerChildren = (
+    <>
       <img
         src={logo}
         alt="portal-logo"
@@ -64,6 +52,23 @@ const Logo: React.FC<LogoProps> = (props) => {
         }}
       />
       {showText && <span className={styles.text}>Portal</span>}
+    </>
+  )
+
+  if (jumpWhenClick) {
+    return (
+      <Link
+        className={clsx(styles.logo_wrapper, className, 'cursor_pointer')}
+        to={ROUTE_INDEX}
+      >
+        {innerChildren}
+      </Link>
+    )
+  }
+
+  return (
+    <div className={clsx(styles.logo_wrapper, className, 'cursor_pointer')}>
+      {innerChildren}
     </div>
   )
 }

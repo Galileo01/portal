@@ -7,7 +7,7 @@ import { DATASET_KEY_RESOURCE_COMPONENT_KEY } from '@/common/constant'
 import { devLogger, getUniqueId } from '@/common/utils'
 import {
   isPreviewerElement,
-  getRCRenderedParentElement,
+  getClosedRCRenderedElement,
   getComponentDataIndexFromElement,
 } from '@/common/utils/element'
 import { RCList } from '@/resource-components'
@@ -150,7 +150,7 @@ export const useDragAndDrop = (params: useDragAndDropParams) => {
             return
           }
           // 否则 ,获取它自身 或者 父级 元素  然后添加到 前面
-          const RCRenderedElement = getRCRenderedParentElement(target)
+          const RCRenderedElement = getClosedRCRenderedElement(target)
           if (RCRenderedElement) {
             previewerElementRef.current?.insertBefore(
               placeHolderElementRef.current,

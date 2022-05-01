@@ -6,8 +6,9 @@ import {
   Popover,
   Message,
   Popconfirm,
+  Tag,
 } from '@arco-design/web-react'
-import { IconRedo, IconUndo, IconInfoCircle } from '@arco-design/web-react/icon'
+import { IconRedo, IconUndo } from '@arco-design/web-react/icon'
 import clsx from 'clsx'
 import { Link } from 'react-router-dom'
 
@@ -126,7 +127,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ pageId, editType }) => {
           onClick={handleSnapshotBack}
         />
         <Popover content={`注意: 最多保存${MAX_LENGTH}个状态快照`}>
-          <IconInfoCircle className={styles.snapshot_btn} />
+          <Tag>{snapshotList.length}</Tag>
         </Popover>
         <IconRedo
           className={clsx(

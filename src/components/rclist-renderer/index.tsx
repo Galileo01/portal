@@ -17,7 +17,7 @@ const RCListRenderer: React.FC<RCListRendererProps> = ({
     {componentDataList.map((component) => {
       const { id, resourceComponent } = component
 
-      let restProps = resourceComponent.props
+      let elementProps = resourceComponent.props
       // 由于 保存到storage 时  组件无法序列化 ，所以 恢复时可能 component 字段为空 ，补救方法 从 RCList 查找
       const Component =
         resourceComponent.component ||
@@ -29,13 +29,13 @@ const RCListRenderer: React.FC<RCListRendererProps> = ({
        * draggable 允许 拖拽
        */
       if (IS_ROUTE_EDITER) {
-        restProps = {
-          ...restProps,
+        elementProps = {
+          ...elementProps,
           draggable: true,
           onDragStart,
         }
       }
-      return <Component key={id} id={id} {...restProps} />
+      return <Component key={id} id={id} {...elementProps} />
     })}
   </>
 )

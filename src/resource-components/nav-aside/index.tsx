@@ -37,7 +37,7 @@ const NavAside: React.FC<NavAsideProps> = (props) => {
   return (
     <div
       className={RCClassnameComputer(
-        { absolute: true },
+        { enforceAbsolute: true },
         styles.nav_aside,
         styles[position]
       )}

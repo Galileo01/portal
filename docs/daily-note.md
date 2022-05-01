@@ -1,3 +1,44 @@
+# 重难点
+
+前端部分：
+
+1. 源组件拖拽
+
+   - 拽入 进预览区渲染
+   - 内部 排序
+     - 获取 drop 事件 target 元素 所属(DOM 树上最近的)的 RCR 元素的信息(id,下标)
+     - RCR 组件的识别
+       - 必要信息 渲染进 DOM 元素 ：id、公共类名、等
+
+2. Tool-box 的样式获取逻辑
+
+   - offsetTop\offsetLeft
+
+3. 右侧配置面板的实现
+
+   - 全局配置
+
+     - 主题配置
+       - 颜色变量的获取和更新
+       - 字体配置的生效和逻辑
+
+   - 属性配置
+
+     - feature: 辅助选中的逻辑
+     - 属性 Form 的生成和 propsSchema 的描述 ！！！
+
+   - 样式配置
+
+     - 样式配置的 存储
+
+     - 样式配置 生效的逻辑
+
+       - formData->css value 的生成函数
+
+       - 元素唯一 选择器的 生成逻辑
+
+   - 三个配置信息的状态维护
+
 # 每日记录
 
 ## 0325
@@ -302,9 +343,78 @@ Pre-TODO:
 
 TODO:
 
-- [ ] 源组件 resource-components 封装为 npm 库？
+- [ ] **源组件 resource-components 封装为 npm 库？ **！！！！important
 
 Finish:
 
 1. 取消 对 @types/portal-network 库的抽离，转为 提取到 本地@typings/network 库
+2. back_top 组件 开始
+3. 修改 toolbox 的 calculateStyle 方法，完全修复 有定位元素计算位置问题
+
+- 一直向上查找 offsetParent 直到 offsetParent 为 PREVIEWER_CONTAINER 并将每一级 的 offsetTop/offsetLeft 相加
+- 重命名 computeOffsetInfo
+- 对于 包含 position !=static 并且不为 RCR 类型的元素 运用第一点的逻辑运算
+
+4. **feature 辅助选中:用户选中任意 元素，属性配置展示距离其最近的 一个 RC 组件**
+
+- props-config
+-
+
+## 0428
+
+Pre-TODO:
+
+- [x] 存储 上次 求解的 closedRCRElement， if preClosedRCRElement.contains(currentClickElement) 不重新计算
+
+TODO
+
+- [ ] Feature-全局配置 添加 整体背景图的设置
+- [ ] Feature- 全局配置和属性配置 添加重置的操作
+- [x] Bug-修复 resource 面板 点击 上方 icon 折叠 无法记录的问题
+- [ ] bug-快照 前进后退 bug
+
+Finish
+
+1. Click-element-info 组件 添加 扩展信息
+
+   - 当前选中
+   - 最近的源组件
+
+2. 源组件进度
+
+   - back_top 组件 完成
+   - info_horizontal 组件 完成
+   - gird_box 组件完成
+
+3. 修复 generateSelector 工具方法：
+
+   - 问题:直接使用 element.className 在元素存在多个类名时 ，内容为空格分隔的类名，直接添加到 选择器 str ，无法正确的选中元素
+
+   - 解决方法:使用 classList 生成有效的 带有.的 类名选择器
+
+## 0429
+
+Pre-TODO
+
+- [x] bug-快照 前进后退 bug
+
+TODO:
+
+- [ ] Feature: 样式设置 根据 选中的元素进行 个性化，图片 - object-fit
+
+Finish
+
+1. 显示快照个数
+
+## 0430
+
+Pre-TODO
+
+TODO
+
+- [ ] feature - 考虑 单位 固定单位还是让用户输入
+
+Finish
+
+1. grid 布局实现瀑布流
 2.

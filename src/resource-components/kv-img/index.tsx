@@ -1,12 +1,11 @@
 import * as React from 'react'
 
-import { CommonProps } from '@/typings/common/resosurce-component'
 import CustomImage from '@/components/custom-image'
 
 import { RCClassnameComputer } from '../utils'
 import styles from './index.module.less'
 
-export type KVImgProps = CommonProps & {
+export type KVImgProps = {
   src: string
   imgHeight?: string
   imgWidth?: string

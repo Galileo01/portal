@@ -155,9 +155,6 @@ const StyleConfig: React.FC<StyleConfigProps> = ({ active }) => {
           <CollapseItem header="布局" name="style_config.layout">
             <LayoutForm />
           </CollapseItem>
-          {/* <CollapseItem header="位置" name="style_config.position">
-            position
-          </CollapseItem> */}
           <CollapseItem header="文字" name="style_config.font">
             <FontForm
               usedFontList={usedFontList}
@@ -174,12 +171,6 @@ const StyleConfig: React.FC<StyleConfigProps> = ({ active }) => {
           <CollapseItem header="边框" name="style_config.border">
             <BorderForm customPalette={globalConfig?.customPalette} />
           </CollapseItem>
-          {/* <CollapseItem header="过渡" name="style_config.transition">
-            过渡
-          </CollapseItem>
-          <CollapseItem header="动画" name="style_config.animation">
-            动画
-          </CollapseItem> */}
         </Form>
       </Collapse>
       <Divider className={styles.divider} />

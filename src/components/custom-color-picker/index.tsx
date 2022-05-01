@@ -15,7 +15,7 @@ export type CustomColorPickerProps = Omit<SketchPickerProps, 'onChange'> & {
    */
   allowClear?: boolean
   /**
-   * @clearToValid 是否清空到第一个有意义的值
+   * @clearToValid 重置时 是否重置到第一个有意义的值
    */
   clearToValid?: boolean
   /**

@@ -71,10 +71,14 @@ export const usePageInit = (paramas: usePageInitParams) => {
       devLogger(' usePage res get', res)
       if (config) {
         if (isEditer) {
+          const snapshotList = [config.componentDataList]
           // 恢复 store
           editerDispatch({
             type: EditerDataActionEnum.SET_STATE,
-            payload: config,
+            payload: {
+              ...config,
+              snapshotList,
+            },
           })
         } else {
           setDataList(config.componentDataList)

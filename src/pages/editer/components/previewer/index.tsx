@@ -70,9 +70,10 @@ const Previewer = () => {
     e.preventDefault()
     updateClickElement(e.target as HTMLElement)
   }
+
   React.useEffect(() => {
-    devLogger('Previewer componentDataList', componentDataList)
-  }, [componentDataList])
+    devLogger('Previewer currentClickElement', currentClickElement)
+  }, [currentClickElement])
 
   return (
     <section
