@@ -20,12 +20,12 @@ export type InfoHorizontalProps = {
 }
 
 const InfoHorizontal: React.FC<InfoHorizontalProps> = (props) => {
-  const { textConfig, imgConfig, ...restProps } = props
+  const { textConfig, imgConfig, ...elementProps } = props
   const { src, imgHeight = 600, imgWidth = 600 } = imgConfig
   return (
     <div
       className={RCClassnameComputer({}, styles.info_horizontal)}
-      {...restProps}
+      {...elementProps}
     >
       <div className={styles.text_wrapper}>
         <h1>{textConfig.title}</h1>

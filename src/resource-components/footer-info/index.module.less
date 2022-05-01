@@ -1,0 +1,34 @@
+.footer_info {
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 12px;
+}
+
+.text_list {
+  display: flex;
+}
+
+.text_item {
+  position: relative;
+  text-decoration: none;
+  color: black;
+  padding: 0 10px;
+
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    left: 0;
+    background-color: rgb(229, 230, 235);
+  }
+
+  &:first-child:before {
+    display: none;
+  }
+}

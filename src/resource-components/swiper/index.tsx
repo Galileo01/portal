@@ -21,11 +21,11 @@ export type SwiperProps = {
 }
 
 const Swiper: React.FC<SwiperProps> = (props) => {
-  const { swiperConfig, imgList, ...restProps } = props
+  const { swiperConfig, imgList, ...elementProps } = props
   const { height = 240, width = '100%', ...restConfig } = swiperConfig
 
   return (
-    <div className={RCClassnameComputer({}, styles.swiper)} {...restProps}>
+    <div className={RCClassnameComputer({}, styles.swiper)} {...elementProps}>
       <Carousel
         style={{
           height,

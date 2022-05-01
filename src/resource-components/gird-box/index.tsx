@@ -21,7 +21,7 @@ export type GridBoxProps = {
 }
 
 const GridBox: React.FC<GridBoxProps> = (props) => {
-  const { gridConfig, itemList, ...restProps } = props
+  const { gridConfig, itemList, ...elementProps } = props
   const {
     width = 1200,
     itemHeight = 300,
@@ -32,7 +32,7 @@ const GridBox: React.FC<GridBoxProps> = (props) => {
   return (
     <div
       className={RCClassnameComputer({}, styles.grid_box)}
-      {...restProps}
+      {...elementProps}
       style={{
         width,
         gridTemplateColumns: `repeat(auto-fill,${itemWidth}px)`,
@@ -50,7 +50,7 @@ const GridBox: React.FC<GridBoxProps> = (props) => {
           }}
         >
           <CustomImage src={item.img} height="90%" width="100%" />
-          <div>{item.description}</div>
+          <div className="line_1">{item.description}</div>
         </div>
       ))}
     </div>

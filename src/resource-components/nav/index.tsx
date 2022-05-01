@@ -30,7 +30,7 @@ const Nav: React.FC<NavProps> = (props) => {
     className,
     isSticky,
     height = DEFAULT_NAV_HEIGHT,
-    ...restProps
+    ...elementProps
   } = props
   return (
     <Header
@@ -43,7 +43,7 @@ const Nav: React.FC<NavProps> = (props) => {
       style={{
         height,
       }}
-      {...restProps}
+      {...elementProps}
     >
       <CustomImage src={logoSrc} preview={false} height={height - 10} />
       <div className={styles.nav_list}>

@@ -19,10 +19,15 @@ export type BackTopProps = {
 }
 
 const BackTop: React.FC<BackTopProps> = (props) => {
-  const { isEditer, visibleHeight = 30, duration = 400, ...restProps } = props
+  const {
+    isEditer,
+    visibleHeight = 30,
+    duration = 400,
+    ...elementProps
+  } = props
 
   return (
-    <div {...restProps} className={RCClassnameComputer({})}>
+    <div {...elementProps} className={RCClassnameComputer({})}>
       <ArcoBackTop
         className={clsx(
           RESOURCE_COMPONENT_ENFORCE_ABSOLUTE_CONTAINER_CLASS,

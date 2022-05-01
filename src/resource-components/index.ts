@@ -15,7 +15,11 @@ import contenTitleComponentConfig from './content-title/config'
 import exampleComponentConfig from './color-example/config'
 import backTopComponentConfig from './back-top/config'
 import InfoHorizontalConfig from './info-horizontal/config'
-import GridBoxConfig from './gird-box/config'
+import gridBoxConfig from './gird-box/config'
+import waterFallFlowConfig from './waterfall-flow/config'
+import timelineConfig from './timeline/config'
+import footerConfig from './footer/config'
+import footerInfoConfig from './footer-info/config'
 
 const navComponentList = [
   navComponentConfig,
@@ -31,7 +35,9 @@ const bannerComponentList = [
 const contentComponentList = [
   contenTitleComponentConfig,
   InfoHorizontalConfig,
-  GridBoxConfig,
+  gridBoxConfig,
+  waterFallFlowConfig,
+  timelineConfig,
 ] as unknown as Array<ResourceComponent>
 
 const otherComponentList = [
@@ -39,11 +45,17 @@ const otherComponentList = [
   backTopComponentConfig,
 ] as unknown as Array<ResourceComponent>
 
+const footerComponentList = [
+  footerConfig,
+  footerInfoConfig,
+] as unknown as Array<ResourceComponent>
+
 // 所有组件列表
 export const RCList = [
   ...navComponentList,
   ...bannerComponentList,
   ...contentComponentList,
+  ...footerComponentList,
   ...otherComponentList,
 ] as Array<ResourceComponent>
 
@@ -72,6 +84,12 @@ export const componentCategoryList: Array<CategoryItem> = [
     cate: ComponentCategoryEnum.CONTENT,
     label: COMPONENT_CATEGORY_LABEL_MAP[ComponentCategoryEnum.CONTENT],
     componentList: contentComponentList,
+  },
+  // footer
+  {
+    cate: ComponentCategoryEnum.FOOTER,
+    label: COMPONENT_CATEGORY_LABEL_MAP[ComponentCategoryEnum.FOOTER],
+    componentList: footerComponentList,
   },
   // 其他
   {

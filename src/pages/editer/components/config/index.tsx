@@ -20,7 +20,6 @@ import StyleConfig from './components/style-config'
 import PropConfig, { PropConfigProps } from './components/props-config'
 import ClickElementInfo from './components/click-element-info'
 import { ConfigPaneNameEnum, COLLAPSE_BASE_PROPS } from './config'
-import { devLogger } from '@/common/utils'
 
 const Config = () => {
   const { currentClickElement, componentDataList } = useEditerDataStore()
@@ -45,7 +44,6 @@ const Config = () => {
       ? getClosedRCRenderedElement(currentClickElement)
       : undefined
 
-    devLogger('closedRCRElement', closedRCRElement)
     if (currentClickElement && closedRCRElement) {
       preClosedRCRElement.current = closedRCRElement
       const index = getComponentDataIndexFromID(

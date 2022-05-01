@@ -12,11 +12,11 @@ export type ContentTitleProps = {
 }
 
 const ContentTitle: React.FC<ContentTitleProps> = (props) => {
-  const { title, secondaryText, isRC = true, ...restProps } = props
+  const { title, secondaryText, isRC = true, ...elementProps } = props
 
   return (
     <div
-      {...restProps}
+      {...elementProps}
       className={RCClassnameComputer({ isRC }, 'content_title')}
     >
       {title && <h2 className="section_title">{title}</h2>}

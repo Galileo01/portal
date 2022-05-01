@@ -60,6 +60,9 @@ export const generateFormItemInner = (
     case PropTypeEnum.BOOLEAN:
       element = <Switch />
       break
+    case PropTypeEnum.COLOR:
+      element = <Input type="color" allowClear />
+      break
     default:
       break
   }
