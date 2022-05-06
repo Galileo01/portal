@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { FontList } from '@/typings/network'
+import { FontList } from '@/typings/database'
 
 import { devLogger } from '@/common/utils'
 

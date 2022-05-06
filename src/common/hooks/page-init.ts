@@ -1,7 +1,6 @@
 import * as React from 'react'
 
-import { FontList } from '@/typings/network'
-
+import { FontList } from '@/typings/database'
 import { PageConfig, ComponentDataList } from '@/typings/common/editer'
 import { devLogger } from '@/common/utils'
 import { getPageConfigById } from '@/common/utils/storage'

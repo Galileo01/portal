@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { Cascader, CascaderProps } from '@arco-design/web-react'
-import { FontList } from '@/typings/network'
+import { FontList } from '@/typings/database'
 
 import { computeCascaderOptions } from '@/common/utils/font'
 

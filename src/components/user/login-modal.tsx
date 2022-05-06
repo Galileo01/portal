@@ -6,7 +6,7 @@ import styles from './index.module.less'
 
 const { Item: FormItem } = Form
 
-export type LoginFormField = { username: string; password: string }
+export type LoginFormField = { name: string; password: string }
 
 export type LoginModalProps = ModalProps & {
   onValidateSuccess: (values: LoginFormField) => void
@@ -42,7 +42,7 @@ const LoginModal: React.FC<LoginModalProps> = (props) => {
     >
       <Form form={loginForm} wrapperCol={{ span: 24 }}>
         <FormItem
-          field="username"
+          field="name"
           rules={[
             {
               required: true,

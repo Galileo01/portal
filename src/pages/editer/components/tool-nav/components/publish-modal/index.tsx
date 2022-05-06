@@ -8,8 +8,8 @@ import { devLogger } from '@/common/utils'
 import { getPreviewerElement } from '@/common/utils/element'
 
 export type PublishForm = {
-  resourceID: string
-  private: string
+  resourceId: string
+  private: number
   resourceType: string
   thumbnailUrl: string
 }
@@ -27,8 +27,8 @@ const privateSelectRenderer = (values: any) => {
     return (
       <FormItem field="private" label="访问权限">
         <RadioGruop>
-          <Radio value="1">私有</Radio>
-          <Radio value="0">公有</Radio>
+          <Radio value={1}>私有</Radio>
+          <Radio value={0}>公有</Radio>
         </RadioGruop>
       </FormItem>
     )
@@ -67,8 +67,8 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
   React.useEffect(() => {
     if (visible) {
       publishForm.setFieldsValue({
-        resourceID: pageId,
-        private: '1',
+        resourceId: pageId,
+        private: 1,
         resourceType: 'page',
       })
       generateThumbnail()
@@ -81,7 +81,7 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
     <Modal title="发布" visible={visible} onConfirm={hanldeConfirm} {...rest}>
       <Form form={publishForm} wrapperCol={{ span: 12 }} labelAlign="left">
         <FormItem
-          field="resourceID"
+          field="resourceId"
           label="资源id"
           defaultValue={pageId}
           disabled
@@ -89,7 +89,7 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
           <Input allowClear />
         </FormItem>
         <FormItem
-          field="resourceName"
+          field="title"
           label="资源名称"
           rules={[
             {
@@ -116,4 +116,5 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
     </Modal>
   )
 }
+
 export default PublishModal
