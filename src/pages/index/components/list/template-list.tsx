@@ -10,7 +10,7 @@ import {
 } from '@arco-design/web-react'
 import { IconLaunch, IconDelete, IconEdit } from '@arco-design/web-react/icon'
 import clsx from 'clsx'
-import { TemplateBaseInfo, TemplateBaseInfoList } from '@/typings/network'
+import { TemplateBaseInfo, TemplateBaseInfoList } from '@/typings/database'
 
 import mockTemplateList from '@/mock/template-list'
 import CustomImage from '@/components/custom-image'
@@ -30,21 +30,6 @@ const TemplateList = () => {
   const [hasMore, setMore] = React.useState(true)
 
   const hanldeLoadMore = () => {
-    setTemplateList((preList) =>
-      preList.concat({
-        title: 'page_test-2',
-        resourceId: `${Date.now()}`,
-        thumbnailUrl:
-          'https://zos.alipayobjects.com/rmsportal/gyseCGEPqWjQpYF.jpg',
-        private: 1,
-        type: 'platform',
-        userInfo: {
-          name: 'test',
-          avatar:
-            'https://p3-passport.byteacctimg.com/img/user-avatar/b6de89756bc6f6c3a65e4fc4c0213db7~300x300.image',
-        },
-      })
-    )
     if (templateList.length > 8) {
       setMore(false)
     }

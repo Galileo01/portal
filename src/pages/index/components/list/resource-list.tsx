@@ -5,26 +5,22 @@ import { IconMore, IconPlus } from '@arco-design/web-react/icon'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { useNavigate } from 'react-router-dom'
 import clsx from 'clsx'
-import {
-  ResourceBaseInfoList,
-  TemplateBaseInfo,
-  PageBaseInfo,
-} from '@/typings/network'
+import { TemplateBase, PageBase, PageBaseList } from '@/typings/request'
 
 import { createNewEditerPath } from '@/common/utils/route'
 
 import styles from './index.module.less'
 
-export type ItemRenderer<T extends TemplateBaseInfo | PageBaseInfo> = (
+export type ItemRenderer<T extends TemplateBase | PageBase> = (
   resource: T,
   index: number
 ) => JSX.Element
 
 export type ResourceListProps = {
   className?: string
-  resourceList: ResourceBaseInfoList
+  resourceList: PageBaseList
   hasMore: boolean
-  itemRenderer: ItemRenderer<PageBaseInfo>
+  itemRenderer: ItemRenderer<PageBase>
   onLoadMore: () => void
 }
 

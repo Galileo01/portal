@@ -46,12 +46,12 @@ export const getUniqueId = (preFix?: string) => {
   return preFix ? `${preFix}_${id}` : id
 }
 
-export const customJsonParse = <T = unknown>(str: string, defaultValue?: T) => {
+export const safeJsonParse = <T = unknown>(str: string, defaultValue?: T) => {
   try {
     return JSON.parse(str) as T
   } catch (err) {
-    devLogger('customJsonParse failed err:', err)
-    console.warn('customJsonParse failed err:', err)
+    devLogger('safeJsonParse failed err:', err)
+    console.warn('safeJsonParse failed err:', err)
     return defaultValue
   }
 }

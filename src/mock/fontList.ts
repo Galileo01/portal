@@ -1,4 +1,4 @@
-import { FontList } from '@/typings/network'
+import { FontList } from '@/typings/database'
 
 export const fontList: FontList = [
   // 系统有可能自带的 字体

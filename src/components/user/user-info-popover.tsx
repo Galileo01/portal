@@ -12,7 +12,7 @@ import {
 } from '@arco-design/web-react'
 import { UploadItem } from '@arco-design/web-react/es/Upload/interface'
 import { IconEdit } from '@arco-design/web-react/icon'
-import { UserInfo } from '@/typings/network'
+import { User } from '@/typings/database'
 
 import { devLogger } from '@/common/utils'
 import CustomImage from '../custom-image'
@@ -28,8 +28,8 @@ export type EditField = {
 }
 
 export type UserInfoPopoverProps = {
-  userInfo: UserInfo
-  onSubmitClick: (values: UserInfo) => void
+  userInfo: User
+  onSubmitClick: (values: User) => void
 }
 
 const initEditedMap = {

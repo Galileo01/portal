@@ -1,4 +1,4 @@
-import { TemplateBaseInfoList } from '@/typings/network'
+import { TemplateBaseInfoList } from '@/typings/database'
 
 const mockTemplateList: TemplateBaseInfoList = [
   {
@@ -8,6 +8,7 @@ const mockTemplateList: TemplateBaseInfoList = [
     private: 1,
     type: 'user',
     userInfo: {
+      userId: '777',
       name: 'ltt',
       avatar:
         'https://p3-passport.byteacctimg.com/img/user-avatar/b6de89756bc6f6c3a65e4fc4c0213db7~300x300.image',
@@ -20,6 +21,7 @@ const mockTemplateList: TemplateBaseInfoList = [
     private: 1,
     type: 'user',
     userInfo: {
+      userId: '777',
       name: 'test',
       avatar:
         'https://p3-passport.byteacctimg.com/img/user-avatar/b6de89756bc6f6c3a65e4fc4c0213db7~300x300.image',
@@ -32,6 +34,7 @@ const mockTemplateList: TemplateBaseInfoList = [
     private: 1,
     type: 'user',
     userInfo: {
+      userId: '777',
       name: 'ltt',
       avatar:
         'https://p3-passport.byteacctimg.com/img/user-avatar/b6de89756bc6f6c3a65e4fc4c0213db7~300x300.image',
@@ -44,6 +47,7 @@ const mockTemplateList: TemplateBaseInfoList = [
     private: 0,
     type: 'user',
     userInfo: {
+      userId: '777',
       name: 'ltt',
       avatar:
         'https://p3-passport.byteacctimg.com/img/user-avatar/b6de89756bc6f6c3a65e4fc4c0213db7~300x300.image',
@@ -56,6 +60,7 @@ const mockTemplateList: TemplateBaseInfoList = [
     private: 0,
     type: 'user',
     userInfo: {
+      userId: '777',
       name: 'ltt',
       avatar:
         'https://p3-passport.byteacctimg.com/img/user-avatar/b6de89756bc6f6c3a65e4fc4c0213db7~300x300.image',
@@ -68,6 +73,7 @@ const mockTemplateList: TemplateBaseInfoList = [
     private: 0,
     type: 'platform',
     userInfo: {
+      userId: '777',
       name: 'ltt',
       avatar:
         'https://p3-passport.byteacctimg.com/img/user-avatar/b6de89756bc6f6c3a65e4fc4c0213db7~300x300.image',
@@ -80,6 +86,7 @@ const mockTemplateList: TemplateBaseInfoList = [
     private: 0,
     type: 'user',
     userInfo: {
+      userId: '777',
       name: 'ltt',
       avatar:
         'https://p3-passport.byteacctimg.com/img/user-avatar/b6de89756bc6f6c3a65e4fc4c0213db7~300x300.image',

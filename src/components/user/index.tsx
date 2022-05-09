@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { Button, Avatar, Message } from '@arco-design/web-react'
 import clsx from 'clsx'
-import { UserInfo } from '@/typings/network'
+import { User } from '@/typings/database'
 
 import { devLogger } from '@/common/utils'
 
@@ -12,12 +12,12 @@ import UserInfoPopover, { UserInfoPopoverProps } from './user-info-popover'
 import styles from './index.module.less'
 
 export type UserProps = {
-  userInfo?: UserInfo
+  userInfo?: User
   className?: string
-  updateUserInfo: (newUserInfo?: UserInfo) => void
+  updateUserInfo: (newUserInfo?: User) => void
 }
 
-const User: React.FC<UserProps> = (props) => {
+const UserComponent: React.FC<UserProps> = (props) => {
   const { userInfo, className, updateUserInfo } = props
 
   const [modalVisible, setVisible] = React.useState(false)
@@ -77,4 +77,4 @@ const User: React.FC<UserProps> = (props) => {
   )
 }
 
-export default User
+export default UserComponent

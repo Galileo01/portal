@@ -3,7 +3,7 @@ import * as React from 'react'
 import { Card, Popconfirm, Spin } from '@arco-design/web-react'
 import { IconLaunch, IconDelete, IconEdit } from '@arco-design/web-react/icon'
 import clsx from 'clsx'
-import { PageBaseInfoList } from '@/typings/network'
+import { PageBaseList } from '@/typings/request'
 
 import mockPageList from '@/mock/page-list'
 import CustomImage from '@/components/custom-image'
@@ -17,18 +17,10 @@ const { Meta } = Card
 export type ActionType = 'edit' | 'launch' | 'delete'
 
 const PageList = () => {
-  const [pageList, setPageList] = React.useState<PageBaseInfoList>(mockPageList)
+  const [pageList, setPageList] = React.useState<PageBaseList>(mockPageList)
   const [hasMore, setMore] = React.useState(true)
 
   const hanldeLoadMore = () => {
-    setPageList((preList) =>
-      preList.concat({
-        title: 'page_test-2',
-        resourceId: `${Date.now()}`,
-        thumbnailUrl:
-          'https://zos.alipayobjects.com/rmsportal/gyseCGEPqWjQpYF.jpg',
-      })
-    )
     if (pageList.length > 8) {
       setMore(false)
     }

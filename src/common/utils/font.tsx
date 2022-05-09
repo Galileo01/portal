@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { FontList, FontType } from '@/typings/network'
+import { FontList, FontType } from '@/typings/database'
 
 import {
   PREVIEWER_CLASS,

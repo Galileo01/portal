@@ -5,7 +5,7 @@ import {
 } from '@/typings/common/storage'
 import { PageConfig } from '@/typings/common/editer'
 
-import { customJsonParse } from './index'
+import { safeJsonParse } from './index'
 
 export const getLocalStorage: GetLocalStorageFun = (key, defaultValue) =>
   localStorage.getItem(key) || defaultValue
@@ -14,7 +14,7 @@ export const setLocalStorage: SetLocalStorageFun = (key, value) =>
   localStorage.setItem(key, value)
 
 export const getAllPageConfig = () =>
-  customJsonParse<PageConfigStorageValue>(
+  safeJsonParse<PageConfigStorageValue>(
     getLocalStorage('page_configs') || '{}',
     {}
   )
