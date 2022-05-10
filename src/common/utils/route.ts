@@ -1,5 +1,6 @@
 import { ROUTE_EDITER } from '@/common/constant/route'
 import { StringKeyValueObject } from '@/typings/common/editer-config-data'
+import { ResourceType } from '@/typings/database'
 import { getUniqueId } from './index'
 
 export type EditerSearchGenerateParams = {
@@ -7,6 +8,20 @@ export type EditerSearchGenerateParams = {
   edit_type?: string
   use_local?: boolean
   title?: string
+  resource_type?: ResourceType
+}
+
+// 字符串 对象为 search 部分参数
+export const stringfySearch = (params: Record<string, string | number>) => {
+  const keys = Object.keys(params)
+  // 生成  search 部分
+  const search = keys.reduce((preValue, curKey) => {
+    const value = params[curKey]
+    if (value) return `${preValue}${preValue ? '&' : '?'}${curKey}=${value}`
+    return preValue
+  }, '')
+
+  return search
 }
 
 export const generateEditerSearch = (params: EditerSearchGenerateParams) => {
@@ -16,14 +31,7 @@ export const generateEditerSearch = (params: EditerSearchGenerateParams) => {
     edit_type: params.edit_type || 'create',
     use_local: params.use_local ? '1' : '0',
   }
-
-  const keys = Object.keys(transformedParams)
-  const search = keys.reduce((preValue, curKey) => {
-    const value = transformedParams[curKey]
-    if (value) return `${preValue}${preValue ? '&' : '?'}${curKey}=${value}`
-    return preValue
-  }, '')
-  return search
+  return stringfySearch(transformedParams)
 }
 
 export const generateEditerPath = (params: EditerSearchGenerateParams) => {
@@ -31,7 +39,13 @@ export const generateEditerPath = (params: EditerSearchGenerateParams) => {
   return ROUTE_EDITER + search
 }
 
-export const createNewEditerPath = () => {
+export const createNewResourcePath: (resource_type?: ResourceType) => string = (
+  resource_type = 'page'
+) => {
   const resourceId = getUniqueId()
-  return generateEditerPath({ resource_id: resourceId, edit_type: 'create' })
+  return generateEditerPath({
+    resource_id: resourceId,
+    edit_type: 'create',
+    resource_type,
+  })
 }

@@ -15,7 +15,12 @@ import dayjs from 'dayjs'
 
 import CustomImage from '@/components/custom-image'
 import { TemplateBase, PageBase, PageBaseList } from '@/typings/request'
-import { createNewEditerPath } from '@/common/utils/route'
+import { ResourceType } from '@/typings/database'
+import {
+  createNewResourcePath,
+  stringfySearch,
+  generateEditerSearch,
+} from '@/common/utils/route'
 import { ROUTE_EDITER, ROUTE_PAGE } from '@/common/constant/route'
 
 import styles from './index.module.less'
@@ -42,6 +47,7 @@ export type ResourceListProps = {
   tagComputer?: TagComputer<PageBase>
   resourceList: PageBaseList
   hasMore: 0 | 1
+  resourceType: ResourceType
   onLoadMore: () => void
   onRemove: (resourceId: string) => void
 }
@@ -51,13 +57,14 @@ const ResourceList: React.FC<ResourceListProps> = (props) => {
     resourceList,
     hasMore,
     className,
+    resourceType,
     actionComputer,
     tagComputer,
     onLoadMore,
     onRemove,
   } = props
 
-  const newPathRef = React.useRef(createNewEditerPath())
+  const newPathRef = React.useRef(createNewResourcePath(resourceType))
 
   return (
     <div className={className}>
@@ -78,7 +85,7 @@ const ResourceList: React.FC<ResourceListProps> = (props) => {
               </div>
             }
           >
-            <Link to={newPathRef.current} target="_blank">
+            <Link to={newPathRef.current}>
               <Button type="primary">创建</Button>
             </Link>
           </Card>
@@ -92,7 +99,15 @@ const ResourceList: React.FC<ResourceListProps> = (props) => {
               <Link
                 target="_blank"
                 className={styles.action_btn}
-                to={`${ROUTE_EDITER}?resource_id=${resource.resourceId}&type=edit`}
+                to={{
+                  pathname: ROUTE_EDITER,
+                  search: generateEditerSearch({
+                    resource_id: resource.resourceId,
+                    resource_type: resourceType,
+                    edit_type: 'edit',
+                    title: resource.title,
+                  }),
+                }}
               >
                 <IconEdit />
               </Link>
@@ -104,7 +119,13 @@ const ResourceList: React.FC<ResourceListProps> = (props) => {
               <Link
                 className={styles.action_btn}
                 target="_blank"
-                to={`${ROUTE_PAGE}?resource_id=${resource.resourceId}`}
+                to={{
+                  pathname: ROUTE_PAGE,
+                  search: stringfySearch({
+                    resource_id: resource.resourceId,
+                    resource_type: resourceType,
+                  }),
+                }}
               >
                 <IconLaunch />
               </Link>

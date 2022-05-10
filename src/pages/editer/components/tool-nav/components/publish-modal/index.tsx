@@ -6,16 +6,20 @@ import domtoimage from 'dom-to-image'
 import CustomImage from '@/components/custom-image'
 import { devLogger } from '@/common/utils'
 import { getPreviewerElement } from '@/common/utils/element'
+import { ResourceType } from '@/typings/database'
 
 export type PublishForm = {
   resourceId: string
+  title: string
   private: number
-  resourceType: string
+  resourceType: ResourceType
   thumbnailUrl: string
 }
 
 export type PublishModalProps = Omit<ModalProps, 'onConfirm'> & {
   resourceId: string
+  resourceType: string
+  title?: string
   onConfirm: (values: PublishForm) => void
 }
 
@@ -36,9 +40,19 @@ const privateSelectRenderer = (values: any) => {
   return null
 }
 
-// TODO: 4.20-1 发布时 判断如果是 平台管理员 则展示 template_type 选择,或者 放到服务端 做？
+// TODO: 510 解决 dom-to-image 跨域问题
 const PublishModal: React.FC<PublishModalProps> = (props) => {
-  const { resourceId, visible, onConfirm, ...rest } = props
+  const { resourceId, resourceType, visible, title, onConfirm, ...rest } = props
+
+  const initialValues = React.useMemo(
+    () => ({
+      resourceId,
+      private: 1,
+      resourceType: resourceType as ResourceType,
+      title,
+    }),
+    [resourceId, resourceType, title]
+  )
 
   const [publishForm] = Form.useForm<PublishForm>()
   const [thumbnail, setThumbnail] = React.useState('')
@@ -47,12 +61,21 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
   const generateThumbnail = React.useCallback(() => {
     const previewerElement = getPreviewerElement()
     if (previewerElement) {
-      domtoimage.toPng(previewerElement).then((imgUrl) => {
-        devLogger('domtoimage imgUrl', imgUrl)
-        setThumbnail(imgUrl)
-        // TODO: 使用 腾讯云 对象存储  临时使用 dataURL
-        publishForm.setFieldValue('thumbnailUrl', imgUrl)
-      })
+      domtoimage
+        .toPng(previewerElement)
+        .then((imgUrl) => {
+          devLogger('domtoimage imgUrl', imgUrl)
+          setThumbnail(imgUrl)
+          // TODO: 使用 腾讯云 对象存储  临时使用 dataURL
+
+          publishForm.setFieldValue('thumbnailUrl', imgUrl)
+        })
+        // TODO: 解决跨域问题
+        .finally(() => {
+          const tempUrl =
+            'https://cos-01-1303103441.cos.ap-chengdu.myqcloud.com/img/portal/6480dbc69be1b5de95010289787d64f1.png_tplv-uwbnlip3yd-webp.webp'
+          publishForm.setFieldValue('thumbnailUrl', tempUrl)
+        })
     }
   }, [publishForm])
 
@@ -60,26 +83,28 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
     publishForm.validate((error, values) => {
       if (!error && values) {
         onConfirm(values as PublishForm)
+      } else {
+        devLogger('publishForm.validate', error, values)
       }
     })
   }
 
   React.useEffect(() => {
     if (visible) {
-      publishForm.setFieldsValue({
-        resourceId,
-        private: 1,
-        resourceType: 'page',
-      })
       generateThumbnail()
-    } else {
-      publishForm.resetFields()
     }
+    publishForm.resetFields()
   }, [generateThumbnail, publishForm, visible, resourceId])
 
   return (
     <Modal title="发布" visible={visible} onConfirm={hanldeConfirm} {...rest}>
-      <Form form={publishForm} wrapperCol={{ span: 12 }} labelAlign="left">
+      <Form
+        form={publishForm}
+        wrapperCol={{ span: 12 }}
+        labelAlign="left"
+        autoComplete="off"
+        initialValues={initialValues}
+      >
         <FormItem
           field="resourceId"
           label="资源id"
@@ -110,7 +135,13 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
           {privateSelectRenderer}
         </FormItem>
         <FormItem label="缩略图" field="thumbnailUrl">
-          <CustomImage src={thumbnail} width={200} />
+          <CustomImage
+            src={thumbnail}
+            width={200}
+            style={{
+              border: '1px solid var(--color-text-4)',
+            }}
+          />
         </FormItem>
       </Form>
     </Modal>

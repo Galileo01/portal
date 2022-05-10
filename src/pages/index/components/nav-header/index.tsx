@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { Grid } from '@arco-design/web-react'
 
-import { createNewEditerPath } from '@/common/utils/route'
+import { createNewResourcePath } from '@/common/utils/route'
 import Logo from '@/components/logo'
 import ThemeSwitch from '@/components/theme-switch'
 import User from '@/components/user'
@@ -18,7 +18,7 @@ const navLinks = [
   },
   {
     title: '编辑器',
-    link: createNewEditerPath(),
+    link: createNewResourcePath(),
   },
   {
     title: 'Github',

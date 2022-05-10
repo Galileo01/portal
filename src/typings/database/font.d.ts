@@ -1,4 +1,4 @@
-export type FontLanguage = 'en' | 'ch'
+export type FontLanguage = 'en' | 'zh'
 
 export type FontType = 'system_exist' | 'platform_provide' | 'user_add'
 

@@ -45,7 +45,7 @@ const ResourceManage: React.FC<ResourceManageProps> = (props) => {
       .dataset
     if (!btnType) return
     if (btnType === 'open') {
-      // FIXME: 等待 官方 修复 bug https://github.com/remix-run/react-router/issues/8245 ,使用 navigator 跳转
+      // FIXME: 等待 官方 修复 bug https://github.com/remix-run/react-router/issues/8245 ,使用 navigator 跳转 页面不刷新问题
 
       const href = generateEditerPath({
         resource_id: resourceId,

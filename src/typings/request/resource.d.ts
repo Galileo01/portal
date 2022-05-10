@@ -30,7 +30,7 @@ export type GetPageListRes = GetResourceListRes<PageBaseList>
 
 export type GetTemplateListRes = GetResourceListRes<TemplateBaseList>
 
-export type PublishResourceData = {
+export type OperateResourceData = {
   operateType: 'publish' | 'update'
   // 资源 数据
   resourceData: {

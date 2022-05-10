@@ -3,7 +3,7 @@ import * as React from 'react'
 import { Spin, Radio, Message } from '@arco-design/web-react'
 
 import { devLogger } from '@/common/utils'
-import { getTemplateList, deleteResourceByid } from '@/network/resource'
+import { getTemplateList, deleteResourceById } from '@/network/resource'
 import {
   TemplateBase,
   GetTemplateListRes,
@@ -100,7 +100,7 @@ const TemplateList = () => {
   }
 
   const handleRemove: ResourceListProps['onRemove'] = (resourceId) => {
-    deleteResourceByid(resourceId).then((res) => {
+    deleteResourceById(resourceId).then((res) => {
       if (res.success) {
         Message.success('删除成功')
         fetchTemplateList()
@@ -136,6 +136,7 @@ const TemplateList = () => {
         loading={loading}
       >
         <ResourceList
+          resourceType="template"
           hasMore={templateListRes.hasMore}
           resourceList={templateListRes.resourceList}
           onLoadMore={hanldeLoadMore}

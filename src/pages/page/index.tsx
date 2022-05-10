@@ -16,6 +16,7 @@ const Page = () => {
     () => ({
       resource_id: params.get('resource_id'),
       is_preview: Boolean(params.get('is_preview')),
+      resource_type: params.get('resource_type') || 'template',
     }),
     [params]
   )
@@ -24,6 +25,7 @@ const Page = () => {
     resourceId: searchParams.resource_id,
     isEditer: false,
     initType: searchParams.is_preview ? 'restore' : 'fetch',
+    resourceType: searchParams.resource_type,
   })
 
   React.useEffect(() => {

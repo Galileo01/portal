@@ -9,9 +9,11 @@
      - 获取 drop 事件 target 元素 所属(DOM 树上最近的)的 RCR 元素的信息(id,下标)
      - RCR 组件的识别
        - 必要信息 渲染进 DOM 元素 ：id、公共类名、等
+
 2. Tool-box 的样式获取逻辑
 
    - offsetTop\offsetLeft
+
 3. 右侧配置面板的实现
 
    - 全局配置
@@ -19,19 +21,21 @@
      - 主题配置
        - 颜色变量的获取和更新
        - 字体配置的生效和逻辑
+
 - 属性配置
-  
+
   - feature: 辅助选中的逻辑
-     - 属性 Form 的生成和 propsSchema 的描述 ！！！
-   - 样式配置
+    - 属性 Form 的生成和 propsSchema 的描述 ！！！
+  - 样式配置
 
-     - 样式配置的 存储
+    - 样式配置的 存储
 
-     - 样式配置 生效的逻辑
+    - 样式配置 生效的逻辑
 
-       - formData->css value 的生成函数
+      - formData->css value 的生成函数
 
-       - 元素唯一 选择器的 生成逻辑
+      - 元素唯一 选择器的 生成逻辑
+
 - 三个配置信息的状态维护
 
 后端部分
@@ -39,8 +43,8 @@
 1. token 身份验证
    - token 意义
    - 验证逻辑
-   - koa - 中间件 
-     - 解析结果 注入ctx.state 
+   - koa - 中间件
+     - 解析结果 注入 ctx.state
 2. 出码能力
 3. 中间件 层次 洋葱模型
 
@@ -424,9 +428,7 @@ Finish
 1. grid 布局实现瀑布流
 2.
 
-
-
-## 0501 
+## 0501
 
 Finish
 
@@ -435,11 +437,7 @@ Finish
    - footer
    - footer-info
 
-
-
 ## 0502
-
-
 
 ## 0503
 
@@ -447,25 +445,25 @@ Finish
 
 ## 0505
 
-TODO: 
+TODO:
 
 1. 全局配置添加 网站 favicon 的配置！！！
 
-2. 
+2.
 
 3. 修复 build 之后 静态资源路径问题 - vite 配置
 
-4. zip 压缩包 定时删除，定时清空output_code 文件夹
+4. zip 压缩包 定时删除，定时清空 output_code 文件夹
 
 5. Output-code-template 模板 清楚不必要的依赖
 
 6. ？config 配置 字符串太长 是否需要分割
 
-7. config 存储 和上传  时 ，propsSchema  以及一些其他字段 不进行存储
+7. config 存储 和上传 时 ，propsSchema 以及一些其他字段 不进行存储
 
 8. 字体存储策略 优化 !!!
 
-   - config 内只存储 选中的name list，手动进行表单的回填，提高存储效率，恢复的方便性
-   - pageConfig.fontConfig新增字段用于 单独 存储用户自己上传的字体列表
+   - config 内只存储 选中的 name list，手动进行表单的回填，提高存储效率，恢复的方便性
+   - pageConfig.fontConfig 新增字段用于 单独 存储用户自己上传的字体列表
 
    影响项目：portal + code-output-template

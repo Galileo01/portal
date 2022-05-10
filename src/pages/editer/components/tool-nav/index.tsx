@@ -10,7 +10,7 @@ import {
 } from '@arco-design/web-react'
 import { IconRedo, IconUndo } from '@arco-design/web-react/icon'
 import clsx from 'clsx'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 
 import Logo from '@/components/logo'
 import ThemeSwitch from '@/components/theme-switch'
@@ -25,11 +25,13 @@ import { setPageConfigById, clearResourceConfig } from '@/common/utils/storage'
 import { restorePreviewColorVariable } from '@/common/utils/color-variable'
 import { removeFontStyleNode } from '@/common/utils/font'
 import { usePrompt } from '@/common/hooks/react-router-dom'
+import { devLogger } from '@/common/utils'
+import { generateEditerPath } from '@/common/utils/route'
+import { operateResource } from '@/network/resource'
 
 import styles from './index.module.less'
 import ResourceManage from './components/resource-manage'
 import PublishModal, { PublishModalProps } from './components/publish-modal'
-import { devLogger } from '@/common/utils'
 
 export type ToolNavProps = {
   resourceId: string
@@ -50,6 +52,14 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
     styleConfig,
   } = useEditerDataStore()
   const editerDataDispatch = useEditerDataDispatch()
+
+  const [params] = useSearchParams()
+
+  const searchParams = React.useRef({
+    resource_type: params.get('resource_type') || 'page',
+    edit_type: params.get('edit_type') || 'create',
+    title: params.get('title') || undefined,
+  })
 
   const canSnapshotBack = currentSnapshotIndex > 0
   const canSnapshotForward =
@@ -102,10 +112,45 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
     setModalVisible(false)
   }
 
-  // TODO: 发布 成功 清空本地 对应存储
   const handlePagePublish: PublishModalProps['onConfirm'] = (values) => {
     devLogger('handlePagePublish', values)
-    hidePublishModal()
+    const isPublish = searchParams.current.edit_type === 'create'
+    operateResource({
+      operateType: isPublish ? 'publish' : 'update',
+      resourceData: {
+        ...values,
+        config: JSON.stringify({
+          title: resourceId,
+          edit_type: editType,
+          globalConfig,
+          styleConfig,
+          componentDataList,
+        }),
+      },
+    }).then((res) => {
+      if (res.success) {
+        hidePublishModal()
+        clearResourceConfig(resourceId)
+        setIsBlocking(false)
+
+        Message.success({
+          content: `${isPublish ? '发布' : '更新'}成功`,
+          // NOTE: 提示关闭后 根据提交信息 重新计算 地址 强制跳转到 新的地址
+          onClose: () => {
+            const { resourceType, title } = values
+
+            // FIXME: 等待 官方 修复 bug https://github.com/remix-run/react-router/issues/8245 ,使用 navigator 跳转 页面不刷新问题
+            const newHref = generateEditerPath({
+              resource_id: resourceId,
+              edit_type: 'edit',
+              resource_type: resourceType,
+              title,
+            })
+            window.open(newHref, '_self')
+          },
+        })
+      }
+    })
   }
   React.useEffect(() => {
     devLogger('currentSnapshotIndex', currentSnapshotIndex)
@@ -160,6 +205,8 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
       </Space>
       <PublishModal
         resourceId={resourceId}
+        title={searchParams.current.title}
+        resourceType={searchParams.current.resource_type}
         visible={modalVisible}
         onCancel={hidePublishModal}
         onConfirm={handlePagePublish}

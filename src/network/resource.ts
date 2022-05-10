@@ -3,7 +3,9 @@ import {
   GetTemplateListRes,
   GetPageListRes,
   GetResourceListQuery,
+  OperateResourceData,
 } from '@/typings/request/resource'
+import { Resource } from '@/typings/database'
 
 import instance from './index'
 
@@ -28,9 +30,12 @@ export const getTemplateList = (params?: OmitedGetResourceListQuery) =>
   })
 
 export const getResourceById = (params: GetByIdQuery) =>
-  instance.get(`${baseRoute}/getById`, {
+  instance.get<Resource>(`${baseRoute}/getById`, {
     params,
   })
 
-export const deleteResourceByid = (resourceId: string) =>
+export const deleteResourceById = (resourceId: string) =>
   instance.post(`${baseRoute}/deleteById`, { resourceId })
+
+export const operateResource = (data: OperateResourceData) =>
+  instance.post(`${baseRoute}/operate`, data)

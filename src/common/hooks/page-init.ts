@@ -1,23 +1,25 @@
 import * as React from 'react'
 
-import { FontList } from '@/typings/database'
+import { FontList, ResourceType } from '@/typings/database'
 import { PageConfig, ComponentDataList } from '@/typings/common/editer'
-import { devLogger } from '@/common/utils'
+import { devLogger, safeJsonParse } from '@/common/utils'
 import { getPageConfigById } from '@/common/utils/storage'
 import { generateStyleNodeFromConfig } from '@/common/utils/style-config'
 import { setColorVariableValue } from '@/common/utils/color-variable'
 import { updateFontConfigToElement } from '@/common/utils/font'
-import { fontList as mockFontList } from '@/mock/fontList'
 import {
   useEditerDataDispatch,
   EditerDataActionEnum,
 } from '@/store/editer-data'
 import { useFetchDataDispatch, FetchDataActionEnum } from '@/store/fetch-data'
+import { getFontList } from '@/network/font'
+import { getResourceById } from '@/network/resource'
 
 export type InitType = 'restore' | 'fetch'
 
 export type usePageInitParams = {
   resourceId: string | null
+  resourceType: string
   initType: InitType
   /**
    * @isEditer : 是否是编辑器 页面 , 编辑器 更新 store
@@ -30,6 +32,7 @@ export type usePageInitParams = {
 const getConfig: (params: {
   resourceId: string
   initType: InitType
+  resourceType: string
 }) => Promise<
   Partial<{
     config: PageConfig
@@ -37,21 +40,37 @@ const getConfig: (params: {
   }>
 > = (params) =>
   new Promise((resolve) => {
-    const { resourceId, initType } = params
+    const { resourceId, initType, resourceType } = params
     if (initType === 'restore') {
-      resolve({
-        config: getPageConfigById(resourceId),
-        fontList: mockFontList,
+      getFontList().then((res) => {
+        resolve({
+          config: getPageConfigById(resourceId),
+          fontList: res.success ? res.data : [],
+        })
       })
     } else {
-      // 发送请求
-      // config = fetch
-      resolve({})
+      // 发送 并发 请求
+      Promise.all([
+        getResourceById({
+          resourceId,
+          resourceType: resourceType as ResourceType,
+        }),
+        getFontList(),
+      ]).then((res) => {
+        const [resourceRes, fontListRes] = res
+        resolve({
+          config: resourceRes.success
+            ? safeJsonParse(resourceRes.data.config)
+            : undefined,
+          fontList: fontListRes.success ? fontListRes.data : [],
+        })
+      })
     }
   })
 
 export const usePageInit = (paramas: usePageInitParams) => {
-  const { resourceId, initType, isEditer } = paramas
+  const { resourceId, initType, resourceType, isEditer } = paramas
+  devLogger('usePageInit params', paramas)
 
   const editerDispatch = useEditerDataDispatch()
   const fetchDataDispatch = useFetchDataDispatch()
@@ -60,7 +79,6 @@ export const usePageInit = (paramas: usePageInitParams) => {
   const [pageTitle, setTitle] = React.useState('')
 
   const pageInit = React.useCallback(() => {
-    devLogger('usePage call', resourceId, initType, isEditer)
     if (!resourceId) {
       throw new Error('pageid not valid')
     }
@@ -68,9 +86,9 @@ export const usePageInit = (paramas: usePageInitParams) => {
     getConfig({
       resourceId,
       initType,
+      resourceType,
     }).then((res) => {
       const { config, fontList = [] } = res
-      devLogger(' usePage res get', res)
       if (config) {
         if (isEditer) {
           const snapshotList = [config.componentDataList]
@@ -109,7 +127,14 @@ export const usePageInit = (paramas: usePageInitParams) => {
         })
       }
     })
-  }, [initType, isEditer, resourceId, editerDispatch, fetchDataDispatch])
+  }, [
+    resourceType,
+    initType,
+    isEditer,
+    resourceId,
+    editerDispatch,
+    fetchDataDispatch,
+  ])
 
   React.useEffect(() => {
     pageInit()

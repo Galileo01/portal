@@ -3,7 +3,7 @@ import * as React from 'react'
 import { Spin, Message } from '@arco-design/web-react'
 
 import { devLogger } from '@/common/utils'
-import { getPageList, deleteResourceByid } from '@/network/resource'
+import { getPageList, deleteResourceById } from '@/network/resource'
 import { GetPageListRes, PageBase } from '@/typings/request/resource'
 import { useRefreshWhenUpdate } from '@/common/hooks/user'
 
@@ -67,7 +67,7 @@ const PageList = () => {
   })
 
   const handleRemove: ResourceListProps['onRemove'] = (resourceId) => {
-    deleteResourceByid(resourceId).then((res) => {
+    deleteResourceById(resourceId).then((res) => {
       if (res.success) {
         Message.success('删除成功')
         fetchPageList()
@@ -93,6 +93,7 @@ const PageList = () => {
       <h1 className={styles.title}>我的页面</h1>
       <Spin style={{ display: 'block' }} loading={loading}>
         <ResourceList
+          resourceType="page"
           hasMore={pageListRes.hasMore}
           resourceList={pageListRes.resourceList}
           onLoadMore={hanldeLoadMore}
