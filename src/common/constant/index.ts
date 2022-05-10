@@ -6,6 +6,8 @@ export const LOSTORAGE_KEY_PAGE_CONFIGS = 'page_configs'
 
 export const LOSTORAGE_KEY_IS_SIDER_COLLAPSE = 'is_sider_collapse'
 
+export const LOSTORAGE_KEY_TOKEN = 'token'
+
 // resource-component 有关
 // 由 源组件 渲染 出来的 元素 公共类
 export const RESOURCE_COMPONENT_COMMON_CLASS = 'resource_component'

@@ -7,35 +7,40 @@ import {
   IconDelete,
 } from '@arco-design/web-react/icon'
 
-import { getAllPageConfig, clearPageConfig } from '@/common/utils/storage'
+import {
+  getAllResourceConfig,
+  clearResourceConfig,
+} from '@/common/utils/storage'
 import { generateEditerPath } from '@/common/utils/route'
 
 import styles from './index.module.less'
 
 const { Item: MenuItem } = Menu
 
-export type PageManageProps = {
-  currentPageId: string
+export type ResourceManageProps = {
+  currentResourceId: string
 }
-export type PageItem = { pageId: string; editType: string }
+export type ResourceItem = { resourceId: string; editType: string }
 
-const PageManage: React.FC<PageManageProps> = (props) => {
-  const { currentPageId } = props
+const ResourceManage: React.FC<ResourceManageProps> = (props) => {
+  const { currentResourceId } = props
 
-  const [pageList, setPageList] = React.useState<Array<PageItem>>([])
+  const [resourceList, setResourceList] = React.useState<Array<ResourceItem>>(
+    []
+  )
 
-  const getLocalPageList = React.useCallback(() => {
-    const allPageConfig = getAllPageConfig() || {}
-    const list = Object.keys(allPageConfig).map((key) => ({
-      pageId: key,
-      editType: allPageConfig[key].edit_type,
+  const getLocalResourceList = React.useCallback(() => {
+    const allResourceConfig = getAllResourceConfig() || {}
+    const list = Object.keys(allResourceConfig).map((key) => ({
+      resourceId: key,
+      editType: allResourceConfig[key].edit_type,
     }))
-    setPageList(list)
+    setResourceList(list)
   }, [])
 
   const handleItemClick = React.useCallback<
     NonNullable<MenuProps['onClickMenuItem']>
-  >((pageId, event) => {
+  >((resourceId, event) => {
     const { btnType, editType = 'create' } = (event.target as HTMLElement)
       .dataset
     if (!btnType) return
@@ -43,17 +48,19 @@ const PageManage: React.FC<PageManageProps> = (props) => {
       // FIXME: 等待 官方 修复 bug https://github.com/remix-run/react-router/issues/8245 ,使用 navigator 跳转
 
       const href = generateEditerPath({
-        page_id: pageId,
+        resource_id: resourceId,
         edit_type: editType,
         use_local: editType === 'edit', // edit_type === edit 的页面 需要 追加 use_local 使用本地存储
       })
 
       window.open(href, '_self')
     } else if (btnType === 'delete') {
-      clearPageConfig(pageId)
+      clearResourceConfig(resourceId)
       // 重新渲染
-      setPageList((preList) => {
-        const index = preList.findIndex((page) => page.pageId === pageId)
+      setResourceList((preList) => {
+        const index = preList.findIndex(
+          (resource) => resource.resourceId === resourceId
+        )
         preList.splice(index, 1)
         return [...preList]
       })
@@ -63,13 +70,13 @@ const PageManage: React.FC<PageManageProps> = (props) => {
   const droplist = React.useMemo(
     () => (
       <Menu onClickMenuItem={handleItemClick}>
-        {pageList.map(({ pageId, editType }) => {
-          const isCurrent = pageId === currentPageId
+        {resourceList.map(({ resourceId, editType }) => {
+          const isCurrent = resourceId === currentResourceId
 
           return (
-            <MenuItem key={pageId} data-page-id={pageId}>
+            <MenuItem key={resourceId} data-resource-id={resourceId}>
               <div className={styles.inner_wrapper}>
-                <span>{pageId}</span>
+                <span>{resourceId}</span>
                 {isCurrent ? (
                   <span className={styles.current}>当前页面</span>
                 ) : (
@@ -97,24 +104,24 @@ const PageManage: React.FC<PageManageProps> = (props) => {
         })}
       </Menu>
     ),
-    [pageList, handleItemClick, currentPageId]
+    [resourceList, handleItemClick, currentResourceId]
   )
 
   React.useEffect(() => {
-    getLocalPageList()
-  }, [getLocalPageList])
+    getLocalResourceList()
+  }, [getLocalResourceList])
 
   // storage 事件 触发时 重新获取
   React.useEffect(() => {
-    window.addEventListener('storage', getLocalPageList)
+    window.addEventListener('storage', getLocalResourceList)
     // 清理 监听
     return () => {
-      window.removeEventListener('storage', getLocalPageList)
+      window.removeEventListener('storage', getLocalResourceList)
     }
-  }, [getLocalPageList])
+  }, [getLocalResourceList])
 
   return (
-    <div className={styles.page_manage}>
+    <div className={styles.resource_manage}>
       <Dropdown droplist={droplist} position="bottom" trigger="click">
         <div className="cursor_pointer">
           <IconUnorderedList />
@@ -125,4 +132,4 @@ const PageManage: React.FC<PageManageProps> = (props) => {
   )
 }
 
-export default PageManage
+export default ResourceManage

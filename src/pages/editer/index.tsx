@@ -19,7 +19,7 @@ const Editer = () => {
   const { searchParams } = useEditerParams()
 
   usePageInit({
-    pageId: searchParams.page_id,
+    resourceId: searchParams.resource_id,
     isEditer: true,
     initType:
       searchParams.use_local === true || searchParams.edit_type === 'create'
@@ -31,7 +31,7 @@ const Editer = () => {
     <Layout className={styles.editer_layout}>
       <Header>
         <ToolNav
-          pageId={searchParams.page_id}
+          resourceId={searchParams.resource_id}
           editType={searchParams.edit_type}
         />
       </Header>

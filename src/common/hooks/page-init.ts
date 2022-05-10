@@ -17,7 +17,7 @@ import { useFetchDataDispatch, FetchDataActionEnum } from '@/store/fetch-data'
 export type InitType = 'restore' | 'fetch'
 
 export type usePageInitParams = {
-  pageId: string | null
+  resourceId: string | null
   initType: InitType
   /**
    * @isEditer : 是否是编辑器 页面 , 编辑器 更新 store
@@ -27,17 +27,20 @@ export type usePageInitParams = {
   isEditer: boolean
 }
 
-const getConfig: (params: { pageId: string; initType: InitType }) => Promise<
+const getConfig: (params: {
+  resourceId: string
+  initType: InitType
+}) => Promise<
   Partial<{
     config: PageConfig
     fontList: FontList
   }>
 > = (params) =>
   new Promise((resolve) => {
-    const { pageId, initType } = params
+    const { resourceId, initType } = params
     if (initType === 'restore') {
       resolve({
-        config: getPageConfigById(pageId),
+        config: getPageConfigById(resourceId),
         fontList: mockFontList,
       })
     } else {
@@ -48,7 +51,7 @@ const getConfig: (params: { pageId: string; initType: InitType }) => Promise<
   })
 
 export const usePageInit = (paramas: usePageInitParams) => {
-  const { pageId, initType, isEditer } = paramas
+  const { resourceId, initType, isEditer } = paramas
 
   const editerDispatch = useEditerDataDispatch()
   const fetchDataDispatch = useFetchDataDispatch()
@@ -57,13 +60,13 @@ export const usePageInit = (paramas: usePageInitParams) => {
   const [pageTitle, setTitle] = React.useState('')
 
   const pageInit = React.useCallback(() => {
-    devLogger('usePage call', pageId, initType, isEditer)
-    if (!pageId) {
+    devLogger('usePage call', resourceId, initType, isEditer)
+    if (!resourceId) {
       throw new Error('pageid not valid')
     }
 
     getConfig({
-      pageId,
+      resourceId,
       initType,
     }).then((res) => {
       const { config, fontList = [] } = res
@@ -97,7 +100,7 @@ export const usePageInit = (paramas: usePageInitParams) => {
           updateFontConfigToElement(config.globalConfig?.fontConfig, fontList)
         }
       }
-      setTitle(config?.title || pageId)
+      setTitle(config?.title || resourceId)
 
       if (fontList.length > 0 && isEditer) {
         fetchDataDispatch({
@@ -106,7 +109,7 @@ export const usePageInit = (paramas: usePageInitParams) => {
         })
       }
     })
-  }, [initType, isEditer, pageId, editerDispatch, fetchDataDispatch])
+  }, [initType, isEditer, resourceId, editerDispatch, fetchDataDispatch])
 
   React.useEffect(() => {
     pageInit()

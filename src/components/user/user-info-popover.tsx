@@ -12,7 +12,7 @@ import {
 } from '@arco-design/web-react'
 import { UploadItem } from '@arco-design/web-react/es/Upload/interface'
 import { IconEdit } from '@arco-design/web-react/icon'
-import { User } from '@/typings/database'
+import { UserBase } from '@/typings/request'
 
 import { devLogger } from '@/common/utils'
 import CustomImage from '../custom-image'
@@ -28,8 +28,9 @@ export type EditField = {
 }
 
 export type UserInfoPopoverProps = {
-  userInfo: User
-  onSubmitClick: (values: User) => void
+  userInfo: UserBase
+  onSubmitClick: (values: Partial<EditField>) => void
+  onLogout: () => void
 }
 
 const initEditedMap = {
@@ -39,7 +40,7 @@ const initEditedMap = {
 }
 
 const UserInfoPopover: React.FC<UserInfoPopoverProps> = (props) => {
-  const { userInfo, onSubmitClick, children } = props
+  const { userInfo, onSubmitClick, onLogout, children } = props
 
   const [imgFile, setImgFile] = React.useState<UploadItem>({
     uid: 'init',
@@ -80,20 +81,24 @@ const UserInfoPopover: React.FC<UserInfoPopoverProps> = (props) => {
         ? URL.createObjectURL(currentFile.originFile)
         : undefined,
     })
-    // TODO:   腾讯云 对象存储
-    // editForm.setFieldValue('')
+    // TODO: 图片服务 统一处理
     setEdited((pre) => ({ ...pre, avatar: true }))
+    editForm.resetFields()
+  }
+
+  const resetData = () => {
+    editForm.resetFields()
+    setEdited(initEditedMap)
+    setImgFile({
+      uid: 'init',
+      url: userInfo.avatar,
+    })
   }
 
   const handleVisibleChange: PopoverProps['onVisibleChange'] = (visible) => {
     devLogger('onVisibleChange', visible)
     if (!visible) {
-      editForm.resetFields()
-      setEdited(initEditedMap)
-      setImgFile({
-        uid: 'init',
-        url: userInfo.avatar,
-      })
+      resetData()
     }
   }
 
@@ -104,6 +109,7 @@ const UserInfoPopover: React.FC<UserInfoPopoverProps> = (props) => {
       ...userInfo,
       ...values,
     })
+    resetData()
   }
 
   return (
@@ -111,6 +117,7 @@ const UserInfoPopover: React.FC<UserInfoPopoverProps> = (props) => {
       trigger="click"
       position="bottom"
       style={{ width: 240 }}
+      onVisibleChange={handleVisibleChange}
       content={
         <div className={styles.user_info_pop}>
           <Form
@@ -120,6 +127,7 @@ const UserInfoPopover: React.FC<UserInfoPopoverProps> = (props) => {
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             initialValues={userInfo}
+            autoComplete="off"
           >
             <FormItem label="头像">
               <div className={styles.item_inner_wrapper}>
@@ -166,16 +174,22 @@ const UserInfoPopover: React.FC<UserInfoPopoverProps> = (props) => {
               </div>
             </FormItem>
           </Form>
-          {oneFiledEditing && (
-            <div className={styles.submit_edit_btn_wrapper}>
-              <Button size="mini" onClick={handleSubmitClick}>
-                提交编辑
+          <div className={styles.btn_wrapper}>
+            {oneFiledEditing && (
+              <Button
+                size="mini"
+                onClick={handleSubmitClick}
+                className={styles.submit_edit_btn}
+              >
+                提交
               </Button>
-            </div>
-          )}
+            )}
+            <Button size="mini" status="danger" onClick={onLogout}>
+              登出
+            </Button>
+          </div>
         </div>
       }
-      onVisibleChange={handleVisibleChange}
     >
       {children}
     </Popover>

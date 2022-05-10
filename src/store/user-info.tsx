@@ -1,10 +1,10 @@
 import * as React from 'react'
 
-import { User } from '@/typings/database'
+import { UserBase } from '@/typings/request'
 
 import { devLogger } from '@/common/utils'
 
-type Store = User | undefined
+type Store = UserBase | undefined
 
 export enum UserActionEnum {
   SET_STATE = 'setState',
@@ -12,7 +12,7 @@ export enum UserActionEnum {
 }
 
 export type ActionPayloadMap = {
-  [UserActionEnum.SET_STATE]: User
+  [UserActionEnum.SET_STATE]: UserBase
   [UserActionEnum.CLEAR]: undefined
 }
 

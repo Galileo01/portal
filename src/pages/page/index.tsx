@@ -14,14 +14,14 @@ const Page = () => {
 
   const searchParams = React.useMemo(
     () => ({
-      page_id: params.get('page_id'),
+      resource_id: params.get('resource_id'),
       is_preview: Boolean(params.get('is_preview')),
     }),
     [params]
   )
 
   const { componentDataList, pageTitle } = usePageInit({
-    pageId: searchParams.page_id,
+    resourceId: searchParams.resource_id,
     isEditer: false,
     initType: searchParams.is_preview ? 'restore' : 'fetch',
   })

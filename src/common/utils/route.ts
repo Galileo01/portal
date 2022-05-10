@@ -3,7 +3,7 @@ import { StringKeyValueObject } from '@/typings/common/editer-config-data'
 import { getUniqueId } from './index'
 
 export type EditerSearchGenerateParams = {
-  page_id: string
+  resource_id: string
   edit_type?: string
   use_local?: boolean
   title?: string
@@ -32,6 +32,6 @@ export const generateEditerPath = (params: EditerSearchGenerateParams) => {
 }
 
 export const createNewEditerPath = () => {
-  const pageId = getUniqueId()
-  return generateEditerPath({ page_id: pageId, edit_type: 'create' })
+  const resourceId = getUniqueId()
+  return generateEditerPath({ resource_id: resourceId, edit_type: 'create' })
 }

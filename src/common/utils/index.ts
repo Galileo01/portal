@@ -68,9 +68,9 @@ export const compose =
     ) as unknown as T
 
 export const createANewPage = () => {
-  const pageId = getUniqueId()
+  const resourceId = getUniqueId()
   return {
-    pageId,
-    path: `${ROUTE_EDITER}?page_id=${pageId}&edit_type=create`,
+    resourceId,
+    path: `${ROUTE_EDITER}?resource_id=${resourceId}&edit_type=create`,
   }
 }

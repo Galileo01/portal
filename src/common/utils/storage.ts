@@ -13,28 +13,31 @@ export const getLocalStorage: GetLocalStorageFun = (key, defaultValue) =>
 export const setLocalStorage: SetLocalStorageFun = (key, value) =>
   localStorage.setItem(key, value)
 
-export const getAllPageConfig = () =>
+export const getAllResourceConfig = () =>
   safeJsonParse<PageConfigStorageValue>(
     getLocalStorage('page_configs') || '{}',
     {}
   )
 
-export const setPageConfigById = (pageId: string, pageConfig: PageConfig) => {
-  const prePageConfigs = getAllPageConfig()!
-  prePageConfigs[pageId] = pageConfig
+export const setPageConfigById = (
+  resourceId: string,
+  pageConfig: PageConfig
+) => {
+  const prePageConfigs = getAllResourceConfig()!
+  prePageConfigs[resourceId] = pageConfig
   setLocalStorage('page_configs', JSON.stringify(prePageConfigs))
 }
 
-export const getPageConfigById = (pageId: string) => {
-  const prePageConfigs = getAllPageConfig()
-  return prePageConfigs?.[pageId]
+export const getPageConfigById = (resourceId: string) => {
+  const prePageConfigs = getAllResourceConfig()
+  return prePageConfigs?.[resourceId]
 }
 
-export const clearPageConfig = (pageId?: string) => {
-  if (pageId) {
-    const prePageConfigs = getAllPageConfig()!
+export const clearResourceConfig = (resourceId?: string) => {
+  if (resourceId) {
+    const prePageConfigs = getAllResourceConfig()!
     // 删除 对应 pageID 的页面配置
-    delete prePageConfigs[pageId]
+    delete prePageConfigs[resourceId]
     setLocalStorage('page_configs', JSON.stringify(prePageConfigs))
   } else {
     // 清空所有

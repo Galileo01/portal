@@ -21,22 +21,22 @@ import {
   MAX_LENGTH,
 } from '@/store/editer-data'
 import { ROUTE_PAGE } from '@/common/constant/route'
-import { setPageConfigById, clearPageConfig } from '@/common/utils/storage'
+import { setPageConfigById, clearResourceConfig } from '@/common/utils/storage'
 import { restorePreviewColorVariable } from '@/common/utils/color-variable'
 import { removeFontStyleNode } from '@/common/utils/font'
 import { usePrompt } from '@/common/hooks/react-router-dom'
 
 import styles from './index.module.less'
-import PageManage from './components/page-manage'
+import ResourceManage from './components/resource-manage'
 import PublishModal, { PublishModalProps } from './components/publish-modal'
 import { devLogger } from '@/common/utils'
 
 export type ToolNavProps = {
-  pageId: string
+  resourceId: string
   editType: string
 }
 
-const ToolNav: React.FC<ToolNavProps> = ({ pageId, editType }) => {
+const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
   const [isBlocking, setIsBlocking] = React.useState(true)
   const [modalVisible, setModalVisible] = React.useState(false)
 
@@ -73,8 +73,8 @@ const ToolNav: React.FC<ToolNavProps> = ({ pageId, editType }) => {
 
   const handleSaveClick = () => {
     setIsBlocking(false)
-    setPageConfigById(pageId, {
-      title: pageId,
+    setPageConfigById(resourceId, {
+      title: resourceId,
       edit_type: editType,
       globalConfig,
       styleConfig,
@@ -87,7 +87,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ pageId, editType }) => {
     editerDataDispatch({
       type: EditerDataActionEnum.CLEAR,
     })
-    clearPageConfig(pageId)
+    clearResourceConfig(resourceId)
     restorePreviewColorVariable()
     removeFontStyleNode()
     setIsBlocking(false)
@@ -115,7 +115,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ pageId, editType }) => {
     <section className={styles.tool_bar}>
       <Space size="large">
         <Logo size={50} circle />
-        <PageManage currentPageId={pageId} />
+        <ResourceManage currentResourceId={resourceId} />
       </Space>
       <Space className={styles.btns} size="medium">
         <ThemeSwitch />
@@ -139,7 +139,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ pageId, editType }) => {
         <Link
           to={{
             pathname: ROUTE_PAGE,
-            search: `page_id=${pageId}&is_preview=1`,
+            search: `resource_id=${resourceId}&is_preview=1`,
           }}
           target="_blank"
           className={styles.preview_link}
@@ -159,7 +159,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ pageId, editType }) => {
         </Button>
       </Space>
       <PublishModal
-        pageId={pageId}
+        resourceId={resourceId}
         visible={modalVisible}
         onCancel={hidePublishModal}
         onConfirm={handlePagePublish}
