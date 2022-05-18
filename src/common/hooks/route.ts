@@ -3,6 +3,7 @@ import * as React from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 import { ResourceType } from '@/typings/database'
+import { EditType } from '@/typings/common/editer'
 
 export type EditerSearchParams = {
   resource_id: string
@@ -18,7 +19,7 @@ export const useEditerParams = () => {
   const searchParams = React.useMemo<EditerSearchParams>(
     () => ({
       resource_id: params.get('resource_id') || '',
-      edit_type: params.get('edit_type') || 'create',
+      edit_type: params.get('edit_type') || EditType.CREATE,
       use_local: Boolean(params.get('use_local')),
       title: params.get('title') || '',
       resource_type:

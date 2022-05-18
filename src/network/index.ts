@@ -4,11 +4,13 @@ import { Message } from '@arco-design/web-react'
 import { IS_DEV, devLogger } from '@/common/utils'
 import { getLocalStorage } from '@/common/utils/storage'
 
-const baseURL = IS_DEV ? 'http://localhost:5000' : 'http://81.68.119.113:5000'
+export const baseURL = IS_DEV
+  ? 'http://localhost:5000'
+  : 'http://81.68.119.113:5000'
 
 const ins = axios.create({
   baseURL,
-  timeout: 5000,
+  timeout: 50000, // 50s超时，出码功能耗时比较长
 })
 
 ins.interceptors.request.use((config) => {

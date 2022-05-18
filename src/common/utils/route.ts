@@ -1,6 +1,8 @@
 import { ROUTE_EDITER } from '@/common/constant/route'
 import { StringKeyValueObject } from '@/typings/common/editer-config-data'
 import { ResourceType } from '@/typings/database'
+import { EditType } from '@/typings/common/editer'
+
 import { getUniqueId } from './index'
 
 export type EditerSearchGenerateParams = {
@@ -28,7 +30,7 @@ export const generateEditerSearch = (params: EditerSearchGenerateParams) => {
   const { edit_type, use_local, ...rest } = params
   const transformedParams: StringKeyValueObject = {
     ...rest,
-    edit_type: params.edit_type || 'create',
+    edit_type: params.edit_type || EditType.CREATE,
     use_local: params.use_local ? '1' : '0',
   }
   return stringfySearch(transformedParams)
@@ -45,7 +47,7 @@ export const createNewResourcePath: (resource_type?: ResourceType) => string = (
   const resourceId = getUniqueId()
   return generateEditerPath({
     resource_id: resourceId,
-    edit_type: 'create',
+    edit_type: EditType.CREATE,
     resource_type,
   })
 }

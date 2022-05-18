@@ -4,15 +4,13 @@ import {
   Form,
   Button,
   Message,
-  Tooltip,
   List,
   Image,
   Collapse,
   FormProps,
 } from '@arco-design/web-react'
-import { IconQuestionCircle, IconSave } from '@arco-design/web-react/icon'
+import { IconSave } from '@arco-design/web-react/icon'
 import { FontList } from '@/typings/database'
-
 import FontCascader from '@/components/custom-form-inner/font-cascader'
 import { FontFormData } from '@/typings/common/editer-config-data'
 import {
@@ -20,6 +18,7 @@ import {
   updateFontConfigToElement,
 } from '@/common/utils/font'
 import { useGlobalConfig } from '@/common/hooks/editer-data'
+import HelpTip from '@/components/help-tip'
 
 import styles from './index.module.less'
 import { COLLAPSE_BASE_PROPS } from '../../../config'
@@ -97,9 +96,7 @@ const FontForm: React.FC<FontFormProps> = ({ fontList }) => {
           label={
             <span>
               使用的字体
-              <Tooltip content="包含全局字体和单个元素个性化字体">
-                <IconQuestionCircle className="question_icon" />
-              </Tooltip>
+              <HelpTip content="包含全局字体和单个元素个性化字体" />
             </span>
           }
         >

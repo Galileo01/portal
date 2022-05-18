@@ -8,6 +8,11 @@ export type ComponentDataItem = {
 
 export type ComponentDataList = ComponentDataItem[]
 
+export enum EditType {
+  CREATE = 'create',
+  EDIT = 'edit',
+}
+
 export type PageConfig = {
   // 页面(资源)标题
   title: string

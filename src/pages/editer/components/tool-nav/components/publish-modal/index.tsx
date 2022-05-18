@@ -94,7 +94,7 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
       generateThumbnail()
     }
     publishForm.resetFields()
-  }, [generateThumbnail, publishForm, visible, resourceId])
+  }, [generateThumbnail, publishForm, visible])
 
   return (
     <Modal title="发布" visible={visible} onConfirm={hanldeConfirm} {...rest}>
@@ -104,6 +104,7 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
         labelAlign="left"
         autoComplete="off"
         initialValues={initialValues}
+        size="small"
       >
         <FormItem
           field="resourceId"

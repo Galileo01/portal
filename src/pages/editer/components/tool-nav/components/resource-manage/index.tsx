@@ -12,6 +12,7 @@ import {
   clearResourceConfig,
 } from '@/common/utils/storage'
 import { generateEditerPath } from '@/common/utils/route'
+import { EditType } from '@/typings/common/editer'
 
 import styles from './index.module.less'
 
@@ -41,11 +42,12 @@ const ResourceManage: React.FC<ResourceManageProps> = (props) => {
   const handleItemClick = React.useCallback<
     NonNullable<MenuProps['onClickMenuItem']>
   >((resourceId, event) => {
-    const { btnType, editType = 'create' } = (event.target as HTMLElement)
-      .dataset
+    const { btnType, editType = EditType.CREATE } = (
+      event.target as HTMLElement
+    ).dataset
     if (!btnType) return
     if (btnType === 'open') {
-      // FIXME: 等待 官方 修复 bug https://github.com/remix-run/react-router/issues/8245 ,使用 navigator 跳转 页面不刷新问题
+      // 等待 官方 修复 bug https://github.com/remix-run/react-router/issues/8245 ,使用 navigator 跳转 页面不刷新问题
 
       const href = generateEditerPath({
         resource_id: resourceId,

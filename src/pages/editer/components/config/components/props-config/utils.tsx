@@ -6,7 +6,6 @@ import {
   Switch,
   Button,
   Select,
-  Popover,
   InputNumber,
 } from '@arco-design/web-react'
 import {
@@ -14,7 +13,6 @@ import {
   IconArrowRise,
   IconArrowFall,
   IconPlus,
-  IconQuestionCircle,
 } from '@arco-design/web-react/icon'
 
 import { ComponentDataItem } from '@/typings/common/editer'
@@ -26,6 +24,7 @@ import {
   OptionsType,
 } from '@/typings/common/resosurce-component'
 import { isNumber } from '@/common/utils/assert'
+import HelpTip from '@/components/help-tip'
 
 import styles from './index.module.less'
 
@@ -87,9 +86,7 @@ export const computeEnhancedLabel = (label: string, help?: string) =>
   help ? (
     <span>
       {label}
-      <Popover content={help} style={{ marginLeft: 5 }}>
-        <IconQuestionCircle className="question_icon" />
-      </Popover>
+      <HelpTip content={help} style={{ marginLeft: 5 }} />
     </span>
   ) : (
     label

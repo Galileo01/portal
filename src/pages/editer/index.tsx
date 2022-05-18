@@ -6,6 +6,7 @@ import { useSearchParams } from 'react-router-dom'
 import { EditerDataProvider } from '@/store/editer-data'
 import { FetchDataProvider } from '@/store/fetch-data'
 import { usePageInit } from '@/common/hooks/page-init'
+import { EditType } from '@/typings/common/editer'
 
 import ToolNav from './components/tool-nav'
 import Resource from './components/resource'
@@ -21,7 +22,7 @@ const Editer = () => {
   const searchParams = React.useMemo(
     () => ({
       resource_id: params.get('resource_id') || '',
-      edit_type: params.get('edit_type') || 'create',
+      edit_type: params.get('edit_type') || EditType.CREATE,
       use_local: Boolean(Number(params.get('use_local'))),
       title: params.get('title') || '',
       resource_type: params.get('resource_type') || 'page',
@@ -34,7 +35,8 @@ const Editer = () => {
     resourceType: searchParams.resource_type,
     isEditer: true,
     initType:
-      searchParams.use_local === true || searchParams.edit_type === 'create'
+      searchParams.use_local === true ||
+      searchParams.edit_type === EditType.CREATE
         ? 'restore'
         : 'fetch',
   })

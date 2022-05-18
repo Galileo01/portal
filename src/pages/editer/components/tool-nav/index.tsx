@@ -28,10 +28,14 @@ import { usePrompt } from '@/common/hooks/react-router-dom'
 import { devLogger } from '@/common/utils'
 import { generateEditerPath } from '@/common/utils/route'
 import { operateResource } from '@/network/resource'
+import { outputCode } from '@/network/code'
+import { EditType } from '@/typings/common/editer'
 
 import styles from './index.module.less'
 import ResourceManage from './components/resource-manage'
 import PublishModal, { PublishModalProps } from './components/publish-modal'
+import OutputModal, { OutputModalProps } from './components/output-modal'
+import { startDownloadZip } from './utils'
 
 export type ToolNavProps = {
   resourceId: string
@@ -40,7 +44,9 @@ export type ToolNavProps = {
 
 const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
   const [isBlocking, setIsBlocking] = React.useState(true)
-  const [modalVisible, setModalVisible] = React.useState(false)
+  const [publishModalVisible, setPublishModalVisible] = React.useState(false)
+  const [outputModalVisible, setOutputModalVisible] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
 
   usePrompt('您还未保存配置，确认离开编辑页么？', isBlocking)
 
@@ -57,7 +63,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
 
   const searchParams = React.useRef({
     resource_type: params.get('resource_type') || 'page',
-    edit_type: params.get('edit_type') || 'create',
+    edit_type: params.get('edit_type') || EditType.CREATE,
     title: params.get('title') || undefined,
   })
 
@@ -105,27 +111,37 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
   }
 
   const showPublishModal = () => {
-    setModalVisible(true)
+    setPublishModalVisible(true)
   }
 
   const hidePublishModal = () => {
-    setModalVisible(false)
+    setPublishModalVisible(false)
   }
 
-  const handlePagePublish: PublishModalProps['onConfirm'] = (values) => {
-    devLogger('handlePagePublish', values)
+  const showOutputModal = () => {
+    setOutputModalVisible(true)
+  }
+
+  const hideOutputModal = () => {
+    setOutputModalVisible(false)
+  }
+
+  const stringfyConfig = () =>
+    JSON.stringify({
+      title: resourceId,
+      globalConfig,
+      styleConfig,
+      componentDataList,
+    })
+
+  const handleResourcePublish: PublishModalProps['onConfirm'] = (values) => {
+    devLogger('handleResourcePublish', values)
     const isPublish = searchParams.current.edit_type === 'create'
     operateResource({
       operateType: isPublish ? 'publish' : 'update',
       resourceData: {
         ...values,
-        config: JSON.stringify({
-          title: resourceId,
-          edit_type: editType,
-          globalConfig,
-          styleConfig,
-          componentDataList,
-        }),
+        config: stringfyConfig(),
       },
     }).then((res) => {
       if (res.success) {
@@ -139,7 +155,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
           onClose: () => {
             const { resourceType, title } = values
 
-            // FIXME: 等待 官方 修复 bug https://github.com/remix-run/react-router/issues/8245 ,使用 navigator 跳转 页面不刷新问题
+            // 等待 官方 修复 bug https://github.com/remix-run/react-router/issues/8245 ,使用 navigator 跳转 页面不刷新问题
             const newHref = generateEditerPath({
               resource_id: resourceId,
               edit_type: 'edit',
@@ -152,9 +168,38 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
       }
     })
   }
-  React.useEffect(() => {
-    devLogger('currentSnapshotIndex', currentSnapshotIndex)
-  }, [currentSnapshotIndex])
+
+  const handleOutputBtnClick = () => {
+    // 资源类型 为页面时 才允许 出码
+    if (searchParams.current.resource_type === 'page') {
+      showOutputModal()
+    } else {
+      Message.warning('模板资源不支持出码')
+    }
+  }
+
+  const handlePageOutput: OutputModalProps['onConfirm'] = (values) => {
+    const { useLocal, ...restField } = values
+    devLogger('handlePageOutput', values)
+    setLoading(true)
+    setIsBlocking(false)
+    outputCode({
+      ...restField,
+      pageConfig: useLocal ? stringfyConfig() : undefined,
+    })
+      .then((res) => {
+        if (res.success === 1) {
+          devLogger('res', res)
+          hideOutputModal()
+          Message.success('出码成功,开始下载')
+          startDownloadZip(res.data.zipName)
+        }
+      })
+      .finally(() => {
+        setLoading(false)
+        setIsBlocking(true)
+      })
+  }
 
   return (
     <section className={styles.tool_bar}>
@@ -198,7 +243,9 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
         >
           <Button>清空</Button>
         </Popconfirm>
-        <Button type="outline">出码</Button>
+        <Button type="outline" onClick={handleOutputBtnClick}>
+          出码
+        </Button>
         <Button type="primary" onClick={showPublishModal}>
           发布
         </Button>
@@ -207,9 +254,18 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
         resourceId={resourceId}
         title={searchParams.current.title}
         resourceType={searchParams.current.resource_type}
-        visible={modalVisible}
+        visible={publishModalVisible}
         onCancel={hidePublishModal}
-        onConfirm={handlePagePublish}
+        onConfirm={handleResourcePublish}
+      />
+      <OutputModal
+        pageId={resourceId}
+        editType={searchParams.current.edit_type}
+        title={searchParams.current.title}
+        visible={outputModalVisible}
+        fetchIng={loading}
+        onCancel={hideOutputModal}
+        onConfirm={handlePageOutput}
       />
     </section>
   )

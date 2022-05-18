@@ -36,7 +36,6 @@ const WaterFallFlow: React.FC<WaterFallFlowProps> = (props) => {
     ) as HTMLDivElement | null | undefined
 
     flowItemElement?.style.setProperty('grid-row', `auto / span ${span}`)
-    devLogger('setGridStyle', imgHeight, span)
   }
 
   const handleImgLoadGenerator: (
