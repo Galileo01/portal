@@ -1,0 +1,86 @@
+.resource_pane {
+  padding: 10px;
+}
+
+.section_title {
+  color: var(--color-text-1);
+  margin-top: 0;
+}
+
+.resources_list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.resource_card {
+  border: none;
+  box-sizing: border-box;
+  width: 48%;
+  margin-bottom: 10px;
+  padding: 0 8px;
+  cursor: pointer;
+
+  :global(.arco-card-body) {
+    padding: 4px 0px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  :global(.arco-card-cover) {
+    border: 1px solid rgb(var(--gray-3));
+    border-radius: var(--border-radius-small);
+  }
+}
+
+.resource_cover img {
+  object-fit: contain;
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(2);
+  }
+}
+
+// template
+
+.filter_wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+
+  :global(.arco-form-item) {
+    margin-bottom: 0;
+  }
+  :global(.arco-form-label-item) {
+    padding-right: 0;
+  }
+}
+
+.filter {
+  margin-top: 20px;
+  width: 100%;
+}
+
+.load_trigger {
+  text-align: center;
+}
+
+.template_cover {
+  position: relative;
+
+  &:hover .template_import_btn {
+    opacity: 1;
+  }
+}
+
+.template_import_btn {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

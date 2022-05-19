@@ -12,9 +12,8 @@ import { ComponentDataList } from '@/typings/common/editer'
 import RCListRenderer from '@/components/rclist-renderer'
 
 import ToolBox from './components/tool-box'
-import { useDragAndDrop, useToolBox } from './hooks'
+import { useDragAndDrop, useToolBox, useTemplateImport } from './hooks'
 import styles from './index.module.less'
-import { devLogger } from '@/common/utils'
 
 /**
  * FIXME:
@@ -71,9 +70,7 @@ const Previewer = () => {
     updateClickElement(e.target as HTMLElement)
   }
 
-  React.useEffect(() => {
-    devLogger('Previewer currentClickElement', currentClickElement)
-  }, [currentClickElement])
+  useTemplateImport()
 
   return (
     <section

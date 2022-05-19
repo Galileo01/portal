@@ -1,16 +1,25 @@
 import * as React from 'react'
 
 import { throttle } from 'lodash-es'
+import { Modal, Message } from '@arco-design/web-react'
 
-import { ComponentDataItem, ComponentDataList } from '@/typings/common/editer'
-import { DATASET_KEY_RESOURCE_COMPONENT_KEY } from '@/common/constant'
-import { devLogger, getUniqueId } from '@/common/utils'
+import {
+  ComponentDataItem,
+  ComponentDataList,
+  PageConfig,
+} from '@/typings/common/editer'
+import {
+  DATASET_KEY_RESOURCE_COMPONENT_KEY,
+  CUSTOM_EVENT_TEMPLATE_IMPORT,
+} from '@/common/constant'
+import { devLogger, getUniqueId, safeJsonParse } from '@/common/utils'
 import {
   isPreviewerElement,
   getClosedRCRenderedElement,
   getComponentDataIndexFromElement,
 } from '@/common/utils/element'
 import { RCList } from '@/resource-components'
+import { getResourceById } from '@/network/resource'
 
 import { ToolBoxRef, ToolBoxProps } from './components/tool-box'
 
@@ -36,7 +45,7 @@ export type useDragAndDropParams = {
   actionsBeforeHandle: () => void
 }
 
-// 处理拖拽 逻辑
+// 处理源组件的拖拽渲染 以及 previewer 内部拖拽排序
 export const useDragAndDrop = (params: useDragAndDropParams) => {
   const {
     previewerElementRef,
@@ -234,4 +243,44 @@ export const useToolBox = (params: useToolBoxParams) => {
     hiddenToolBox,
     handleOprateBtnClick,
   }
+}
+
+// TODO: 完善逻辑
+// 处理模板导入 相关逻辑
+export const useTemplateImport = () => {
+  const handleImport = React.useCallback((e) => {
+    const {
+      detail: { resourceId },
+    } = e as CustomEvent<{
+      resourceId: string
+    }>
+    const modal = Modal.info({
+      title: '提示',
+      content: '正在拉取并导入模板数据...',
+      footer: null,
+      maskClosable: false,
+    })
+    getResourceById({
+      resourceId,
+      resourceType: 'template',
+    }).then((res) => {
+      if (res.success) {
+        const config = safeJsonParse<PageConfig>(res.data.config)
+        devLogger('getResourceById', res.data, config)
+        // TODO: 封装 page-init 恢复的方法 并在这里复用
+        setTimeout(() => {
+          modal.close()
+          Message.success('导入成功')
+        }, 3000)
+      }
+    })
+  }, [])
+
+  React.useEffect(() => {
+    window.addEventListener(CUSTOM_EVENT_TEMPLATE_IMPORT, handleImport)
+
+    return () => {
+      window.removeEventListener(CUSTOM_EVENT_TEMPLATE_IMPORT, handleImport)
+    }
+  }, [handleImport])
 }

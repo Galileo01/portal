@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { Spin, Radio, Message } from '@arco-design/web-react'
+import { Spin, Message } from '@arco-design/web-react'
 
 import { devLogger } from '@/common/utils'
 import { getTemplateList, deleteResourceById } from '@/network/resource'
@@ -10,6 +10,7 @@ import {
   GetResourceListQuery,
 } from '@/typings/request'
 import { useRefreshWhenUpdate } from '@/common/hooks/user'
+import TemplateTypeRadio from '@/components/template-type-selector'
 
 import styles from './index.module.less'
 import ResourceList, {
@@ -17,8 +18,6 @@ import ResourceList, {
   ActionComputer,
   TagComputer,
 } from './resource-list'
-
-const { Group: RadioGroup } = Radio
 
 type Pagination = {
   current: number
@@ -88,7 +87,7 @@ const TemplateList = () => {
 
     const tags: Array<{ text: string; color: string }> = [
       {
-        text: isPrivate ? '私有' : '共享',
+        text: isPrivate ? '我的' : '共享',
         color: isPrivate ? 'red' : 'blue',
       },
       {
@@ -124,12 +123,7 @@ const TemplateList = () => {
   return (
     <section className={styles.page_list_container}>
       <h1 className={styles.title}>模板空间</h1>
-      <RadioGroup type="button" value={filter} onChange={setFilter}>
-        <Radio value="all">全部</Radio>
-        <Radio value="private">我的</Radio>
-        <Radio value="public">共享</Radio>
-        <Radio value="platform">平台</Radio>
-      </RadioGroup>
+      <TemplateTypeRadio value={filter} onChange={setFilter} />
       <Spin
         style={{ display: 'block' }}
         className={styles.template_spin}

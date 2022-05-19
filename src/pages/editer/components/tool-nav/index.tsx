@@ -7,8 +7,10 @@ import {
   Message,
   Popconfirm,
   Tag,
+  Modal,
+  Tooltip,
 } from '@arco-design/web-react'
-import { IconRedo, IconUndo } from '@arco-design/web-react/icon'
+import { IconRedo, IconUndo, IconCopy } from '@arco-design/web-react/icon'
 import clsx from 'clsx'
 import { Link, useSearchParams } from 'react-router-dom'
 
@@ -25,7 +27,6 @@ import { setPageConfigById, clearResourceConfig } from '@/common/utils/storage'
 import { restorePreviewColorVariable } from '@/common/utils/color-variable'
 import { removeFontStyleNode } from '@/common/utils/font'
 import { usePrompt } from '@/common/hooks/react-router-dom'
-import { devLogger } from '@/common/utils'
 import { generateEditerPath } from '@/common/utils/route'
 import { operateResource } from '@/network/resource'
 import { outputCode } from '@/network/code'
@@ -138,7 +139,6 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
   const handleResourcePublish: PublishModalProps['onConfirm'] = async (
     values
   ) => {
-    devLogger('handleResourcePublish', values)
     const isPublish = searchParams.current.edit_type === 'create'
     const { thumbnail, ...restData } = values
     // 点击确认时 才上传至 腾讯云 cos
@@ -158,20 +158,54 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
       clearResourceConfig(resourceId)
       setIsBlocking(false)
 
-      Message.success({
-        content: `${isPublish ? '发布' : '更新'}成功`,
-        // NOTE: 提示关闭后 根据提交信息 重新计算 地址 强制跳转到 新的地址
-        onClose: () => {
-          const { resourceType, title } = values
+      // 并清空本地数据
+      if (isPublish) {
+        clearResourceConfig(resourceId)
+      }
+      // eslint-disable-next-line no-restricted-globals
+      const pageSearch = `${location.origin}${ROUTE_PAGE}/resourceId=${resourceId}&resource_type=${searchParams.current.resource_type}`
 
-          // 等待 官方 修复 bug https://github.com/remix-run/react-router/issues/8245 ,使用 navigator 跳转 页面不刷新问题
-          const newHref = generateEditerPath({
-            resource_id: resourceId,
-            edit_type: 'edit',
-            resource_type: resourceType,
-            title,
-          })
-          window.open(newHref, '_self')
+      const handleCopyClick = () => {
+        navigator.clipboard.writeText(pageSearch).then(() => {
+          Message.success('复制成功')
+        })
+      }
+
+      Modal.success({
+        title: '提示',
+        footer: null,
+        content: (
+          <div>
+            <div>
+              {`${isPublish ? '发布' : '更新'}成功 , `}
+              <a href={pageSearch} target="_blank" rel="noreferrer">
+                点此访问
+              </a>
+              <Tooltip content="复制链接">
+                <IconCopy className="question_icon" onClick={handleCopyClick} />
+              </Tooltip>
+            </div>
+            {isPublish && (
+              <div className="tip_text" style={{ marginTop: 10 }}>
+                弹窗关闭后会强制更新url
+              </div>
+            )}
+          </div>
+        ),
+        cancelText: '取消',
+        onCancel: () => {
+          // NOTE: 若是发布模式 发布成功后 必须跳转到 编辑模式的页面
+          if (isPublish) {
+            const { resourceType, title } = values
+            const newHref = generateEditerPath({
+              resource_id: resourceId,
+              edit_type: 'edit',
+              resource_type: resourceType,
+              title,
+            })
+            // eslint-disable-next-line no-restricted-globals
+            location.replace(newHref)
+          }
         },
       })
     }
@@ -188,7 +222,6 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
 
   const handlePageOutput: OutputModalProps['onConfirm'] = (values) => {
     const { useLocal, ...restField } = values
-    devLogger('handlePageOutput', values)
     setLoading(true)
     setIsBlocking(false)
     outputCode({
@@ -197,7 +230,6 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
     })
       .then((res) => {
         if (res.success === 1) {
-          devLogger('res', res)
           hideOutputModal()
           Message.success('出码成功,开始下载')
           startDownloadZip(res.data.zipName)
@@ -237,7 +269,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
         <Link
           to={{
             pathname: ROUTE_PAGE,
-            search: `resource_id=${resourceId}&is_preview=1`,
+            search: `resource_id=${resourceId}&resource_type=${searchParams.current.resource_type}&is_preview=1`,
           }}
           target="_blank"
           className={styles.preview_link}

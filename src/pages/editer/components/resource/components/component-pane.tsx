@@ -1,10 +1,11 @@
 import * as React from 'react'
 
-import { Card, Image } from '@arco-design/web-react'
+import { Card } from '@arco-design/web-react'
 
 import { componentCategoryList } from '@/resource-components'
 import { devLogger } from '@/common/utils'
 import { DATASET_KEY_RESOURCE_COMPONENT_KEY } from '@/common/constant'
+import CustomImage from '@/components/custom-image'
 
 import styles from './index.module.less'
 
@@ -21,26 +22,24 @@ const ComponentPane = () => {
   }
 
   return (
-    <section className={styles.component_pane}>
+    <section className={styles.resource_pane}>
       <div className={styles.content} onDragStart={handleDragStart}>
         {componentCategoryList.map(({ cate, label, componentList }) => (
           <div className={styles.cate_item} key={cate}>
-            <h4 className={styles.category_title}>{label}</h4>
-            <div className={styles.components_list}>
+            <h4 className={styles.section_title}>{label}</h4>
+            <div className={styles.resources_list}>
               {componentList.map(({ previewImg, name, key }) => (
                 <Card
                   hoverable
                   cover={
-                    <Image
+                    <CustomImage
                       src={previewImg}
-                      alt={name}
                       height={80}
                       width="100%"
-                      className={styles.component_cover}
-                      preview={false}
+                      className={styles.resource_cover}
                     />
                   }
-                  className={styles.component_card}
+                  className={styles.resource_card}
                   key={key}
                   draggable
                   // data-key 请和  @/common/constant 下  DATASET_KEY_RESOURCE_COMPONENT_KEY 常量 保持一致

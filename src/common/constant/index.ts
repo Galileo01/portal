@@ -44,3 +44,7 @@ export const NANO_ID_LENGTH = 10
 
 export const BLEND_MODE_DOC_HREF =
   'https://developer.mozilla.org/zh-CN/docs/Web/CSS/blend-mode'
+
+// 自定义事件
+
+export const CUSTOM_EVENT_TEMPLATE_IMPORT = 'template_import'

@@ -53,8 +53,7 @@ const UserComponent: React.FC<UserProps> = (props) => {
     const { name, password } = values
     login({
       name,
-      password,
-      // password: md5(password),
+      password: md5(password),
     }).then((res) => {
       if (res.success) {
         const { user, token, isRegister } = res.data

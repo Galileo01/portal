@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { nanoid } from 'nanoid'
 
-import { NANO_ID_LENGTH } from '@/common/constant'
+import { NANO_ID_LENGTH, CUSTOM_EVENT_TEMPLATE_IMPORT } from '@/common/constant'
 import { ROUTE_EDITER } from '@/common/constant/route'
 
 export const calculateIsDevFromQuery = () => {
@@ -66,3 +66,12 @@ export const compose =
         curFun.apply(null, [].concat(preValue as any | any[])),
       args
     ) as unknown as T
+
+export const dispatchTemplateImportEvent = (resourceId: string) => {
+  const customEvent = new CustomEvent(CUSTOM_EVENT_TEMPLATE_IMPORT, {
+    detail: {
+      resourceId,
+    },
+  })
+  window.dispatchEvent(customEvent)
+}

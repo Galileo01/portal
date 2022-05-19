@@ -61,7 +61,9 @@ const ClickElementInfo: React.FC<ClickElementInfoProps> = (props) => {
           </span>
           <span className={styles.info_text}>{currentClickElement?.id}</span>
           {currentClickElement?.id && (
-            <IconCopy className="question_icon" onClick={handleCopyClick} />
+            <Tooltip content="复制id">
+              <IconCopy className="question_icon" onClick={handleCopyClick} />
+            </Tooltip>
           )}
         </div>
       </div>

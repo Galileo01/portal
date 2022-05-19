@@ -46,19 +46,26 @@
 }
 
 .function_item {
-  :global(.arco-card-body) {
-    .align_center();
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+
+  &:hover :global(.arco-icon) {
+    width: 100px;
+    height: 100px;
   }
 }
 
 .function_item_cover {
   .align_center();
+
   height: 120px;
 
   :global(.arco-icon) {
     width: 50px;
     height: 50px;
-    transition: transform 0.2s ease-in-out;
+    transition: width, height 0.2s ease-in-out;
     color: var(--color-text-1);
   }
 }

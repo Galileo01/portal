@@ -73,7 +73,6 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
       html2canvas(previewerElement).then((canvas) => {
         canvas.toBlob((blob) => {
           if (blob) {
-            devLogger('html2canvas', blob, URL.createObjectURL(blob))
             setThumbnailInfo({
               img: blob,
               url: canvas.toDataURL(),
