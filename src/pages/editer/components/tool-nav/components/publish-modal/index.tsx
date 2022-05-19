@@ -1,7 +1,14 @@
 import * as React from 'react'
 
-import { Modal, Form, Input, Radio, ModalProps } from '@arco-design/web-react'
-import domtoimage from 'dom-to-image'
+import {
+  Modal,
+  Form,
+  Input,
+  Radio,
+  ModalProps,
+  Spin,
+} from '@arco-design/web-react'
+import html2canvas from 'html2canvas'
 
 import CustomImage from '@/components/custom-image'
 import { devLogger } from '@/common/utils'
@@ -13,7 +20,7 @@ export type PublishForm = {
   title: string
   private: number
   resourceType: ResourceType
-  thumbnailUrl: string
+  thumbnail: Blob
 }
 
 export type PublishModalProps = Omit<ModalProps, 'onConfirm'> & {
@@ -40,7 +47,6 @@ const privateSelectRenderer = (values: any) => {
   return null
 }
 
-// TODO: 510 解决 dom-to-image 跨域问题
 const PublishModal: React.FC<PublishModalProps> = (props) => {
   const { resourceId, resourceType, visible, title, onConfirm, ...rest } = props
 
@@ -49,40 +55,42 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
       resourceId,
       private: 1,
       resourceType: resourceType as ResourceType,
-      title,
+      title: title || resourceId,
     }),
     [resourceId, resourceType, title]
   )
 
   const [publishForm] = Form.useForm<PublishForm>()
-  const [thumbnail, setThumbnail] = React.useState('')
+  const [thumbnailInfo, setThumbnailInfo] = React.useState<{
+    img: Blob
+    url: string
+  }>()
 
   // 展示  设置默认值
   const generateThumbnail = React.useCallback(() => {
     const previewerElement = getPreviewerElement()
     if (previewerElement) {
-      domtoimage
-        .toPng(previewerElement)
-        .then((imgUrl) => {
-          devLogger('domtoimage imgUrl', imgUrl)
-          setThumbnail(imgUrl)
-          // TODO: 使用 腾讯云 对象存储  临时使用 dataURL
-
-          publishForm.setFieldValue('thumbnailUrl', imgUrl)
+      html2canvas(previewerElement).then((canvas) => {
+        canvas.toBlob((blob) => {
+          if (blob) {
+            devLogger('html2canvas', blob, URL.createObjectURL(blob))
+            setThumbnailInfo({
+              img: blob,
+              url: canvas.toDataURL(),
+            })
+          }
         })
-        // TODO: 解决跨域问题
-        .finally(() => {
-          const tempUrl =
-            'https://cos-01-1303103441.cos.ap-chengdu.myqcloud.com/img/portal/6480dbc69be1b5de95010289787d64f1.png_tplv-uwbnlip3yd-webp.webp'
-          publishForm.setFieldValue('thumbnailUrl', tempUrl)
-        })
+      })
     }
-  }, [publishForm])
+  }, [])
 
   const hanldeConfirm = () => {
     publishForm.validate((error, values) => {
-      if (!error && values) {
-        onConfirm(values as PublishForm)
+      if (!error && values && thumbnailInfo) {
+        onConfirm({
+          ...values,
+          thumbnail: thumbnailInfo?.img,
+        })
       } else {
         devLogger('publishForm.validate', error, values)
       }
@@ -92,8 +100,10 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
   React.useEffect(() => {
     if (visible) {
       generateThumbnail()
+    } else {
+      publishForm.resetFields()
+      setThumbnailInfo(undefined)
     }
-    publishForm.resetFields()
   }, [generateThumbnail, publishForm, visible])
 
   return (
@@ -135,14 +145,16 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
         <FormItem shouldUpdate noStyle>
           {privateSelectRenderer}
         </FormItem>
-        <FormItem label="缩略图" field="thumbnailUrl">
-          <CustomImage
-            src={thumbnail}
-            width={200}
-            style={{
-              border: '1px solid var(--color-text-4)',
-            }}
-          />
+        <FormItem label="缩略图" field="thumbnail">
+          <Spin style={{ display: 'block' }} loading={!thumbnailInfo?.url}>
+            <CustomImage
+              src={thumbnailInfo?.url}
+              width={200}
+              style={{
+                border: '1px solid var(--color-text-4)',
+              }}
+            />
+          </Spin>
         </FormItem>
       </Form>
     </Modal>

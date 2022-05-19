@@ -29,6 +29,7 @@ import { devLogger } from '@/common/utils'
 import { generateEditerPath } from '@/common/utils/route'
 import { operateResource } from '@/network/resource'
 import { outputCode } from '@/network/code'
+import { uploadCos } from '@/network/cos'
 import { EditType } from '@/typings/common/editer'
 
 import styles from './index.module.less'
@@ -134,39 +135,46 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
       componentDataList,
     })
 
-  const handleResourcePublish: PublishModalProps['onConfirm'] = (values) => {
+  const handleResourcePublish: PublishModalProps['onConfirm'] = async (
+    values
+  ) => {
     devLogger('handleResourcePublish', values)
     const isPublish = searchParams.current.edit_type === 'create'
-    operateResource({
+    const { thumbnail, ...restData } = values
+    // 点击确认时 才上传至 腾讯云 cos
+    const thumbnailUrl = await uploadCos(thumbnail, restData.resourceId)
+
+    const oprateRes = await operateResource({
       operateType: isPublish ? 'publish' : 'update',
       resourceData: {
-        ...values,
+        ...restData,
+        thumbnailUrl,
         config: stringfyConfig(),
       },
-    }).then((res) => {
-      if (res.success) {
-        hidePublishModal()
-        clearResourceConfig(resourceId)
-        setIsBlocking(false)
-
-        Message.success({
-          content: `${isPublish ? '发布' : '更新'}成功`,
-          // NOTE: 提示关闭后 根据提交信息 重新计算 地址 强制跳转到 新的地址
-          onClose: () => {
-            const { resourceType, title } = values
-
-            // 等待 官方 修复 bug https://github.com/remix-run/react-router/issues/8245 ,使用 navigator 跳转 页面不刷新问题
-            const newHref = generateEditerPath({
-              resource_id: resourceId,
-              edit_type: 'edit',
-              resource_type: resourceType,
-              title,
-            })
-            window.open(newHref, '_self')
-          },
-        })
-      }
     })
+
+    if (oprateRes.success) {
+      hidePublishModal()
+      clearResourceConfig(resourceId)
+      setIsBlocking(false)
+
+      Message.success({
+        content: `${isPublish ? '发布' : '更新'}成功`,
+        // NOTE: 提示关闭后 根据提交信息 重新计算 地址 强制跳转到 新的地址
+        onClose: () => {
+          const { resourceType, title } = values
+
+          // 等待 官方 修复 bug https://github.com/remix-run/react-router/issues/8245 ,使用 navigator 跳转 页面不刷新问题
+          const newHref = generateEditerPath({
+            resource_id: resourceId,
+            edit_type: 'edit',
+            resource_type: resourceType,
+            title,
+          })
+          window.open(newHref, '_self')
+        },
+      })
+    }
   }
 
   const handleOutputBtnClick = () => {
