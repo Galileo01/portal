@@ -14,12 +14,12 @@ export type ColorVarMap = Record<
 export type ThemeConfigData = ColorVarValue
 
 // 字体配置
-export type FontFormData = {
+export type FontFormField = {
   globalFont: string[]
   usedFont: string[][]
 }
 
-export type FontConfigData = Partial<FontFormData>
+export type FontConfigData = Partial<FontFormField>
 
 // 全局配置
 export type GlobalConfig = {

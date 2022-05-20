@@ -6,7 +6,7 @@ import { devLogger, safeJsonParse } from '@/common/utils'
 import { getPageConfigById } from '@/common/utils/storage'
 import { generateStyleNodeFromConfig } from '@/common/utils/style-config'
 import { setColorVariableValue } from '@/common/utils/color-variable'
-import { updateFontConfigToElement } from '@/common/utils/font'
+import { updateFontConfigToDOM } from '@/common/utils/font'
 import {
   useEditerDataDispatch,
   EditerDataActionEnum,
@@ -69,8 +69,7 @@ const getConfig: (params: {
   })
 
 // 应用配置数据 到dom上
-// TODO: 优化 字体存储
-export const applyConfigToDom = (
+export const applyConfigToDOM = (
   config: PageConfig,
   fontList: FontList,
   isEditer = false
@@ -86,11 +85,12 @@ export const applyConfigToDom = (
   }
   // 恢复 字体
   if (config.globalConfig?.fontConfig) {
-    updateFontConfigToElement(
-      config.globalConfig?.fontConfig,
-      fontList,
-      isEditer
+    const { fontConfig } = config.globalConfig
+    const usedFontName = fontConfig.usedFont?.map((item) => item[1]) || []
+    const usedFont = fontList.filter(
+      (font) => font.src && usedFontName.includes(font.name)
     )
+    updateFontConfigToDOM(fontConfig.globalFont?.[1], usedFont, isEditer)
   }
 }
 
@@ -137,7 +137,7 @@ export const usePageInit = (paramas: usePageInitParams) => {
         } else {
           setDataList(componentDataListInConfig)
         }
-        applyConfigToDom(config, fontList, isEditer)
+        applyConfigToDOM(config, fontList, isEditer)
       }
       setTitle(config?.title || resourceId)
 

@@ -3,7 +3,7 @@ import * as React from 'react'
 import { Cascader, CascaderProps } from '@arco-design/web-react'
 import { FontList } from '@/typings/database'
 
-import { computeCascaderOptions } from '@/common/utils/font'
+import { computeCascaderOptions } from './utils'
 
 export type FontCascaderProps = CascaderProps & {
   fontList: FontList

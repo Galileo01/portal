@@ -26,7 +26,7 @@ import {
 } from '@/common/utils/element'
 import { RCList } from '@/resource-components'
 import { getResourceById } from '@/network/resource'
-import { applyConfigToDom } from '@/common/hooks/page-init'
+import { applyConfigToDOM } from '@/common/hooks/page-init'
 
 import { ToolBoxRef, ToolBoxProps } from './components/tool-box'
 
@@ -302,7 +302,7 @@ export const useTemplateImport = (params: useTemplateImportParmas) => {
             })
 
             // 应用配置数据
-            applyConfigToDom(config, [], true)
+            applyConfigToDOM(config, [], true)
             // 模板的组件列表追加到后面
             updateComponenDataList(
               componentDataList.concat(componentDataListInConfig)
