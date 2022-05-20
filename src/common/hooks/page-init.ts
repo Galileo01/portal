@@ -68,11 +68,37 @@ const getConfig: (params: {
     }
   })
 
+// 应用配置数据 到dom上
+// TODO: 优化 字体存储
+export const applyConfigToDom = (
+  config: PageConfig,
+  fontList: FontList,
+  isEditer = false
+) => {
+  // 恢复 style node
+  if (config.styleConfig) {
+    generateStyleNodeFromConfig(config.styleConfig)
+  }
+
+  // 恢复主题配置
+  if (config.globalConfig?.themeConfig) {
+    setColorVariableValue(config.globalConfig?.themeConfig, isEditer)
+  }
+  // 恢复 字体
+  if (config.globalConfig?.fontConfig) {
+    updateFontConfigToElement(
+      config.globalConfig?.fontConfig,
+      fontList,
+      isEditer
+    )
+  }
+}
+
 export const usePageInit = (paramas: usePageInitParams) => {
   const { resourceId, initType, resourceType, isEditer } = paramas
   devLogger('usePageInit params', paramas)
 
-  const editerDispatch = useEditerDataDispatch()
+  const editerDataDispatch = useEditerDataDispatch()
   const fetchDataDispatch = useFetchDataDispatch()
 
   const [componentDataList, setDataList] = React.useState<ComponentDataList>([])
@@ -89,34 +115,29 @@ export const usePageInit = (paramas: usePageInitParams) => {
       resourceType,
     }).then((res) => {
       const { config, fontList = [] } = res
+      devLogger('getConfig', config)
+
       if (config) {
+        const {
+          globalConfig,
+          componentDataList: componentDataListInConfig,
+          styleConfig,
+        } = config
         if (isEditer) {
-          const snapshotList = [config.componentDataList]
           // 恢复 store
-          editerDispatch({
+          editerDataDispatch({
             type: EditerDataActionEnum.SET_STATE,
             payload: {
-              ...config,
-              snapshotList,
+              componentDataList: componentDataListInConfig,
+              globalConfig,
+              styleConfig,
+              snapshotList: [componentDataListInConfig],
             },
           })
         } else {
-          setDataList(config.componentDataList)
+          setDataList(componentDataListInConfig)
         }
-
-        // 恢复 style node
-        if (config.styleConfig) {
-          generateStyleNodeFromConfig(config.styleConfig)
-        }
-
-        // 恢复主题配置
-        if (config.globalConfig?.themeConfig) {
-          setColorVariableValue(config.globalConfig?.themeConfig, isEditer)
-        }
-        // 恢复 字体
-        if (config.globalConfig?.fontConfig) {
-          updateFontConfigToElement(config.globalConfig?.fontConfig, fontList)
-        }
+        applyConfigToDom(config, fontList, isEditer)
       }
       setTitle(config?.title || resourceId)
 
@@ -132,7 +153,7 @@ export const usePageInit = (paramas: usePageInitParams) => {
     initType,
     isEditer,
     resourceId,
-    editerDispatch,
+    editerDataDispatch,
     fetchDataDispatch,
   ])
 

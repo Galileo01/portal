@@ -26,6 +26,7 @@ export type PublishForm = {
 export type PublishModalProps = Omit<ModalProps, 'onConfirm'> & {
   resourceId: string
   resourceType: string
+  fetching: boolean
   title?: string
   onConfirm: (values: PublishForm) => void
 }
@@ -48,7 +49,15 @@ const privateSelectRenderer = (values: any) => {
 }
 
 const PublishModal: React.FC<PublishModalProps> = (props) => {
-  const { resourceId, resourceType, visible, title, onConfirm, ...rest } = props
+  const {
+    resourceId,
+    resourceType,
+    visible,
+    title,
+    fetching,
+    onConfirm,
+    ...rest
+  } = props
 
   const initialValues = React.useMemo(
     () => ({
@@ -65,6 +74,8 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
     img: Blob
     url: string
   }>()
+
+  const loading = fetching || !thumbnailInfo?.url
 
   // 展示  设置默认值
   const generateThumbnail = React.useCallback(() => {
@@ -107,45 +118,45 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
 
   return (
     <Modal title="发布" visible={visible} onConfirm={hanldeConfirm} {...rest}>
-      <Form
-        form={publishForm}
-        wrapperCol={{ span: 12 }}
-        labelAlign="left"
-        autoComplete="off"
-        initialValues={initialValues}
-        size="small"
-      >
-        <FormItem
-          field="resourceId"
-          label="资源id"
-          defaultValue={resourceId}
-          disabled
+      <Spin loading={loading} dot style={{ display: 'block' }}>
+        <Form
+          form={publishForm}
+          wrapperCol={{ span: 12 }}
+          labelAlign="left"
+          autoComplete="off"
+          initialValues={initialValues}
+          size="small"
         >
-          <Input allowClear />
-        </FormItem>
-        <FormItem
-          field="title"
-          label="资源名称"
-          rules={[
-            {
-              required: true,
-              message: '请填写资源名称',
-            },
-          ]}
-        >
-          <Input allowClear />
-        </FormItem>
-        <FormItem field="resourceType" label="资源类型">
-          <RadioGruop>
-            <Radio value="page">页面</Radio>
-            <Radio value="template">模板</Radio>
-          </RadioGruop>
-        </FormItem>
-        <FormItem shouldUpdate noStyle>
-          {privateSelectRenderer}
-        </FormItem>
-        <FormItem label="缩略图" field="thumbnail">
-          <Spin style={{ display: 'block' }} loading={!thumbnailInfo?.url}>
+          <FormItem
+            field="resourceId"
+            label="资源id"
+            defaultValue={resourceId}
+            disabled
+          >
+            <Input allowClear />
+          </FormItem>
+          <FormItem
+            field="title"
+            label="资源名称"
+            rules={[
+              {
+                required: true,
+                message: '请填写资源名称',
+              },
+            ]}
+          >
+            <Input allowClear />
+          </FormItem>
+          <FormItem field="resourceType" label="资源类型">
+            <RadioGruop>
+              <Radio value="page">页面</Radio>
+              <Radio value="template">模板</Radio>
+            </RadioGruop>
+          </FormItem>
+          <FormItem shouldUpdate noStyle>
+            {privateSelectRenderer}
+          </FormItem>
+          <FormItem label="缩略图" field="thumbnail">
             <CustomImage
               src={thumbnailInfo?.url}
               width={200}
@@ -153,9 +164,9 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
                 border: '1px solid var(--color-text-4)',
               }}
             />
-          </Spin>
-        </FormItem>
-      </Form>
+          </FormItem>
+        </Form>
+      </Spin>
     </Modal>
   )
 }

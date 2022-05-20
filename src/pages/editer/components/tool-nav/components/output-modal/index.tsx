@@ -28,7 +28,7 @@ export type OutputForm = {
 export type OutputModalProps = Omit<ModalProps, 'onConfirm'> & {
   pageId: string
   editType: string
-  fetchIng: boolean
+  fetching: boolean
   title?: string
   onConfirm: (values: OutputForm) => void
 }
@@ -39,7 +39,7 @@ const OutputModal: React.FC<OutputModalProps> = (props) => {
     pageId,
     title,
     editType,
-    fetchIng,
+    fetching,
     onConfirm,
     ...restProps
   } = props
@@ -81,7 +81,7 @@ const OutputModal: React.FC<OutputModalProps> = (props) => {
       visible={visible}
       onConfirm={handleSubmitClick}
     >
-      <Spin loading={fetchIng} dot tip="出码中..." style={{ display: 'block' }}>
+      <Spin loading={fetching} dot tip="出码中..." style={{ display: 'block' }}>
         <Form
           form={outputForm}
           wrapperCol={{ span: 12 }}

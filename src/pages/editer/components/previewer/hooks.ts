@@ -7,12 +7,18 @@ import {
   ComponentDataItem,
   ComponentDataList,
   PageConfig,
+  EditerData,
 } from '@/typings/common/editer'
 import {
   DATASET_KEY_RESOURCE_COMPONENT_KEY,
   CUSTOM_EVENT_TEMPLATE_IMPORT,
 } from '@/common/constant'
-import { devLogger, getUniqueId, safeJsonParse } from '@/common/utils'
+import {
+  devLogger,
+  getUniqueId,
+  safeJsonParse,
+  createTimeoutPromise,
+} from '@/common/utils'
 import {
   isPreviewerElement,
   getClosedRCRenderedElement,
@@ -20,6 +26,7 @@ import {
 } from '@/common/utils/element'
 import { RCList } from '@/resource-components'
 import { getResourceById } from '@/network/resource'
+import { applyConfigToDom } from '@/common/hooks/page-init'
 
 import { ToolBoxRef, ToolBoxProps } from './components/tool-box'
 
@@ -245,36 +252,69 @@ export const useToolBox = (params: useToolBoxParams) => {
   }
 }
 
-// TODO: 完善逻辑
 // 处理模板导入 相关逻辑
-export const useTemplateImport = () => {
-  const handleImport = React.useCallback((e) => {
-    const {
-      detail: { resourceId },
-    } = e as CustomEvent<{
-      resourceId: string
-    }>
-    const modal = Modal.info({
-      title: '提示',
-      content: '正在拉取并导入模板数据...',
-      footer: null,
-      maskClosable: false,
-    })
-    getResourceById({
-      resourceId,
-      resourceType: 'template',
-    }).then((res) => {
-      if (res.success) {
-        const config = safeJsonParse<PageConfig>(res.data.config)
-        devLogger('getResourceById', res.data, config)
-        // TODO: 封装 page-init 恢复的方法 并在这里复用
-        setTimeout(() => {
-          modal.close()
-          Message.success('导入成功')
-        }, 3000)
-      }
-    })
-  }, [])
+export type useTemplateImportParmas = Pick<
+  useDragAndDropParams,
+  'componentDataList' | 'updateComponenDataList'
+> & {
+  updateEditerData: (editerData: Partial<EditerData>) => void
+}
+
+export const useTemplateImport = (params: useTemplateImportParmas) => {
+  const { componentDataList, updateComponenDataList, updateEditerData } = params
+
+  const handleImport = React.useCallback(
+    (e) => {
+      const {
+        detail: { resourceId },
+      } = e as CustomEvent<{
+        resourceId: string
+      }>
+      const modal = Modal.info({
+        title: '提示',
+        content: '正在拉取并导入模板数据...',
+        footer: null,
+        maskClosable: false,
+      })
+
+      // 保证 弹框展示至少2秒 ，使用 createTimeoutPromise创建延时
+      Promise.all([
+        getResourceById({
+          resourceId,
+          resourceType: 'template',
+        }),
+        createTimeoutPromise(2000),
+      ]).then(([res]) => {
+        if (res.success) {
+          const config = safeJsonParse<PageConfig>(res.data.config)
+          devLogger('getResourceById', res.data, config)
+          if (config) {
+            const {
+              globalConfig,
+              componentDataList: componentDataListInConfig,
+              styleConfig,
+            } = config
+
+            // 更新store
+            updateEditerData({
+              globalConfig,
+              styleConfig,
+            })
+
+            // 应用配置数据
+            applyConfigToDom(config, [], true)
+            // 模板的组件列表追加到后面
+            updateComponenDataList(
+              componentDataList.concat(componentDataListInConfig)
+            )
+            modal.close()
+            Message.success('导入成功')
+          }
+        }
+      })
+    },
+    [updateComponenDataList, updateEditerData, componentDataList]
+  )
 
   React.useEffect(() => {
     window.addEventListener(CUSTOM_EVENT_TEMPLATE_IMPORT, handleImport)

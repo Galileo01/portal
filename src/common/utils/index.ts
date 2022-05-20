@@ -75,3 +75,12 @@ export const dispatchTemplateImportEvent = (resourceId: string) => {
   })
   window.dispatchEvent(customEvent)
 }
+
+// 使用 Promise 创建延时效果
+export const createTimeoutPromise = (ms: number) =>
+  new Promise<void>((resolve) => {
+    const timer = setTimeout(() => {
+      resolve()
+      clearTimeout(timer)
+    }, ms)
+  })

@@ -18,10 +18,9 @@ import { TemplateBase, PageBase, PageBaseList } from '@/typings/request'
 import { ResourceType } from '@/typings/database'
 import {
   createNewResourcePath,
-  stringfySearch,
-  generateEditerSearch,
+  generateEditerPath,
+  generatePagePath,
 } from '@/common/utils/route'
-import { ROUTE_EDITER, ROUTE_PAGE } from '@/common/constant/route'
 
 import styles from './index.module.less'
 
@@ -99,15 +98,12 @@ const ResourceList: React.FC<ResourceListProps> = (props) => {
               <Link
                 target="_blank"
                 className={styles.action_btn}
-                to={{
-                  pathname: ROUTE_EDITER,
-                  search: generateEditerSearch({
-                    resource_id: resource.resourceId,
-                    resource_type: resourceType,
-                    edit_type: 'edit',
-                    title: resource.title,
-                  }),
-                }}
+                to={generateEditerPath({
+                  resource_id: resource.resourceId,
+                  resource_type: resourceType,
+                  edit_type: 'edit',
+                  title: resource.title,
+                })}
               >
                 <IconEdit />
               </Link>
@@ -119,13 +115,10 @@ const ResourceList: React.FC<ResourceListProps> = (props) => {
               <Link
                 className={styles.action_btn}
                 target="_blank"
-                to={{
-                  pathname: ROUTE_PAGE,
-                  search: stringfySearch({
-                    resource_id: resource.resourceId,
-                    resource_type: resourceType,
-                  }),
-                }}
+                to={generatePagePath({
+                  resource_id: resource.resourceId,
+                  resource_type: resourceType,
+                })}
               >
                 <IconLaunch />
               </Link>

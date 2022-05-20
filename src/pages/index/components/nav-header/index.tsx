@@ -44,7 +44,7 @@ const NavHeader = () => (
         <Col span={1}>
           <ThemeSwitch />
         </Col>
-        <Col span={8} offset={1}>
+        <Col span={8} offset={2}>
           <User />
         </Col>
       </Row>

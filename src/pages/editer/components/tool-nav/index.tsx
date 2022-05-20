@@ -16,18 +16,20 @@ import { Link, useSearchParams } from 'react-router-dom'
 
 import Logo from '@/components/logo'
 import ThemeSwitch from '@/components/theme-switch'
+import UserComponent from '@/components/user'
 import {
   useEditerDataStore,
   useEditerDataDispatch,
   EditerDataActionEnum,
   MAX_LENGTH,
 } from '@/store/editer-data'
+import { useUserInfo } from '@/store/user-info'
 import { ROUTE_PAGE } from '@/common/constant/route'
 import { setPageConfigById, clearResourceConfig } from '@/common/utils/storage'
 import { restorePreviewColorVariable } from '@/common/utils/color-variable'
 import { removeFontStyleNode } from '@/common/utils/font'
 import { usePrompt } from '@/common/hooks/react-router-dom'
-import { generateEditerPath } from '@/common/utils/route'
+import { generateEditerPath, generatePagePath } from '@/common/utils/route'
 import { operateResource } from '@/network/resource'
 import { outputCode } from '@/network/code'
 import { uploadCos } from '@/network/cos'
@@ -48,7 +50,8 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
   const [isBlocking, setIsBlocking] = React.useState(true)
   const [publishModalVisible, setPublishModalVisible] = React.useState(false)
   const [outputModalVisible, setOutputModalVisible] = React.useState(false)
-  const [loading, setLoading] = React.useState(false)
+  const [outputing, setOutputing] = React.useState(false)
+  const [operating, setOperating] = React.useState(false)
 
   usePrompt('您还未保存配置，确认离开编辑页么？', isBlocking)
 
@@ -60,6 +63,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
     styleConfig,
   } = useEditerDataStore()
   const editerDataDispatch = useEditerDataDispatch()
+  const userInfo = useUserInfo()
 
   const [params] = useSearchParams()
 
@@ -136,11 +140,12 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
       componentDataList,
     })
 
-  const handleResourcePublish: PublishModalProps['onConfirm'] = async (
+  const handleResourceOperate: PublishModalProps['onConfirm'] = async (
     values
   ) => {
     const isPublish = searchParams.current.edit_type === 'create'
     const { thumbnail, ...restData } = values
+    setOperating(true)
     // 点击确认时 才上传至 腾讯云 cos
     const thumbnailUrl = await uploadCos(thumbnail, restData.resourceId)
 
@@ -162,11 +167,17 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
       if (isPublish) {
         clearResourceConfig(resourceId)
       }
-      // eslint-disable-next-line no-restricted-globals
-      const pageSearch = `${location.origin}${ROUTE_PAGE}/resourceId=${resourceId}&resource_type=${searchParams.current.resource_type}`
+
+      const pageUrl = generatePagePath(
+        {
+          resource_id: resourceId,
+          resource_type: searchParams.current.resource_type,
+        },
+        true
+      )
 
       const handleCopyClick = () => {
-        navigator.clipboard.writeText(pageSearch).then(() => {
+        navigator.clipboard.writeText(pageUrl).then(() => {
           Message.success('复制成功')
         })
       }
@@ -178,7 +189,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
           <div>
             <div>
               {`${isPublish ? '发布' : '更新'}成功 , `}
-              <a href={pageSearch} target="_blank" rel="noreferrer">
+              <a href={pageUrl} target="_blank" rel="noreferrer">
                 点此访问
               </a>
               <Tooltip content="复制链接">
@@ -209,9 +220,14 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
         },
       })
     }
+    setOperating(false)
   }
 
   const handleOutputBtnClick = () => {
+    if (!userInfo) {
+      Message.warning('您还未登录，请登录后再尝试')
+      return
+    }
     // 资源类型 为页面时 才允许 出码
     if (searchParams.current.resource_type === 'page') {
       showOutputModal()
@@ -220,9 +236,17 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
     }
   }
 
+  const handlePublishBtnClick = () => {
+    if (!userInfo) {
+      Message.warning('您还未登录，请登录后再尝试')
+      return
+    }
+    showPublishModal()
+  }
+
   const handlePageOutput: OutputModalProps['onConfirm'] = (values) => {
     const { useLocal, ...restField } = values
-    setLoading(true)
+    setOutputing(true)
     setIsBlocking(false)
     outputCode({
       ...restField,
@@ -236,7 +260,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
         }
       })
       .finally(() => {
-        setLoading(false)
+        setOutputing(false)
         setIsBlocking(true)
       })
   }
@@ -286,24 +310,26 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
         <Button type="outline" onClick={handleOutputBtnClick}>
           出码
         </Button>
-        <Button type="primary" onClick={showPublishModal}>
+        <Button type="primary" onClick={handlePublishBtnClick}>
           发布
         </Button>
+        <UserComponent />
       </Space>
       <PublishModal
         resourceId={resourceId}
         title={searchParams.current.title}
         resourceType={searchParams.current.resource_type}
         visible={publishModalVisible}
+        fetching={operating}
         onCancel={hidePublishModal}
-        onConfirm={handleResourcePublish}
+        onConfirm={handleResourceOperate}
       />
       <OutputModal
         pageId={resourceId}
         editType={searchParams.current.edit_type}
         title={searchParams.current.title}
         visible={outputModalVisible}
-        fetchIng={loading}
+        fetching={outputing}
         onCancel={hideOutputModal}
         onConfirm={handlePageOutput}
       />

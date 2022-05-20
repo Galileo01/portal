@@ -1,4 +1,4 @@
-import { ROUTE_EDITER } from '@/common/constant/route'
+import { ROUTE_EDITER, ROUTE_PAGE } from '@/common/constant/route'
 import { StringKeyValueObject } from '@/typings/common/editer-config-data'
 import { ResourceType } from '@/typings/database'
 import { EditType } from '@/typings/common/editer'
@@ -36,10 +36,18 @@ export const generateEditerSearch = (params: EditerSearchGenerateParams) => {
   return stringfySearch(transformedParams)
 }
 
-export const generateEditerPath = (params: EditerSearchGenerateParams) => {
-  const search = generateEditerSearch(params)
-  return ROUTE_EDITER + search
+export const generateEditerPath = (params: EditerSearchGenerateParams) =>
+  `${ROUTE_EDITER}${generateEditerSearch(params)}`
+
+export type PageSearch = {
+  resource_id: string
+  resource_type: ResourceType | string
 }
+
+// 某些场景下需要 包含域名的 完整url
+export const generatePagePath = (params: PageSearch, needOrigin = false) =>
+  // eslint-disable-next-line no-restricted-globals
+  `${needOrigin ? location.origin : ''}${ROUTE_PAGE}${stringfySearch(params)}`
 
 export const createNewResourcePath: (resource_type?: ResourceType) => string = (
   resource_type = 'page'

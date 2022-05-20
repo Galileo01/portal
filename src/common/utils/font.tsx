@@ -105,6 +105,8 @@ export const removeFontStyleNode = () => {
  * 网站全局 字体
  * 网站 用到的字体
  */
+
+// TODO: 优化 字体存储
 export const updateFontConfigToElement = (
   fontConfig: FontConfigData,
   fontList: FontList,
