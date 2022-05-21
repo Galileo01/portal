@@ -6,6 +6,10 @@ import {
 
 import { PageConfig } from './editer'
 
+export type PageConfigInStorage = PageConfig & {
+  edit_type: string
+}
+
 export type Storage = {
   [LOSTORAGE_KEY_PAGE_CONFIGS]: string
   [LOSTORAGE_KEY_IS_SIDER_COLLAPSE]: string
@@ -22,5 +26,5 @@ export type GetLocalStorageFun = (
 export type SetLocalStorageFun = (key: StorageKeys, value: string) => void
 
 export type PageConfigStorageValue = {
-  [resource_id: string]: PageConfig
+  [resource_id: string]: PageConfigInStorage
 }

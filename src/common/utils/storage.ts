@@ -2,8 +2,8 @@ import {
   GetLocalStorageFun,
   SetLocalStorageFun,
   PageConfigStorageValue,
+  PageConfigInStorage,
 } from '@/typings/common/storage'
-import { PageConfig } from '@/typings/common/editer'
 
 import { safeJsonParse } from './index'
 
@@ -21,7 +21,7 @@ export const getAllResourceConfig = () =>
 
 export const setPageConfigById = (
   resourceId: string,
-  pageConfig: PageConfig
+  pageConfig: PageConfigInStorage
 ) => {
   const prePageConfigs = getAllResourceConfig()!
   prePageConfigs[resourceId] = pageConfig

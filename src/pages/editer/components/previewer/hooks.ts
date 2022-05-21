@@ -287,7 +287,6 @@ export const useTemplateImport = (params: useTemplateImportParmas) => {
       ]).then(([res]) => {
         if (res.success) {
           const config = safeJsonParse<PageConfig>(res.data.config)
-          devLogger('getResourceById', res.data, config)
           if (config) {
             const {
               globalConfig,
