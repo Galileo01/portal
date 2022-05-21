@@ -3,6 +3,7 @@ import * as React from 'react'
 import clsx from 'clsx'
 
 import {
+  Store,
   useEditerDataStore,
   useEditerDataDispatch,
   EditerDataActionEnum,
@@ -12,9 +13,8 @@ import { ComponentDataList } from '@/typings/common/editer'
 import RCListRenderer from '@/components/rclist-renderer'
 
 import ToolBox from './components/tool-box'
-import { useDragAndDrop, useToolBox } from './hooks'
+import { useDragAndDrop, useToolBox, useTemplateImport } from './hooks'
 import styles from './index.module.less'
-import { devLogger } from '@/common/utils'
 
 /**
  * FIXME:
@@ -27,20 +27,36 @@ const Previewer = () => {
 
   const previewerElementRef = React.useRef<HTMLDivElement | null>(null)
 
-  const updateComponenDataList = (newList: ComponentDataList) => {
-    editerDataDispatch({
-      type: EditerDataActionEnum.SET_COMPONENT_DATA_LIST,
-      payload: [...newList],
-    })
-  }
-
-  const updateClickElement = (newElement?: HTMLElement) => {
-    if (currentClickElement !== newElement)
+  const updateComponenDataList = React.useCallback(
+    (newList: ComponentDataList) => {
       editerDataDispatch({
-        type: EditerDataActionEnum.SET_CURRENT_CLICK_ELEMENT,
-        payload: newElement,
+        type: EditerDataActionEnum.SET_COMPONENT_DATA_LIST,
+        payload: [...newList],
       })
-  }
+    },
+    [editerDataDispatch]
+  )
+
+  const updateEditerData = React.useCallback(
+    (editerData: Partial<Store>) => {
+      editerDataDispatch({
+        type: EditerDataActionEnum.SET_STATE,
+        payload: editerData,
+      })
+    },
+    [editerDataDispatch]
+  )
+
+  const updateClickElement = React.useCallback(
+    (newElement?: HTMLElement) => {
+      if (currentClickElement !== newElement)
+        editerDataDispatch({
+          type: EditerDataActionEnum.SET_CURRENT_CLICK_ELEMENT,
+          payload: newElement,
+        })
+    },
+    [editerDataDispatch, currentClickElement]
+  )
 
   const { toolBoxRef, hiddenToolBox, handleOprateBtnClick } = useToolBox({
     currentClickElement,
@@ -71,9 +87,11 @@ const Previewer = () => {
     updateClickElement(e.target as HTMLElement)
   }
 
-  React.useEffect(() => {
-    devLogger('Previewer currentClickElement', currentClickElement)
-  }, [currentClickElement])
+  useTemplateImport({
+    componentDataList,
+    updateComponenDataList,
+    updateEditerData,
+  })
 
   return (
     <section

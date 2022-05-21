@@ -1,6 +1,7 @@
 import * as React from 'react'
 
 import { Modal, Button, Form, Input, ModalProps } from '@arco-design/web-react'
+import clsx from 'clsx'
 
 import styles from './index.module.less'
 
@@ -40,7 +41,7 @@ const LoginModal: React.FC<LoginModalProps> = (props) => {
       visible={visible}
       {...reset}
     >
-      <Form form={loginForm} wrapperCol={{ span: 24 }}>
+      <Form form={loginForm} wrapperCol={{ span: 24 }} autoComplete="off">
         <FormItem
           field="name"
           rules={[
@@ -67,6 +68,9 @@ const LoginModal: React.FC<LoginModalProps> = (props) => {
           <Button type="primary" onClick={handleLoginSubmit}>
             登陆/注册
           </Button>
+        </div>
+        <div className={clsx('tip_text', styles.login_tip)}>
+          未注册用户自动注册
         </div>
       </Form>
     </Modal>

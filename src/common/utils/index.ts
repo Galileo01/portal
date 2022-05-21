@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { nanoid } from 'nanoid'
 
-import { NANO_ID_LENGTH } from '@/common/constant'
+import { NANO_ID_LENGTH, CUSTOM_EVENT_TEMPLATE_IMPORT } from '@/common/constant'
 import { ROUTE_EDITER } from '@/common/constant/route'
 
 export const calculateIsDevFromQuery = () => {
@@ -67,10 +67,20 @@ export const compose =
       args
     ) as unknown as T
 
-export const createANewPage = () => {
-  const pageId = getUniqueId()
-  return {
-    pageId,
-    path: `${ROUTE_EDITER}?page_id=${pageId}&edit_type=create`,
-  }
+export const dispatchTemplateImportEvent = (resourceId: string) => {
+  const customEvent = new CustomEvent(CUSTOM_EVENT_TEMPLATE_IMPORT, {
+    detail: {
+      resourceId,
+    },
+  })
+  window.dispatchEvent(customEvent)
 }
+
+// 使用 Promise 创建延时效果
+export const createTimeoutPromise = (ms: number) =>
+  new Promise<void>((resolve) => {
+    const timer = setTimeout(() => {
+      resolve()
+      clearTimeout(timer)
+    }, ms)
+  })

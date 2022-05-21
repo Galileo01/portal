@@ -1,16 +1,32 @@
 import * as React from 'react'
 
 import { throttle } from 'lodash-es'
+import { Modal, Message } from '@arco-design/web-react'
 
-import { ComponentDataItem, ComponentDataList } from '@/typings/common/editer'
-import { DATASET_KEY_RESOURCE_COMPONENT_KEY } from '@/common/constant'
-import { devLogger, getUniqueId } from '@/common/utils'
+import {
+  ComponentDataItem,
+  ComponentDataList,
+  PageConfig,
+  EditerData,
+} from '@/typings/common/editer'
+import {
+  DATASET_KEY_RESOURCE_COMPONENT_KEY,
+  CUSTOM_EVENT_TEMPLATE_IMPORT,
+} from '@/common/constant'
+import {
+  devLogger,
+  getUniqueId,
+  safeJsonParse,
+  createTimeoutPromise,
+} from '@/common/utils'
 import {
   isPreviewerElement,
   getClosedRCRenderedElement,
   getComponentDataIndexFromElement,
 } from '@/common/utils/element'
 import { RCList } from '@/resource-components'
+import { getResourceById } from '@/network/resource'
+import { applyConfigToDOM } from '@/common/hooks/page-init'
 
 import { ToolBoxRef, ToolBoxProps } from './components/tool-box'
 
@@ -36,7 +52,7 @@ export type useDragAndDropParams = {
   actionsBeforeHandle: () => void
 }
 
-// 处理拖拽 逻辑
+// 处理源组件的拖拽渲染 以及 previewer 内部拖拽排序
 export const useDragAndDrop = (params: useDragAndDropParams) => {
   const {
     previewerElementRef,
@@ -234,4 +250,76 @@ export const useToolBox = (params: useToolBoxParams) => {
     hiddenToolBox,
     handleOprateBtnClick,
   }
+}
+
+// 处理模板导入 相关逻辑
+export type useTemplateImportParmas = Pick<
+  useDragAndDropParams,
+  'componentDataList' | 'updateComponenDataList'
+> & {
+  updateEditerData: (editerData: Partial<EditerData>) => void
+}
+
+export const useTemplateImport = (params: useTemplateImportParmas) => {
+  const { componentDataList, updateComponenDataList, updateEditerData } = params
+
+  const handleImport = React.useCallback(
+    (e) => {
+      const {
+        detail: { resourceId },
+      } = e as CustomEvent<{
+        resourceId: string
+      }>
+      const modal = Modal.info({
+        title: '提示',
+        content: '正在拉取并导入模板数据...',
+        footer: null,
+        maskClosable: false,
+      })
+
+      // 保证 弹框展示至少2秒 ，使用 createTimeoutPromise创建延时
+      Promise.all([
+        getResourceById({
+          resourceId,
+          resourceType: 'template',
+        }),
+        createTimeoutPromise(2000),
+      ]).then(([res]) => {
+        if (res.success) {
+          const config = safeJsonParse<PageConfig>(res.data.config)
+          if (config) {
+            const {
+              globalConfig,
+              componentDataList: componentDataListInConfig,
+              styleConfig,
+            } = config
+
+            // 更新store
+            updateEditerData({
+              globalConfig,
+              styleConfig,
+            })
+
+            // 应用配置数据
+            applyConfigToDOM(config, [], true)
+            // 模板的组件列表追加到后面
+            updateComponenDataList(
+              componentDataList.concat(componentDataListInConfig)
+            )
+            modal.close()
+            Message.success('导入成功')
+          }
+        }
+      })
+    },
+    [updateComponenDataList, updateEditerData, componentDataList]
+  )
+
+  React.useEffect(() => {
+    window.addEventListener(CUSTOM_EVENT_TEMPLATE_IMPORT, handleImport)
+
+    return () => {
+      window.removeEventListener(CUSTOM_EVENT_TEMPLATE_IMPORT, handleImport)
+    }
+  }, [handleImport])
 }

@@ -8,7 +8,7 @@ import { FontFamily } from '@/typings/database'
 import { FontLanguageSelect } from '@/components/custom-form-inner/simple'
 import { useFetchDataStore } from '@/store/fetch-data'
 
-import FontForm from '../font-form'
+import FontFormField from '../font-form'
 import styles from './index.module.less'
 
 const { Item: CollapseItem } = Collapse
@@ -111,7 +111,7 @@ const FontConfig = () => {
           自己添加字体
         </span>
       </div>
-      <FontForm fontList={fontList} />
+      <FontFormField fontList={fontList} />
     </CollapseItem>
   )
 }

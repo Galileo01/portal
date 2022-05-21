@@ -1,21 +1,33 @@
 import * as React from 'react'
 
-import { Modal, Form, Input, Radio, ModalProps } from '@arco-design/web-react'
-import domtoimage from 'dom-to-image'
+import {
+  Modal,
+  Form,
+  Input,
+  Radio,
+  ModalProps,
+  Spin,
+} from '@arco-design/web-react'
+import html2canvas from 'html2canvas'
 
 import CustomImage from '@/components/custom-image'
 import { devLogger } from '@/common/utils'
 import { getPreviewerElement } from '@/common/utils/element'
+import { ResourceType } from '@/typings/database'
 
 export type PublishForm = {
   resourceId: string
+  title: string
   private: number
-  resourceType: string
-  thumbnailUrl: string
+  resourceType: ResourceType
+  thumbnail: Blob
 }
 
 export type PublishModalProps = Omit<ModalProps, 'onConfirm'> & {
-  pageId: string
+  resourceId: string
+  resourceType: string
+  fetching: boolean
+  title?: string
   onConfirm: (values: PublishForm) => void
 }
 
@@ -36,83 +48,125 @@ const privateSelectRenderer = (values: any) => {
   return null
 }
 
-// TODO: 4.20-1 发布时 判断如果是 平台管理员 则展示 template_type 选择,或者 放到服务端 做？
 const PublishModal: React.FC<PublishModalProps> = (props) => {
-  const { pageId, visible, onConfirm, ...rest } = props
+  const {
+    resourceId,
+    resourceType,
+    visible,
+    title,
+    fetching,
+    onConfirm,
+    ...rest
+  } = props
+
+  const initialValues = React.useMemo(
+    () => ({
+      resourceId,
+      private: 1,
+      resourceType: resourceType as ResourceType,
+      title: title || resourceId,
+    }),
+    [resourceId, resourceType, title]
+  )
 
   const [publishForm] = Form.useForm<PublishForm>()
-  const [thumbnail, setThumbnail] = React.useState('')
+  const [thumbnailInfo, setThumbnailInfo] = React.useState<{
+    img: Blob
+    url: string
+  }>()
+
+  const loading = fetching || !thumbnailInfo?.url
 
   // 展示  设置默认值
   const generateThumbnail = React.useCallback(() => {
     const previewerElement = getPreviewerElement()
     if (previewerElement) {
-      domtoimage.toPng(previewerElement).then((imgUrl) => {
-        devLogger('domtoimage imgUrl', imgUrl)
-        setThumbnail(imgUrl)
-        // TODO: 使用 腾讯云 对象存储  临时使用 dataURL
-        publishForm.setFieldValue('thumbnailUrl', imgUrl)
+      html2canvas(previewerElement).then((canvas) => {
+        canvas.toBlob((blob) => {
+          if (blob) {
+            setThumbnailInfo({
+              img: blob,
+              url: canvas.toDataURL(),
+            })
+          }
+        })
       })
     }
-  }, [publishForm])
+  }, [])
 
   const hanldeConfirm = () => {
     publishForm.validate((error, values) => {
-      if (!error && values) {
-        onConfirm(values as PublishForm)
+      if (!error && values && thumbnailInfo) {
+        onConfirm({
+          ...values,
+          thumbnail: thumbnailInfo?.img,
+        })
+      } else {
+        devLogger('publishForm.validate', error, values)
       }
     })
   }
 
   React.useEffect(() => {
     if (visible) {
-      publishForm.setFieldsValue({
-        resourceId: pageId,
-        private: 1,
-        resourceType: 'page',
-      })
       generateThumbnail()
     } else {
       publishForm.resetFields()
+      setThumbnailInfo(undefined)
     }
-  }, [generateThumbnail, publishForm, visible, pageId])
+  }, [generateThumbnail, publishForm, visible])
 
   return (
     <Modal title="发布" visible={visible} onConfirm={hanldeConfirm} {...rest}>
-      <Form form={publishForm} wrapperCol={{ span: 12 }} labelAlign="left">
-        <FormItem
-          field="resourceId"
-          label="资源id"
-          defaultValue={pageId}
-          disabled
+      <Spin loading={loading} dot style={{ display: 'block' }}>
+        <Form
+          form={publishForm}
+          wrapperCol={{ span: 12 }}
+          labelAlign="left"
+          autoComplete="off"
+          initialValues={initialValues}
+          size="small"
         >
-          <Input allowClear />
-        </FormItem>
-        <FormItem
-          field="title"
-          label="资源名称"
-          rules={[
-            {
-              required: true,
-              message: '请填写资源名称',
-            },
-          ]}
-        >
-          <Input allowClear />
-        </FormItem>
-        <FormItem field="resourceType" label="资源类型">
-          <RadioGruop>
-            <Radio value="page">页面</Radio>
-            <Radio value="template">模板</Radio>
-          </RadioGruop>
-        </FormItem>
-        <FormItem shouldUpdate noStyle>
-          {privateSelectRenderer}
-        </FormItem>
-        <FormItem label="缩略图" field="thumbnailUrl">
-          <CustomImage src={thumbnail} width={200} />
-        </FormItem>
-      </Form>
+          <FormItem
+            field="resourceId"
+            label="资源id"
+            defaultValue={resourceId}
+            disabled
+          >
+            <Input allowClear />
+          </FormItem>
+          <FormItem
+            field="title"
+            label="资源名称"
+            rules={[
+              {
+                required: true,
+                message: '请填写资源名称',
+              },
+            ]}
+          >
+            <Input allowClear />
+          </FormItem>
+          <FormItem field="resourceType" label="资源类型">
+            <RadioGruop>
+              <Radio value="page">页面</Radio>
+              <Radio value="template">模板</Radio>
+            </RadioGruop>
+          </FormItem>
+          <FormItem shouldUpdate noStyle>
+            {privateSelectRenderer}
+          </FormItem>
+          <FormItem label="缩略图" field="thumbnail">
+            <CustomImage
+              src={thumbnailInfo?.url}
+              width={200}
+              style={{
+                border: '1px solid var(--color-text-4)',
+              }}
+            />
+          </FormItem>
+        </Form>
+      </Spin>
     </Modal>
   )
 }

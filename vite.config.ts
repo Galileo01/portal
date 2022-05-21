@@ -6,6 +6,7 @@ const { resolve } = require('path')
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: './',
   plugins: [react(), vitePluginForArco()],
   resolve: {
     // 配置路径 别名

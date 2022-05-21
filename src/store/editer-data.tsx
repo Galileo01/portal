@@ -10,7 +10,7 @@ import {
 import { GlobalConfig, StyleConfig } from '@/typings/common/editer-config-data'
 import { devLogger } from '@/common/utils'
 
-type Store = EditerData
+export type Store = EditerData
 
 export enum EditerDataActionEnum {
   BACK = 'back',

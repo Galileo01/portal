@@ -7,6 +7,7 @@ import { LOSTORAGE_KEY_IS_SIDER_COLLAPSE } from '@/common/constant'
 import { getLocalStorage, setLocalStorage } from '@/common/utils/storage'
 
 import ComponentPane from './components/component-pane'
+import TemplatePane from './components/template-pane'
 import styles from './index.module.less'
 
 const { TabPane } = Tabs
@@ -75,7 +76,7 @@ const Resource = () => {
             </Tooltip>
           }
         >
-          template
+          <TemplatePane />
         </TabPane>
       </Tabs>
     </Sider>

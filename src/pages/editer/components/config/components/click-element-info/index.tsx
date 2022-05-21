@@ -1,11 +1,9 @@
 import * as React from 'react'
 
 import { Tooltip, Button, Message } from '@arco-design/web-react'
-import {
-  IconRefresh,
-  IconQuestionCircle,
-  IconCopy,
-} from '@arco-design/web-react/icon'
+import { IconRefresh, IconCopy } from '@arco-design/web-react/icon'
+
+import HelpTip from '@/components/help-tip'
 
 import styles from './index.module.less'
 
@@ -59,14 +57,13 @@ const ClickElementInfo: React.FC<ClickElementInfoProps> = (props) => {
         <div>
           <span className={styles.label}>
             id
-            <Tooltip content="元素id,可填入侧边导航等组件中跳转">
-              <IconQuestionCircle className="question_icon" />
-            </Tooltip>
-            :
+            <HelpTip content="元素id,可填入侧边导航等组件中跳转" />:
           </span>
           <span className={styles.info_text}>{currentClickElement?.id}</span>
           {currentClickElement?.id && (
-            <IconCopy className="question_icon" onClick={handleCopyClick} />
+            <Tooltip content="复制id">
+              <IconCopy className="question_icon" onClick={handleCopyClick} />
+            </Tooltip>
           )}
         </div>
       </div>

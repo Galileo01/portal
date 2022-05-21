@@ -4,22 +4,19 @@ import {
   Form,
   Button,
   Message,
-  Tooltip,
   List,
   Image,
   Collapse,
   FormProps,
 } from '@arco-design/web-react'
-import { IconQuestionCircle, IconSave } from '@arco-design/web-react/icon'
+import { IconSave } from '@arco-design/web-react/icon'
 import { FontList } from '@/typings/database'
-
 import FontCascader from '@/components/custom-form-inner/font-cascader'
-import { FontFormData } from '@/typings/common/editer-config-data'
-import {
-  filterFontByType,
-  updateFontConfigToElement,
-} from '@/common/utils/font'
+import { filterFontByType } from '@/components/custom-form-inner/utils'
+import { FontFormField } from '@/typings/common/editer-config-data'
+import { updateFontConfigToDOM } from '@/common/utils/font'
 import { useGlobalConfig } from '@/common/hooks/editer-data'
+import HelpTip from '@/components/help-tip'
 
 import styles from './index.module.less'
 import { COLLAPSE_BASE_PROPS } from '../../../config'
@@ -36,21 +33,21 @@ const { Item: ListItem } = List
 const { Meta: ListItemMeta } = ListItem
 const { Item: CollapseItem } = Collapse
 
-const FontForm: React.FC<FontFormProps> = ({ fontList }) => {
+const GlobalFontForm: React.FC<FontFormProps> = ({ fontList }) => {
   const { configData, updateGlobalConfig } = useGlobalConfig()
 
-  const [fontForm] = Form.useForm<FontFormData>()
+  const [fontForm] = Form.useForm<FontFormField>()
 
   const platFormFontList = React.useMemo(
     () => filterFontByType(fontList, 'platform_provide'),
     [fontList]
   )
 
-  const handleFormChangeHandler: FormProps<FontFormData>['onChange'] = (
+  const handleFormChangeHandler: FormProps<FontFormField>['onChange'] = (
     value,
     values
   ) => {
-    // 更新 的字段不是  globalFont
+    // 更新 的字段不是  globalFont 退出执行
     if (!value.globalFont) return
     const [, globalFont] = value.globalFont
     const usedFont = values.usedFont || []
@@ -64,7 +61,11 @@ const FontForm: React.FC<FontFormProps> = ({ fontList }) => {
   }
 
   const handleSaveClick = () => {
-    updateFontConfigToElement(fontForm.getFieldsValue(), fontList, true)
+    updateFontConfigToDOM(
+      fontForm.getFieldsValue().globalFont?.[1],
+      fontList,
+      true
+    )
 
     updateGlobalConfig({
       fontConfig: fontForm.getFieldsValue(),
@@ -97,9 +98,7 @@ const FontForm: React.FC<FontFormProps> = ({ fontList }) => {
           label={
             <span>
               使用的字体
-              <Tooltip content="包含全局字体和单个元素个性化字体">
-                <IconQuestionCircle className="question_icon" />
-              </Tooltip>
+              <HelpTip content="包含全局字体和单个元素个性化字体" />
             </span>
           }
         >
@@ -138,4 +137,4 @@ const FontForm: React.FC<FontFormProps> = ({ fontList }) => {
   )
 }
 
-export default FontForm
+export default GlobalFontForm

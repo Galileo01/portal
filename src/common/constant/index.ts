@@ -6,6 +6,8 @@ export const LOSTORAGE_KEY_PAGE_CONFIGS = 'page_configs'
 
 export const LOSTORAGE_KEY_IS_SIDER_COLLAPSE = 'is_sider_collapse'
 
+export const LOSTORAGE_KEY_TOKEN = 'token'
+
 // resource-component 有关
 // 由 源组件 渲染 出来的 元素 公共类
 export const RESOURCE_COMPONENT_COMMON_CLASS = 'resource_component'
@@ -42,3 +44,7 @@ export const NANO_ID_LENGTH = 10
 
 export const BLEND_MODE_DOC_HREF =
   'https://developer.mozilla.org/zh-CN/docs/Web/CSS/blend-mode'
+
+// 自定义事件
+
+export const CUSTOM_EVENT_TEMPLATE_IMPORT = 'template_import'
