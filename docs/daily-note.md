@@ -554,7 +554,7 @@ TODO:
 
   - [x] 发布资源时 验证用户的登陆状态，提示用户登陆---！
 
-- [ ] 字体存储策略 优化
+- [x] 字体存储策略 优化
 
   - config 内只存储 选中的 name list，手动进行表单的回填，提高存储效率，恢复的方便性
 
@@ -582,9 +582,9 @@ TODO:
 
 ##### 发布
 
-- [ ] config 配置 字符串太长 是否需要分割
+- [ ] ~~config 配置 字符串太长 是否需要分割~~
 - [ ] feat-config 存储 和上传 时 ，propsSchema 以及一些其他字段 不进行存储
-- [ ] dom-to-img 跨域问题
+- [ ] ~~dom-to-img 跨域问题~~
 
 #### 全局配置
 
@@ -600,8 +600,8 @@ TODO:
 #### 出码能力
 
 - [ ] 修复 build 之后 静态资源路径问题 - vite 配置
-- [ ] zip 压缩包 定时删除，定时清空 output_code 文件夹
-- [ ] feat-Output-code-template 模板 清楚不必要的依赖
+- [x] zip 压缩包 定时删除，定时清空 output_code 文件夹
+- [x] feat-Output-code-template 模板 清楚不必要的依赖
 - [ ] 只 打包使用到的源组件
 
 #### 其他
