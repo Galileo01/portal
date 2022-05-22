@@ -59,7 +59,7 @@ const TemplatePane = () => {
   const triggerElementRef = React.useRef(null)
 
   const fetchTemplateList = React.useCallback(() => {
-    const values = queryForm.getFieldsValue(['titleLike', 'filter', 'order'])
+    const values = queryForm.getFieldsValue()
     const { current, size } = paginationInfo
     const offset = (current - 1) * size
 

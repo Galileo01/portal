@@ -11,7 +11,6 @@ import {
   Tooltip,
 } from '@arco-design/web-react'
 import { IconRedo, IconUndo, IconCopy } from '@arco-design/web-react/icon'
-import clsx from 'clsx'
 import { Link, useSearchParams } from 'react-router-dom'
 
 import Logo from '@/components/logo'
@@ -34,6 +33,7 @@ import { operateResource } from '@/network/resource'
 import { outputCode } from '@/network/code'
 import { uploadCos } from '@/network/cos'
 import { EditType } from '@/typings/common/editer'
+import { transformToNecessaryList } from '@/common/utils/prop-config'
 
 import styles from './index.module.less'
 import ResourceManage from './components/resource-manage'
@@ -132,12 +132,14 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
     setOutputModalVisible(false)
   }
 
-  const stringfyConfig = () =>
+  const stringfyConfig = (transform = false) =>
     JSON.stringify({
       title: resourceId,
       globalConfig,
       styleConfig,
-      componentDataList,
+      componentDataList: transform
+        ? transformToNecessaryList(componentDataList)
+        : componentDataList,
     })
 
   const handleResourceOperate: PublishModalProps['onConfirm'] = async (
@@ -154,7 +156,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
       resourceData: {
         ...restData,
         thumbnailUrl,
-        config: stringfyConfig(),
+        config: stringfyConfig(true),
       },
     })
 
@@ -273,21 +275,21 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
       </Space>
       <Space className={styles.btns} size="medium">
         <ThemeSwitch />
-        <IconUndo
-          className={clsx(
-            styles.snapshot_btn,
-            !canSnapshotBack && styles.snapshot_disable
-          )}
+        <Button
+          size="mini"
+          icon={<IconUndo />}
+          className={styles.snapshot_btn}
+          disabled={!canSnapshotBack}
           onClick={handleSnapshotBack}
         />
         <Popover content={`注意: 最多保存${MAX_LENGTH}个状态快照`}>
-          <Tag>{snapshotList.length}</Tag>
+          <Tag color="blue">{snapshotList.length}</Tag>
         </Popover>
-        <IconRedo
-          className={clsx(
-            styles.snapshot_btn,
-            !canSnapshotForward && styles.snapshot_disable
-          )}
+        <Button
+          size="mini"
+          icon={<IconRedo />}
+          className={styles.snapshot_btn}
+          disabled={!canSnapshotForward}
           onClick={handleSnapshotForward}
         />
         <Link

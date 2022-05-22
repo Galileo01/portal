@@ -1,4 +1,7 @@
-import { ResourceComponent } from './resosurce-component'
+import {
+  ResourceComponent,
+  ResourceComponentKeyAttr,
+} from './resosurce-component'
 import { GlobalConfig, StyleConfig } from './editer-config-data'
 
 export type ComponentDataItem = {
@@ -6,7 +9,14 @@ export type ComponentDataItem = {
   resourceComponent: ResourceComponent
 }
 
+export type KeyComponentDataItem = {
+  id: string // 组件唯一id  拖拽时 动态生成
+  resourceComponent: ResourceComponentKeyAttr
+}
+
 export type ComponentDataList = ComponentDataItem[]
+
+export type KeyComponentDataList = KeyComponentDataItem[]
 
 export enum EditType {
   CREATE = 'create',

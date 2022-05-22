@@ -6,7 +6,9 @@ import { devLogger, safeJsonParse } from '@/common/utils'
 import { getPageConfigById } from '@/common/utils/storage'
 import { generateStyleNodeFromConfig } from '@/common/utils/style-config'
 import { setColorVariableValue } from '@/common/utils/color-variable'
+import { transformToDataList } from '@/common/utils/prop-config'
 import { updateFontConfigToDOM } from '@/common/utils/font'
+import { generateElementFromMetaInfo } from '@/common/utils/meta-config'
 import {
   useEditerDataDispatch,
   EditerDataActionEnum,
@@ -74,23 +76,30 @@ export const applyConfigToDOM = (
   fontList: FontList,
   isEditer = false
 ) => {
+  const { styleConfig, globalConfig } = config
+
   // 恢复 style node
-  if (config.styleConfig) {
-    generateStyleNodeFromConfig(config.styleConfig)
+  if (styleConfig) {
+    generateStyleNodeFromConfig(styleConfig)
   }
 
   // 恢复主题配置
-  if (config.globalConfig?.themeConfig) {
-    setColorVariableValue(config.globalConfig?.themeConfig, isEditer)
+  if (globalConfig?.themeConfig) {
+    setColorVariableValue(globalConfig?.themeConfig, isEditer)
   }
   // 恢复 字体
-  if (config.globalConfig?.fontConfig) {
-    const { fontConfig } = config.globalConfig
+  if (globalConfig?.fontConfig) {
+    const { fontConfig } = globalConfig
     const usedFontName = fontConfig.usedFont?.map((item) => item[1]) || []
     const usedFont = fontList.filter(
       (font) => font.src && usedFontName.includes(font.name)
     )
     updateFontConfigToDOM(fontConfig.globalFont?.[1], usedFont, isEditer)
+  }
+
+  // 恢复元信息
+  if (globalConfig?.metaConfig) {
+    generateElementFromMetaInfo(globalConfig?.metaConfig)
   }
 }
 
@@ -128,7 +137,9 @@ export const usePageInit = (paramas: usePageInitParams) => {
           editerDataDispatch({
             type: EditerDataActionEnum.SET_STATE,
             payload: {
-              componentDataList: componentDataListInConfig,
+              // NOTE: 实际上 请求返回的并不是  ComponentDataList 类型
+              // 添加 其他非必要的字段
+              componentDataList: transformToDataList(componentDataListInConfig),
               globalConfig,
               styleConfig,
               snapshotList: [componentDataListInConfig],

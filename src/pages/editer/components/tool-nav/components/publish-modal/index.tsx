@@ -11,6 +11,7 @@ import {
 import html2canvas from 'html2canvas'
 
 import CustomImage from '@/components/custom-image'
+import HelpTip from '@/components/help-tip'
 import { devLogger } from '@/common/utils'
 import { getPreviewerElement } from '@/common/utils/element'
 import { ResourceType } from '@/typings/database'
@@ -122,6 +123,7 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
         <Form
           form={publishForm}
           wrapperCol={{ span: 12 }}
+          labelCol={{ span: 6 }}
           labelAlign="left"
           autoComplete="off"
           initialValues={initialValues}
@@ -137,7 +139,12 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
           </FormItem>
           <FormItem
             field="title"
-            label="资源名称"
+            label={
+              <>
+                资源名称
+                <HelpTip content="显示为页面或模板的名称" />
+              </>
+            }
             rules={[
               {
                 required: true,

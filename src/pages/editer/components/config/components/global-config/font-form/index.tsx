@@ -111,7 +111,9 @@ const GlobalFontForm: React.FC<FontFormProps> = ({ fontList }) => {
             width: '100%',
           }}
           onClick={handleSaveClick}
-        />
+        >
+          保存
+        </Button>
       </Form>
       <Collapse {...COLLAPSE_BASE_PROPS}>
         <CollapseItem

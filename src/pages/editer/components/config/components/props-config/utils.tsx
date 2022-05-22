@@ -15,7 +15,6 @@ import {
   IconPlus,
 } from '@arco-design/web-react/icon'
 
-import { ComponentDataItem } from '@/typings/common/editer'
 import {
   PropsSchema,
   PropsSchemaObj,
@@ -282,10 +281,7 @@ const traverseGenerate = (schema: PropsSchemaObj, parentProp?: string) => {
   return elementList
 }
 
-export const generatePropFormItems = (componentData: ComponentDataItem) => {
-  const {
-    resourceComponent: { propsSchema },
-  } = componentData
+export const generatePropFormItems = (propsSchema: PropsSchemaObj) => {
   const elementList = traverseGenerate(propsSchema)
   return elementList
 }

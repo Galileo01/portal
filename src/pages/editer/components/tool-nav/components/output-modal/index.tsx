@@ -85,6 +85,7 @@ const OutputModal: React.FC<OutputModalProps> = (props) => {
         <Form
           form={outputForm}
           wrapperCol={{ span: 12 }}
+          labelCol={{ span: 6 }}
           labelAlign="left"
           autoComplete="off"
           initialValues={initialValues}
@@ -100,7 +101,12 @@ const OutputModal: React.FC<OutputModalProps> = (props) => {
           </FormItem>
           <FormItem
             field="title"
-            label="页面名称"
+            label={
+              <>
+                页面名称
+                <HelpTip content="显示为页面的名称" />
+              </>
+            }
             rules={[
               {
                 required: true,

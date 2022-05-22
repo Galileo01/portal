@@ -2,7 +2,7 @@ import axios, { AxiosResponse, AxiosError } from 'axios'
 import { Message } from '@arco-design/web-react'
 
 import { IS_DEV, devLogger } from '@/common/utils'
-import { getLocalStorage } from '@/common/utils/storage'
+import { getLocalStorage, setLocalStorage } from '@/common/utils/storage'
 
 export const baseURL = IS_DEV
   ? 'http://localhost:5000'
@@ -38,6 +38,10 @@ ins.interceptors.response.use(
   (err: AxiosError) => {
     devLogger('axios interceptors.response error', err.message)
     Message.error(err.message)
+    // 401 ： 用户token 验证失败 清除 token
+    if (err.response?.status === 401) {
+      setLocalStorage('token', '')
+    }
     return {
       data: {
         data: err.message,

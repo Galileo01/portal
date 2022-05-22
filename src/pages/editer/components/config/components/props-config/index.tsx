@@ -7,7 +7,6 @@ import { CommonProps } from '@/typings/common/resosurce-component'
 
 import { ConfigPaneBaseProps, ConfigPaneNameEnum } from '../../config'
 import { generatePropFormItems } from './utils'
-import { devLogger } from '@/common/utils'
 
 const { Item: CollapseItem } = Collapse
 
@@ -24,13 +23,14 @@ const PropConfig: React.FC<PropConfigProps> = (props) => {
   const [formItems, setList] = React.useState<JSX.Element[]>([])
 
   const handlePropsChange: FormProps['onChange'] = (value, values) => {
-    devLogger('PropConfig handlePropsChange', values)
     updateComponentProps(values)
   }
 
   React.useEffect(() => {
     if (componentData) {
-      const elements = generatePropFormItems(componentData)
+      const elements = generatePropFormItems(
+        componentData.resourceComponent.propsSchema
+      )
       setList(elements)
       // 先清空数据
       form.clearFields()

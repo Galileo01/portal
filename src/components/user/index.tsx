@@ -98,10 +98,6 @@ const UserComponent: React.FC<UserProps> = (props) => {
         if (res.success) {
           updateUserInfoDispatch(res.data)
         }
-        // token 验证失败 清除token
-        else {
-          setLocalStorage('token', '')
-        }
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

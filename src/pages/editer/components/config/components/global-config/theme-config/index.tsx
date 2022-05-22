@@ -54,7 +54,7 @@ const ThemeConfig = () => {
 
   return (
     <CollapseItem
-      header="主题配置"
+      header="主题色配置"
       name="global_config.theme_config"
       className={styles.theme_config}
     >

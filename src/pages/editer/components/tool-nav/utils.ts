@@ -5,7 +5,6 @@ export const startDownloadZip = (fileName: string) => {
   a.href = `${baseURL}/output_code/${fileName}`
   document.documentElement.appendChild(a)
   a.click()
-
   a.remove()
 }
 
