@@ -21,7 +21,7 @@ import {
 import CustomImage from '@/components/custom-image'
 import { GetTemplateListRes, GetResourceListQuery } from '@/typings/request'
 import { getTemplateList } from '@/network/resource'
-import { dispatchTemplateImportEvent } from '@/common/utils'
+import { dispatchTemplateImportEvent } from '@/common/utils/custom-event'
 
 import styles from './index.module.less'
 
@@ -203,7 +203,7 @@ const TemplatePane = () => {
           className={clsx(styles.load_trigger, 'load_trigger')}
           ref={triggerElementRef}
         >
-          <span className="tip_text">我也是有底线的</span>
+          <span className="tip_text">底线在这里</span>
         </Divider>
       </Spin>
     </div>

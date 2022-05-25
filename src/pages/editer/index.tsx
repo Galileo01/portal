@@ -5,7 +5,7 @@ import { useSearchParams } from 'react-router-dom'
 
 import { EditerDataProvider } from '@/store/editer-data'
 import { FetchDataProvider } from '@/store/fetch-data'
-import { usePageInit } from '@/common/hooks/page-init'
+import { useResourceInit } from '@/common/hooks/resource-init'
 import { EditType } from '@/typings/common/editer'
 
 import ToolNav from './components/tool-nav'
@@ -15,7 +15,7 @@ import Prop from './components/config'
 import styles from './index.module.less'
 
 const { Header, Content, Sider } = Layout
-// TODO: 结合 服务端 完成出码能力
+
 const Editer = () => {
   const [params] = useSearchParams()
 
@@ -30,7 +30,7 @@ const Editer = () => {
     [params]
   )
 
-  usePageInit({
+  useResourceInit({
     resourceId: searchParams.resource_id,
     resourceType: searchParams.resource_type,
     isEditer: true,

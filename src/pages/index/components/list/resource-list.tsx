@@ -102,7 +102,6 @@ const ResourceList: React.FC<ResourceListProps> = (props) => {
                   resource_id: resource.resourceId,
                   resource_type: resourceType,
                   edit_type: 'edit',
-                  title: resource.title,
                 })}
               >
                 <IconEdit />

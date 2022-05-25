@@ -1,21 +1,24 @@
 import * as React from 'react'
 
-import { FontList } from '@/typings/database'
+import { FontList, Resource } from '@/typings/database'
 
 import { devLogger } from '@/common/utils'
 
 type Store = {
   allFontList: FontList
+  resource?: Resource
 }
 
 export enum FetchDataActionEnum {
   SET_STATE = 'setState',
   SET_ALL_FONT_LIST = 'setAllFontList',
+  SET_RESOURCE = 'setResource',
 }
 
 export type FetchDataPayloadMap = {
   [FetchDataActionEnum.SET_STATE]: Store
   [FetchDataActionEnum.SET_ALL_FONT_LIST]: FontList
+  [FetchDataActionEnum.SET_RESOURCE]: Resource
 }
 
 type Action = {
@@ -48,6 +51,11 @@ const reducer: React.Reducer<Store, Action> = (state, action) => {
       return {
         ...state,
         allFontList: payload as FetchDataPayloadMap['setAllFontList'],
+      }
+    case FetchDataActionEnum.SET_RESOURCE:
+      return {
+        ...state,
+        resource: payload as Resource,
       }
     default:
       return {

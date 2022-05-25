@@ -47,4 +47,6 @@ export const BLEND_MODE_DOC_HREF =
 
 // 自定义事件
 
-export const CUSTOM_EVENT_TEMPLATE_IMPORT = 'template_import'
+export const TEMPLATE_IMPORT_EVENT = 'template_import'
+
+export const CUSTOM_STORAGE_EVENT = 'custom_event'

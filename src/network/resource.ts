@@ -4,6 +4,7 @@ import {
   GetPageListRes,
   GetResourceListQuery,
   OperateResourceData,
+  DeleteByIdData,
 } from '@/typings/request/resource'
 import { Resource } from '@/typings/database'
 
@@ -34,8 +35,8 @@ export const getResourceById = (params: GetByIdQuery) =>
     params,
   })
 
-export const deleteResourceById = (resourceId: string) =>
-  instance.post(`${baseRoute}/deleteById`, { resourceId })
+export const deleteResourceById = (data: DeleteByIdData) =>
+  instance.post(`${baseRoute}/deleteById`, data)
 
 export const operateResource = (data: OperateResourceData) =>
-  instance.post(`${baseRoute}/operate`, data)
+  instance.post<Resource>(`${baseRoute}/operate`, data)

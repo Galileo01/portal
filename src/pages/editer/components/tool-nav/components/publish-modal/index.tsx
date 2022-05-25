@@ -14,21 +14,23 @@ import CustomImage from '@/components/custom-image'
 import HelpTip from '@/components/help-tip'
 import { devLogger } from '@/common/utils'
 import { getPreviewerElement } from '@/common/utils/element'
-import { ResourceType } from '@/typings/database'
+import { ResourceType, TemplateType, Template } from '@/typings/database'
+import { useUserInfo } from '@/store/user-info'
+import { useFetchDataStore } from '@/store/fetch-data'
 
 export type PublishForm = {
   resourceId: string
   title: string
-  private: number
   resourceType: ResourceType
   thumbnail: Blob
+  private?: number
+  type?: TemplateType
 }
 
 export type PublishModalProps = Omit<ModalProps, 'onConfirm'> & {
   resourceId: string
   resourceType: string
   fetching: boolean
-  title?: string
   onConfirm: (values: PublishForm) => void
 }
 
@@ -50,24 +52,20 @@ const privateSelectRenderer = (values: any) => {
 }
 
 const PublishModal: React.FC<PublishModalProps> = (props) => {
-  const {
-    resourceId,
-    resourceType,
-    visible,
-    title,
-    fetching,
-    onConfirm,
-    ...rest
-  } = props
+  const { resourceId, resourceType, visible, fetching, onConfirm, ...rest } =
+    props
+
+  const userInfo = useUserInfo()
+  const useFetchData = useFetchDataStore()
 
   const initialValues = React.useMemo(
     () => ({
       resourceId,
-      private: 1,
+      private: (useFetchData?.resource as Template | undefined)?.private ?? 1,
       resourceType: resourceType as ResourceType,
-      title: title || resourceId,
+      title: useFetchData?.resource?.title || resourceId,
     }),
-    [resourceId, resourceType, title]
+    [resourceId, resourceType, useFetchData?.resource]
   )
 
   const [publishForm] = Form.useForm<PublishForm>()
@@ -98,10 +96,16 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
   const hanldeConfirm = () => {
     publishForm.validate((error, values) => {
       if (!error && values && thumbnailInfo) {
-        onConfirm({
-          ...values,
-          thumbnail: thumbnailInfo?.img,
-        })
+        const { resourceType: resourceTypeInValues } = values
+        const finallyValues = { ...values, thumbnail: thumbnailInfo?.img }
+        // 资源类型为 模板
+        if (resourceTypeInValues === 'template') {
+          devLogger('userInfo', userInfo)
+          //  模板为公有 且用户角色是 admin ，自动填充 type
+          finallyValues.type = userInfo?.role === 'admin' ? 'platform' : 'user'
+        }
+
+        onConfirm(finallyValues)
       } else {
         devLogger('publishForm.validate', error, values)
       }
@@ -112,10 +116,10 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
     if (visible) {
       generateThumbnail()
     } else {
-      publishForm.resetFields()
+      publishForm.setFieldsValue(initialValues)
       setThumbnailInfo(undefined)
     }
-  }, [generateThumbnail, publishForm, visible])
+  }, [generateThumbnail, publishForm, visible, initialValues])
 
   return (
     <Modal title="发布" visible={visible} onConfirm={hanldeConfirm} {...rest}>
@@ -126,7 +130,6 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
           labelCol={{ span: 6 }}
           labelAlign="left"
           autoComplete="off"
-          initialValues={initialValues}
           size="small"
         >
           <FormItem
@@ -149,6 +152,10 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
               {
                 required: true,
                 message: '请填写资源名称',
+              },
+              {
+                maxLength: 20,
+                message: '最大长度为20',
               },
             ]}
           >

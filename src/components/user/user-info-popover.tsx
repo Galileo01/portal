@@ -131,8 +131,8 @@ const UserInfoPopover: React.FC<UserInfoPopoverProps> = (props) => {
           >
             <FormItem label="头像">
               <div className={styles.item_inner_wrapper}>
-                <Avatar className={styles.avatar_wrapper}>
-                  <CustomImage src={imgFile.url} />
+                <Avatar className={styles.avatar_wrapper_un_scale}>
+                  <CustomImage src={imgFile.url} height={40} width={40} />
                 </Avatar>
                 <Upload
                   showUploadList={false}

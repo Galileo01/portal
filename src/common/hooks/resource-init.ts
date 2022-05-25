@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { FontList, ResourceType } from '@/typings/database'
+import { FontList, ResourceType, Resource } from '@/typings/database'
 import { PageConfig, ComponentDataList } from '@/typings/common/editer'
 import { devLogger, safeJsonParse } from '@/common/utils'
 import { getPageConfigById } from '@/common/utils/storage'
@@ -19,7 +19,7 @@ import { getResourceById } from '@/network/resource'
 
 export type InitType = 'restore' | 'fetch'
 
-export type usePageInitParams = {
+export type useResourceInitParams = {
   resourceId: string | null
   resourceType: string
   initType: InitType
@@ -31,16 +31,17 @@ export type usePageInitParams = {
   isEditer: boolean
 }
 
-const getConfig: (params: {
+type ResourceData = Partial<{
+  config: PageConfig
+  fontList: FontList
+  resource: Resource
+}>
+
+const getResourceData: (params: {
   resourceId: string
   initType: InitType
   resourceType: string
-}) => Promise<
-  Partial<{
-    config: PageConfig
-    fontList: FontList
-  }>
-> = (params) =>
+}) => Promise<ResourceData> = (params) =>
   new Promise((resolve) => {
     const { resourceId, initType, resourceType } = params
     if (initType === 'restore') {
@@ -65,6 +66,7 @@ const getConfig: (params: {
             ? safeJsonParse(resourceRes.data.config)
             : undefined,
           fontList: fontListRes.success ? fontListRes.data : [],
+          resource: resourceRes.success ? resourceRes.data : undefined,
         })
       })
     }
@@ -98,14 +100,14 @@ export const applyConfigToDOM = (
   }
 
   // 恢复元信息
-  if (globalConfig?.metaConfig) {
+  if (globalConfig?.metaConfig && !isEditer) {
     generateElementFromMetaInfo(globalConfig?.metaConfig)
   }
 }
 
-export const usePageInit = (paramas: usePageInitParams) => {
+export const useResourceInit = (paramas: useResourceInitParams) => {
   const { resourceId, initType, resourceType, isEditer } = paramas
-  devLogger('usePageInit params', paramas)
+  devLogger('useResourceInit params', paramas)
 
   const editerDataDispatch = useEditerDataDispatch()
   const fetchDataDispatch = useFetchDataDispatch()
@@ -118,13 +120,13 @@ export const usePageInit = (paramas: usePageInitParams) => {
       throw new Error('pageid not valid')
     }
 
-    getConfig({
+    getResourceData({
       resourceId,
       initType,
       resourceType,
     }).then((res) => {
-      const { config, fontList = [] } = res
-      devLogger('getConfig', config)
+      const { config, fontList = [], resource } = res
+      devLogger('getResourceData', config)
 
       if (config) {
         const {
@@ -152,10 +154,17 @@ export const usePageInit = (paramas: usePageInitParams) => {
       }
       setTitle(config?.title || resourceId)
 
-      if (fontList.length > 0 && isEditer) {
+      if (isEditer && (fontList.length > 0 || resource)) {
         fetchDataDispatch({
           type: FetchDataActionEnum.SET_ALL_FONT_LIST,
           payload: fontList,
+        })
+        fetchDataDispatch({
+          type: FetchDataActionEnum.SET_STATE,
+          payload: {
+            allFontList: fontList,
+            resource,
+          },
         })
       }
     })

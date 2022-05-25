@@ -132,7 +132,7 @@ const BackgroundForm: React.FC<BackgroundFormProps> = (props) => {
       >
         <CustomColorPicker allowClear presetColors={customPalette} />
       </FormItem>
-      <FormItem label="图片或渐变" labelCol={{ span: 8 }} />
+      <FormItem label="图片" labelCol={{ span: 8 }} />
       <FormList field="backgrounds">
         {(fields, { remove, move }) => (
           <div>

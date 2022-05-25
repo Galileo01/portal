@@ -9,7 +9,6 @@ export type EditerSearchGenerateParams = {
   resource_id: string
   edit_type?: string
   use_local?: boolean
-  title?: string
   resource_type?: ResourceType
 }
 

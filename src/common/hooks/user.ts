@@ -6,7 +6,7 @@ export type HooksParams = {
   onRefresh: () => void
 }
 
-export const useRefreshWhenUpdate = (params: HooksParams) => {
+export const useRefreshWhenUserUpdate = (params: HooksParams) => {
   const { onRefresh } = params
 
   const userInfo = useUserInfo()
@@ -18,6 +18,10 @@ export const useRefreshWhenUpdate = (params: HooksParams) => {
       preUserInfoRef.current = userInfo
     }
   }, [userInfo, onRefresh])
+
+  return {
+    userInfo,
+  }
 }
 
-export default useRefreshWhenUpdate
+export default useRefreshWhenUserUpdate

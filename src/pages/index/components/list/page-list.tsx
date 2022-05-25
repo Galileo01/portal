@@ -5,7 +5,7 @@ import { Spin, Message } from '@arco-design/web-react'
 import { devLogger } from '@/common/utils'
 import { getPageList, deleteResourceById } from '@/network/resource'
 import { GetPageListRes, PageBase } from '@/typings/request/resource'
-import { useRefreshWhenUpdate } from '@/common/hooks/user'
+import { useRefreshWhenUserUpdate } from '@/common/hooks/user'
 
 import styles from './index.module.less'
 import ResourceList, {
@@ -67,7 +67,9 @@ const PageList = () => {
   })
 
   const handleRemove: ResourceListProps['onRemove'] = (resourceId) => {
-    deleteResourceById(resourceId).then((res) => {
+    deleteResourceById({
+      resourceId,
+    }).then((res) => {
       if (res.success) {
         Message.success('删除成功')
         fetchPageList()
@@ -84,7 +86,7 @@ const PageList = () => {
     setPagination({ ...initPagination })
   }, [])
 
-  useRefreshWhenUpdate({
+  useRefreshWhenUserUpdate({
     onRefresh: handleRefresh,
   })
 

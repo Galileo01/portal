@@ -4,7 +4,7 @@ import { UserBase } from '@/typings/request'
 
 import { devLogger } from '@/common/utils'
 
-type Store = UserBase | undefined
+export type Store = UserBase | undefined
 
 export enum UserActionEnum {
   SET_STATE = 'setState',

@@ -23,6 +23,7 @@ import {
   MAX_LENGTH,
 } from '@/store/editer-data'
 import { useUserInfo } from '@/store/user-info'
+import { useFetchDataDispatch, FetchDataActionEnum } from '@/store/fetch-data'
 import { ROUTE_PAGE } from '@/common/constant/route'
 import { setPageConfigById, clearResourceConfig } from '@/common/utils/storage'
 import { restorePreviewColorVariable } from '@/common/utils/color-variable'
@@ -64,13 +65,13 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
   } = useEditerDataStore()
   const editerDataDispatch = useEditerDataDispatch()
   const userInfo = useUserInfo()
+  const fetchDataDispatch = useFetchDataDispatch()
 
   const [params] = useSearchParams()
 
-  const searchParams = React.useRef({
+  const searchParamsRef = React.useRef({
     resource_type: params.get('resource_type') || 'page',
     edit_type: params.get('edit_type') || EditType.CREATE,
-    title: params.get('title') || undefined,
   })
 
   const canSnapshotBack = currentSnapshotIndex > 0
@@ -132,9 +133,9 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
     setOutputModalVisible(false)
   }
 
-  const stringfyConfig = (transform = false) =>
+  const stringfyConfig = (title: string, transform = false) =>
     JSON.stringify({
-      title: resourceId,
+      title,
       globalConfig,
       styleConfig,
       componentDataList: transform
@@ -145,7 +146,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
   const handleResourceOperate: PublishModalProps['onConfirm'] = async (
     values
   ) => {
-    const isPublish = searchParams.current.edit_type === 'create'
+    const isPublish = searchParamsRef.current.edit_type === 'create'
     const { thumbnail, ...restData } = values
     setOperating(true)
     // 点击确认时 才上传至 腾讯云 cos
@@ -156,7 +157,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
       resourceData: {
         ...restData,
         thumbnailUrl,
-        config: stringfyConfig(true),
+        config: stringfyConfig(restData.title, true),
       },
     })
 
@@ -173,7 +174,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
       const pageUrl = generatePagePath(
         {
           resource_id: resourceId,
-          resource_type: searchParams.current.resource_type,
+          resource_type: searchParamsRef.current.resource_type,
         },
         true
       )
@@ -183,6 +184,11 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
           Message.success('复制成功')
         })
       }
+
+      fetchDataDispatch({
+        type: FetchDataActionEnum.SET_RESOURCE,
+        payload: oprateRes.data,
+      })
 
       Modal.success({
         title: '提示',
@@ -209,12 +215,11 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
         onCancel: () => {
           // NOTE: 若是发布模式 发布成功后 必须跳转到 编辑模式的页面
           if (isPublish) {
-            const { resourceType, title } = values
+            const { resourceType } = values
             const newHref = generateEditerPath({
               resource_id: resourceId,
               edit_type: 'edit',
               resource_type: resourceType,
-              title,
             })
             // eslint-disable-next-line no-restricted-globals
             location.replace(newHref)
@@ -231,7 +236,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
       return
     }
     // 资源类型 为页面时 才允许 出码
-    if (searchParams.current.resource_type === 'page') {
+    if (searchParamsRef.current.resource_type === 'page') {
       showOutputModal()
     } else {
       Message.warning('模板资源不支持出码')
@@ -252,7 +257,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
     setIsBlocking(false)
     outputCode({
       ...restField,
-      pageConfig: useLocal ? stringfyConfig() : undefined,
+      pageConfig: useLocal ? stringfyConfig(restField.title) : undefined,
     })
       .then((res) => {
         if (res.success === 1) {
@@ -295,7 +300,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
         <Link
           to={{
             pathname: ROUTE_PAGE,
-            search: `resource_id=${resourceId}&resource_type=${searchParams.current.resource_type}&is_preview=1`,
+            search: `resource_id=${resourceId}&resource_type=${searchParamsRef.current.resource_type}&is_preview=1`,
           }}
           target="_blank"
           className={styles.preview_link}
@@ -319,8 +324,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
       </Space>
       <PublishModal
         resourceId={resourceId}
-        title={searchParams.current.title}
-        resourceType={searchParams.current.resource_type}
+        resourceType={searchParamsRef.current.resource_type}
         visible={publishModalVisible}
         fetching={operating}
         onCancel={hidePublishModal}
@@ -328,8 +332,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
       />
       <OutputModal
         pageId={resourceId}
-        editType={searchParams.current.edit_type}
-        title={searchParams.current.title}
+        editType={searchParamsRef.current.edit_type}
         visible={outputModalVisible}
         fetching={outputing}
         onCancel={hideOutputModal}

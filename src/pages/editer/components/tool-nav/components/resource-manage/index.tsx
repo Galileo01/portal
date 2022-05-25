@@ -1,6 +1,12 @@
 import * as React from 'react'
 
-import { Dropdown, Menu, Button, MenuProps } from '@arco-design/web-react'
+import {
+  Dropdown,
+  Menu,
+  Button,
+  Empty,
+  MenuProps,
+} from '@arco-design/web-react'
 import {
   IconUnorderedList,
   IconLaunch,
@@ -13,6 +19,7 @@ import {
 } from '@/common/utils/storage'
 import { generateEditerPath } from '@/common/utils/route'
 import { EditType } from '@/typings/common/editer'
+import { CUSTOM_STORAGE_EVENT } from '@/common/constant'
 
 import styles from './index.module.less'
 
@@ -72,38 +79,44 @@ const ResourceManage: React.FC<ResourceManageProps> = (props) => {
   const droplist = React.useMemo(
     () => (
       <Menu onClickMenuItem={handleItemClick}>
-        {resourceList.map(({ resourceId, editType }) => {
-          const isCurrent = resourceId === currentResourceId
+        {resourceList.length > 0 ? (
+          <>
+            {resourceList.map(({ resourceId, editType }) => {
+              const isCurrent = resourceId === currentResourceId
 
-          return (
-            <MenuItem key={resourceId} data-resource-id={resourceId}>
-              <div className={styles.inner_wrapper}>
-                <span>{resourceId}</span>
-                {isCurrent ? (
-                  <span className={styles.current}>当前页面</span>
-                ) : (
-                  <div className={styles.btns}>
-                    <Button
-                      icon={<IconLaunch />}
-                      shape="circle"
-                      size="mini"
-                      data-btn-type="open"
-                      data-edit-type={editType}
-                    />
-                    <Button
-                      icon={<IconDelete />}
-                      shape="circle"
-                      size="mini"
-                      status="danger"
-                      data-btn-type="delete"
-                      data-edit-type={editType}
-                    />
+              return (
+                <MenuItem key={resourceId} data-resource-id={resourceId}>
+                  <div className={styles.inner_wrapper}>
+                    <span>{resourceId}</span>
+                    {isCurrent ? (
+                      <span className={styles.current}>当前页面</span>
+                    ) : (
+                      <div className={styles.btns}>
+                        <Button
+                          icon={<IconLaunch />}
+                          shape="circle"
+                          size="mini"
+                          data-btn-type="open"
+                          data-edit-type={editType}
+                        />
+                        <Button
+                          icon={<IconDelete />}
+                          shape="circle"
+                          size="mini"
+                          status="danger"
+                          data-btn-type="delete"
+                          data-edit-type={editType}
+                        />
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            </MenuItem>
-          )
-        })}
+                </MenuItem>
+              )
+            })}
+          </>
+        ) : (
+          <Empty className={styles.empty} />
+        )}
       </Menu>
     ),
     [resourceList, handleItemClick, currentResourceId]
@@ -115,10 +128,10 @@ const ResourceManage: React.FC<ResourceManageProps> = (props) => {
 
   // storage 事件 触发时 重新获取
   React.useEffect(() => {
-    window.addEventListener('storage', getLocalResourceList)
+    window.addEventListener(CUSTOM_STORAGE_EVENT, getLocalResourceList)
     // 清理 监听
     return () => {
-      window.removeEventListener('storage', getLocalResourceList)
+      window.removeEventListener(CUSTOM_STORAGE_EVENT, getLocalResourceList)
     }
   }, [getLocalResourceList])
 

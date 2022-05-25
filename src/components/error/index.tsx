@@ -3,12 +3,14 @@ import * as React from 'react'
 
 import { useSearchParams } from 'react-router-dom'
 
+import { DISABLE_ERROR_REDIRECT_PARAMS } from '@/common/constant/route'
+
 import styles from './index.module.less'
 
 const Error = () => {
   const [searchParams] = useSearchParams()
   const disableRedirect = React.useMemo(
-    () => Boolean(searchParams.get('disable_error_redirect')),
+    () => Boolean(searchParams.get(DISABLE_ERROR_REDIRECT_PARAMS)),
     [searchParams]
   )
 
