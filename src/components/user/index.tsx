@@ -14,6 +14,7 @@ import { HAS_TOKEN } from '@/common/utils'
 import { LOSTORAGE_KEY_TOKEN } from '@/common/constant'
 import { setLocalStorage } from '@/common/utils/storage'
 import { getUserInfo, login, updateUserInfo } from '@/network/user'
+import { uploadCos } from '@/network/cos'
 
 import CustomImage from '../custom-image'
 import LoginModal, { LoginModalProps } from './login-modal'
@@ -76,12 +77,19 @@ const UserComponent: React.FC<UserProps> = (props) => {
     })
   }
 
-  const hanldeEditSubmitClick: UserInfoPopoverProps['onSubmitClick'] = (
+  const hanldeEditSubmitClick: UserInfoPopoverProps['onSubmitClick'] = async (
     values
   ) => {
-    const { password } = values
+    const { password, avatarImg, ...resetValues } = values
+    let avatarCOSUrl: undefined | string
+    if (values.avatarImg) {
+      // 点击确认时 才上传至 腾讯云 cos
+      avatarCOSUrl = await uploadCos(values.avatarImg, values.avatarImg.name)
+    }
+
     updateUserInfo({
-      ...values,
+      ...resetValues,
+      avatar: avatarCOSUrl,
       password: password ? md5(password) : undefined,
     }).then((res) => {
       if (res.success) {

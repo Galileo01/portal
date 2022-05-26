@@ -28,9 +28,9 @@ const cos = new COS({
 export const cosDomain =
   'https://cos-01-1303103441.cos.ap-chengdu.myqcloud.com/'
 
-export const uploadCos = (imgFile: Blob, pageId: string) =>
+export const uploadCos = (imgFile: Blob, filename: string) =>
   new Promise<string>((resolve, reject) => {
-    const fileName = `img/portal/${pageId}.png`
+    const fileName = `img/portal/${filename}`
     cos.putObject(
       {
         Bucket: 'cos-01-1303103441' /* 必须 */,

@@ -2,10 +2,10 @@ import * as React from 'react'
 
 import { Spin, Message } from '@arco-design/web-react'
 
-import { devLogger } from '@/common/utils'
-import { getPageList, deleteResourceById } from '@/network/resource'
-import { GetPageListRes, PageBase } from '@/typings/request/resource'
+import { deleteResourceById } from '@/network/resource'
+import { PageBase } from '@/typings/request/resource'
 import { useRefreshWhenUserUpdate } from '@/common/hooks/user'
+import { useFetchResrouceList } from '@/common/hooks/fetch-resource'
 
 import styles from './index.module.less'
 import ResourceList, {
@@ -13,52 +13,14 @@ import ResourceList, {
   ActionComputer,
 } from './resource-list'
 
-type Pagination = {
-  current: number
-  size: number
-}
-
-const initPagination: Pagination = {
-  current: 1,
-  size: 5,
-}
-
 const PageList = () => {
-  const [paginationInfo, setPagination] =
-    React.useState<Pagination>(initPagination)
-
-  const [pageListRes, setPageList] = React.useState<GetPageListRes>({
-    resourceList: [],
-    hasMore: 0,
-  })
-
-  const [loading, setLoading] = React.useState(false)
-
-  const fetchPageList = React.useCallback(() => {
-    const { current, size } = paginationInfo
-    const offset = (current - 1) * size
-    setLoading(true)
-
-    getPageList({
-      offset,
-      limit: size,
-    })
-      .then((res) => {
-        if (res.success) {
-          setPageList(res.data)
-        }
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }, [paginationInfo])
-
-  const hanldeLoadMore = () => {
-    setPagination(({ current, size }) => ({
-      size,
-      current: current + 1,
-    }))
-  }
+  const {
+    loading,
+    resourceListRes,
+    fetchResourceList,
+    hanldeLoadMore,
+    handleRefresh,
+  } = useFetchResrouceList({ resourceType: 'page', size: 5 })
 
   const actionsComputer: ActionComputer<PageBase> = () => ({
     edit: true,
@@ -72,18 +34,15 @@ const PageList = () => {
     }).then((res) => {
       if (res.success) {
         Message.success('删除成功')
-        fetchPageList()
+        fetchResourceList('init')
       }
     })
   }
 
   React.useEffect(() => {
-    fetchPageList()
-  }, [fetchPageList])
+    fetchResourceList('init')
 
-  const handleRefresh = React.useCallback(() => {
-    devLogger('handleRefresh')
-    setPagination({ ...initPagination })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useRefreshWhenUserUpdate({
@@ -96,9 +55,9 @@ const PageList = () => {
       <Spin style={{ display: 'block' }} loading={loading}>
         <ResourceList
           resourceType="page"
-          hasMore={pageListRes.hasMore}
-          resourceList={pageListRes.resourceList}
-          onLoadMore={hanldeLoadMore}
+          hasMore={resourceListRes.hasMore}
+          resourceList={resourceListRes.resourceList}
+          onLoadMore={() => hanldeLoadMore()}
           actionComputer={actionsComputer}
           onRemove={handleRemove}
         />

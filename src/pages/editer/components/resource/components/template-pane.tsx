@@ -19,11 +19,13 @@ import {
   TemplateOrderSelect,
 } from '@/components/template-type-selector'
 import CustomImage from '@/components/custom-image'
-import { GetTemplateListRes, GetResourceListQuery } from '@/typings/request'
-import { getTemplateList } from '@/network/resource'
+import { GetResourceListQuery } from '@/typings/request'
 import { dispatchTemplateImportEvent } from '@/common/utils/custom-event'
+import { useRefreshWhenUserUpdate } from '@/common/hooks/user'
+import { useFetchResrouceList } from '@/common/hooks/fetch-resource'
 
 import styles from './index.module.less'
+import { devLogger } from '@/common/utils'
 
 const { Search } = Input
 
@@ -43,64 +45,50 @@ const initialQuery: QueryForm = {
 }
 
 const TemplatePane = () => {
-  const [paginationInfo, setPagination] = React.useState<{
-    current: number
-    size: number
-  }>({ current: 1, size: 10 })
-
   const [queryForm] = Form.useForm<QueryForm>()
-
-  const [templateListRes, setPageList] = React.useState<GetTemplateListRes>({
-    resourceList: [],
-    hasMore: 0,
-  })
-  const [loading, setLoading] = React.useState(false)
 
   const triggerElementRef = React.useRef(null)
 
-  const fetchTemplateList = React.useCallback(() => {
-    const values = queryForm.getFieldsValue()
-    const { current, size } = paginationInfo
-    const offset = (current - 1) * size
-
-    setLoading(true)
-    getTemplateList({
-      offset,
-      limit: size,
-      ...values,
-    })
-      .then((res) => {
-        if (res.success) {
-          setPageList(res.data)
-        }
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }, [paginationInfo, queryForm])
-
-  const hanldeLoadMore = React.useCallback(() => {
-    if (!templateListRes.hasMore) return
-    setPagination(({ current, size }) => ({
-      size,
-      current: current + 1,
-    }))
-  }, [templateListRes.hasMore])
+  const {
+    loading,
+    resourceListRes,
+    fetchResourceList,
+    hanldeLoadMore,
+    handleRefresh,
+  } = useFetchResrouceList({ resourceType: 'template', size: 5 })
 
   const handleFormChange: FormProps<QueryForm>['onChange'] = (value) => {
     // 不是 输入框的变化 引起的 才触发请求
     if (!value.titleLike) {
-      fetchTemplateList()
+      handleRefresh()
     }
   }
+
+  const fetchWithFrom = () => {
+    const values = queryForm.getFieldsValue()
+    devLogger('values', values)
+    fetchResourceList('init', values)
+  }
+
+  const loadMoreWithForm = React.useCallback(() => {
+    const values = queryForm.getFieldsValue()
+    devLogger('values', values)
+    hanldeLoadMore(values)
+  }, [hanldeLoadMore, queryForm])
 
   const generateImportHandler = (resourceId: string) => () => {
     dispatchTemplateImportEvent(resourceId)
   }
 
   React.useEffect(() => {
-    fetchTemplateList()
-  }, [fetchTemplateList])
+    fetchWithFrom()
+    // 第一次渲染才请求
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useRefreshWhenUserUpdate({
+    onRefresh: handleRefresh,
+  })
 
   // 加载更多
   // eslint-disable-next-line consistent-return
@@ -108,15 +96,13 @@ const TemplatePane = () => {
     const triggerElement = triggerElementRef.current
     const observerCallback: IntersectionObserverCallback = (entries) => {
       const { intersectionRatio } = entries[0]
-      // 排除 triggerElement 一开始 就可见的情况，很常见
-      if (intersectionRatio !== 1) {
-        hanldeLoadMore()
+      // // 排除 triggerElement 一开始 就可见的情况，很常见
+      if (intersectionRatio > 0) {
+        loadMoreWithForm()
       }
     }
 
-    const observer = new IntersectionObserver(observerCallback, {
-      threshold: 0.5, // 交叉比例 超过 0.5 才触发
-    })
+    const observer = new IntersectionObserver(observerCallback)
     if (triggerElement) {
       observer.observe(triggerElement)
       return () => {
@@ -124,7 +110,7 @@ const TemplatePane = () => {
         observer.unobserve(triggerElement)
       }
     }
-  }, [hanldeLoadMore])
+  }, [loadMoreWithForm])
 
   return (
     <div className={styles.resource_pane}>
@@ -147,7 +133,7 @@ const TemplatePane = () => {
             placeholder="输入关键词进行模糊查询"
             style={{ width: '90%' }}
             size="small"
-            onSearch={fetchTemplateList}
+            onSearch={fetchWithFrom}
           />
         </FormItem>
         <Row className={styles.filter} gutter={10}>
@@ -166,7 +152,7 @@ const TemplatePane = () => {
       <h4 className={styles.section_title}>模板列表</h4>
       <Spin style={{ display: 'block' }} loading={loading}>
         <div className={styles.resources_list}>
-          {templateListRes.resourceList.map(
+          {resourceListRes.resourceList.map(
             ({ thumbnailUrl, title, resourceId }) => (
               <Card
                 hoverable
@@ -198,7 +184,7 @@ const TemplatePane = () => {
             )
           )}
         </div>
-        {templateListRes.resourceList.length === 0 && <Empty />}
+        {resourceListRes.resourceList.length === 0 && <Empty />}
         <Divider
           className={clsx(styles.load_trigger, 'load_trigger')}
           ref={triggerElementRef}

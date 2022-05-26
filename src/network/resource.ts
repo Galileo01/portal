@@ -2,6 +2,7 @@ import {
   GetByIdQuery,
   GetTemplateListRes,
   GetPageListRes,
+  GetResourceListRes,
   GetResourceListQuery,
   OperateResourceData,
   DeleteByIdData,
@@ -13,6 +14,11 @@ import instance from './index'
 const baseRoute = '/resource'
 
 type OmitedGetResourceListQuery = Omit<GetResourceListQuery, 'resourceType'>
+
+export const getResourceList = (params: GetResourceListQuery) =>
+  instance.get<GetResourceListRes>(`${baseRoute}/getList`, {
+    params,
+  })
 
 export const getPageList = (params?: OmitedGetResourceListQuery) =>
   instance.get<GetPageListRes>(`${baseRoute}/getList`, {

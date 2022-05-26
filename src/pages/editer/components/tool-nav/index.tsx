@@ -150,7 +150,10 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
     const { thumbnail, ...restData } = values
     setOperating(true)
     // 点击确认时 才上传至 腾讯云 cos
-    const thumbnailUrl = await uploadCos(thumbnail, restData.resourceId)
+    const thumbnailUrl = await uploadCos(
+      thumbnail,
+      `${restData.resourceId}.png`
+    )
 
     const oprateRes = await operateResource({
       operateType: isPublish ? 'publish' : 'update',
