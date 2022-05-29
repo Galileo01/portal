@@ -28,6 +28,7 @@ import {
 import { RCList } from '@/resource-components'
 import { getResourceById } from '@/network/resource'
 import { applyConfigToDOM } from '@/common/hooks/resource-init'
+import { transformToDataList } from '@/common/utils/prop-config'
 
 import { ToolBoxRef, ToolBoxProps } from './components/tool-box'
 
@@ -303,7 +304,9 @@ export const useTemplateImport = (params: useTemplateImportParmas) => {
             applyConfigToDOM(config, [], true)
             // 模板的组件列表追加到后面
             updateComponenDataList(
-              componentDataList.concat(componentDataListInConfig)
+              componentDataList.concat(
+                transformToDataList(componentDataListInConfig)
+              )
             )
             modal.close()
             Message.success('导入成功')

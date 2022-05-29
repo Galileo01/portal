@@ -11,9 +11,10 @@ import {
   Button,
   FormProps,
 } from '@arco-design/web-react'
-import { IconPlus } from '@arco-design/web-react/icon'
-
+import { IconPlus, IconEye } from '@arco-design/web-react/icon'
 import clsx from 'clsx'
+import { Link } from 'react-router-dom'
+
 import {
   TemplateTypeSelect,
   TemplateOrderSelect,
@@ -23,9 +24,9 @@ import { GetResourceListQuery } from '@/typings/request'
 import { dispatchTemplateImportEvent } from '@/common/utils/custom-event'
 import { useRefreshWhenUserUpdate } from '@/common/hooks/user'
 import { useFetchResrouceList } from '@/common/hooks/fetch-resource'
+import { generatePagePath } from '@/common/utils/route'
 
 import styles from './index.module.less'
-import { devLogger } from '@/common/utils'
 
 const { Search } = Input
 
@@ -57,24 +58,22 @@ const TemplatePane = () => {
     handleRefresh,
   } = useFetchResrouceList({ resourceType: 'template', size: 5 })
 
-  const handleFormChange: FormProps<QueryForm>['onChange'] = (value) => {
-    // 不是 输入框的变化 引起的 才触发请求
-    if (!value.titleLike) {
-      handleRefresh()
-    }
-  }
-
   const fetchWithFrom = () => {
     const values = queryForm.getFieldsValue()
-    devLogger('values', values)
     fetchResourceList('init', values)
   }
 
   const loadMoreWithForm = React.useCallback(() => {
     const values = queryForm.getFieldsValue()
-    devLogger('values', values)
     hanldeLoadMore(values)
   }, [hanldeLoadMore, queryForm])
+
+  const handleFormChange: FormProps<QueryForm>['onChange'] = (value) => {
+    // 不是 输入框的变化 引起的 才触发请求
+    if (!value.titleLike) {
+      fetchWithFrom()
+    }
+  }
 
   const generateImportHandler = (resourceId: string) => () => {
     dispatchTemplateImportEvent(resourceId)
@@ -134,6 +133,7 @@ const TemplatePane = () => {
             style={{ width: '90%' }}
             size="small"
             onSearch={fetchWithFrom}
+            allowClear
           />
         </FormItem>
         <Row className={styles.filter} gutter={10}>
@@ -165,15 +165,33 @@ const TemplatePane = () => {
                       preview={false}
                       className={styles.resource_cover}
                     />
-                    <Button
-                      className={styles.template_import_btn}
-                      size="mini"
-                      type="primary"
-                      icon={<IconPlus />}
-                      onClick={generateImportHandler(resourceId)}
-                    >
-                      引入
-                    </Button>
+                    <div className={styles.template_btns}>
+                      <Link
+                        className={styles.action_btn}
+                        target="_blank"
+                        to={generatePagePath({
+                          resource_id: resourceId,
+                          resource_type: 'template',
+                        })}
+                      >
+                        <Button
+                          className={styles.template_btn}
+                          size="mini"
+                          icon={<IconEye />}
+                        >
+                          查看
+                        </Button>
+                      </Link>
+                      <Button
+                        className={styles.template_btn}
+                        size="mini"
+                        type="primary"
+                        icon={<IconPlus />}
+                        onClick={generateImportHandler(resourceId)}
+                      >
+                        引入
+                      </Button>
+                    </div>
                   </div>
                 }
                 className={styles.resource_card}

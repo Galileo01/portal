@@ -29,6 +29,7 @@ import FontForm from './font-form'
 import BackgroundForm from './background-form'
 import BorderForm from './border-form'
 import styles from './index.module.less'
+import { devLogger } from '@/common/utils'
 
 const { Item: CollapseItem } = Collapse
 
@@ -166,6 +167,7 @@ const StyleConfig: React.FC<StyleConfigProps> = ({ active }) => {
               // 忽略 对于 FormInstance 的类型检测
               // @ts-ignore
               styleConfigForm={styleConfigForm}
+              customPalette={globalConfig?.customPalette}
             />
           </CollapseItem>
           <CollapseItem header="边框" name="style_config.border">

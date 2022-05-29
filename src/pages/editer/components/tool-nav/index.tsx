@@ -3,7 +3,6 @@ import * as React from 'react'
 import {
   Button,
   Space,
-  Popover,
   Message,
   Popconfirm,
   Tag,
@@ -290,9 +289,11 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
           disabled={!canSnapshotBack}
           onClick={handleSnapshotBack}
         />
-        <Popover content={`注意: 最多保存${MAX_LENGTH}个状态快照`}>
-          <Tag color="blue">{snapshotList.length}</Tag>
-        </Popover>
+        <Tooltip content={`注意: 最多保存${MAX_LENGTH}个状态快照`}>
+          <Tag color="blue">{`${currentSnapshotIndex + 1}/${
+            snapshotList.length
+          }`}</Tag>
+        </Tooltip>
         <Button
           size="mini"
           icon={<IconRedo />}
@@ -308,7 +309,9 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
           target="_blank"
           className={styles.preview_link}
         >
-          <Button type="primary">预览</Button>
+          <Tooltip content="注:请先点击保存按钮，保存数据">
+            <Button type="primary">预览</Button>
+          </Tooltip>
         </Link>
         <Button onClick={handleSaveClick}>保存</Button>
         <Popconfirm

@@ -23,7 +23,7 @@ export type GridBoxProps = {
 const GridBox: React.FC<GridBoxProps> = (props) => {
   const { gridConfig, itemList, ...elementProps } = props
   const {
-    width = 1200,
+    width,
     itemHeight = 300,
     itemWidth = 300,
     rowGap = 20,
@@ -50,7 +50,7 @@ const GridBox: React.FC<GridBoxProps> = (props) => {
           }}
         >
           <CustomImage src={item.img} height="90%" width="100%" />
-          <div className="line_1">{item.description}</div>
+          <div className="line_1 description">{item.description}</div>
         </div>
       ))}
     </div>

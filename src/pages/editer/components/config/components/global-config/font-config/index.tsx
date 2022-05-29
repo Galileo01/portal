@@ -53,7 +53,8 @@ const FontConfig = () => {
   return (
     <CollapseItem header="字体配置" name="global_config.font-config">
       <div className={styles.form_tip}>
-        <span className="tip_text">
+        {/* TODO:临时注释 字体添加入口 */}
+        {/* <span className="tip_text">
           点击
           <Popover
             popupVisible={popupVisible}
@@ -109,7 +110,7 @@ const FontConfig = () => {
             />
           </Popover>
           自己添加字体
-        </span>
+        </span> */}
       </div>
       <FontFormField fontList={fontList} />
     </CollapseItem>

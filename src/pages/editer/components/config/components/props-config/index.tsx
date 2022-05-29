@@ -56,6 +56,7 @@ const PropConfig: React.FC<PropConfigProps> = (props) => {
         }}
         labelAlign="left"
         onChange={handlePropsChange}
+        autoComplete="off"
       >
         {formItems}
       </Form>

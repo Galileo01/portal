@@ -70,12 +70,12 @@
 .template_cover {
   position: relative;
 
-  &:hover .template_import_btn {
+  &:hover .template_btns {
     opacity: 1;
   }
 }
 
-.template_import_btn {
+.template_btns {
   opacity: 0;
   transition: opacity 0.2s ease-in-out;
 
@@ -83,4 +83,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.template_btn:first-of-type {
+  margin-bottom: 5px;
 }

@@ -51,7 +51,7 @@ const config: ResourceComponent<GridBoxProps> = {
       properties: {
         width: {
           label: '容器宽度',
-          emptyHint: '默认值1200px',
+          emptyHint: '默认值为父容器宽度',
           type: PropTypeEnum.NUMBER,
           unit: 'px',
         },

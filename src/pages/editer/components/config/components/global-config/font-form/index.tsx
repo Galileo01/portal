@@ -97,7 +97,7 @@ const GlobalFontForm: React.FC<FontFormProps> = ({ fontList }) => {
           field="usedFont"
           label={
             <span>
-              使用的字体
+              字体全集
               <HelpTip content="包含全局字体和单个元素个性化字体" />
             </span>
           }

@@ -8,7 +8,7 @@ import NavAside, { NavAsideProps } from './index'
 
 const initProps: NavAsideProps = {
   position: 'right',
-  scrollSmooth: false,
+  scrollSmooth: true,
   titleMode: 'text',
   navList: [
     {
@@ -73,7 +73,7 @@ export const componentConfig: ResourceComponent<NavAsideProps> = {
     scrollSmooth: {
       type: PropTypeEnum.BOOLEAN,
       label: '平滑滚动',
-      help: '打开使得页面的滚动更加舒适平滑',
+      help: '使得页面的滚动更加舒适平滑',
     },
     navList: {
       type: PropTypeEnum.ARRAY,

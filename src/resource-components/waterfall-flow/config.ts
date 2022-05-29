@@ -61,7 +61,7 @@ const config: ResourceComponent<WaterFallFlowProps> = {
           label: '容器宽度',
           type: PropTypeEnum.NUMBER,
           unit: 'px',
-          emptyHint: '默认为1200px',
+          emptyHint: '默认为容器宽度',
         },
         column: {
           label: '列数',
