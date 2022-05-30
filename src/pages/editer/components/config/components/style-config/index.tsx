@@ -29,7 +29,6 @@ import FontForm from './font-form'
 import BackgroundForm from './background-form'
 import BorderForm from './border-form'
 import styles from './index.module.less'
-import { devLogger } from '@/common/utils'
 
 const { Item: CollapseItem } = Collapse
 
@@ -85,7 +84,7 @@ const StyleConfig: React.FC<StyleConfigProps> = ({ active }) => {
         styleConfig[targetElementInfo.configIndex].cssAttribute =
           cloneDeep(values)
       }
-      // 插入
+      // 找不到 下标 就插入
       else {
         styleConfig.push({
           styleNodeId,

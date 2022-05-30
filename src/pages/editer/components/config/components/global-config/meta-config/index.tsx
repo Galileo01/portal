@@ -31,6 +31,7 @@ const MetaConfig = () => {
       <Form
         form={metaForm}
         labelAlign="left"
+        autoComplete="off"
         size="small"
         labelCol={{
           span: 8,

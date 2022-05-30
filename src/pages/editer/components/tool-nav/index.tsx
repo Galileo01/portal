@@ -145,8 +145,12 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
   const handleResourceOperate: PublishModalProps['onConfirm'] = async (
     values
   ) => {
-    const isPublish = searchParamsRef.current.edit_type === 'create'
-    const { thumbnail, ...restData } = values
+    const { thumbnail, resourceType, ...restData } = values
+    // values 中的 resourceType和 地址栏的不一致 也视为发布 -> 将已有 页面发布为 模板
+    const isPublish =
+      searchParamsRef.current.edit_type === 'create' ||
+      resourceType !== searchParamsRef.current.resource_type
+
     setOperating(true)
     // 点击确认时 才上传至 腾讯云 cos
     const thumbnailUrl = await uploadCos(
@@ -158,6 +162,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
       operateType: isPublish ? 'publish' : 'update',
       resourceData: {
         ...restData,
+        resourceType,
         thumbnailUrl,
         config: stringfyConfig(restData.title, true),
       },
@@ -217,7 +222,6 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
         onCancel: () => {
           // NOTE: 若是发布模式 发布成功后 必须跳转到 编辑模式的页面
           if (isPublish) {
-            const { resourceType } = values
             const newHref = generateEditerPath({
               resource_id: resourceId,
               edit_type: 'edit',

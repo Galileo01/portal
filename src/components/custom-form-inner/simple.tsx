@@ -4,13 +4,10 @@ import {
   Input,
   InputNumber,
   Select,
-  Tooltip,
   SelectProps,
   InputProps,
   InputNumberProps,
 } from '@arco-design/web-react'
-
-import { IconQuestionCircle } from '@arco-design/web-react/icon'
 
 export type CustomSelectFC = React.FC<SelectProps>
 
@@ -195,17 +192,6 @@ export const BACKGROUND_CLIP_OPTIONS = [
   {
     label: '内容',
     value: 'content-box',
-  },
-  {
-    label: (
-      <span>
-        文字
-        <Tooltip content="部分浏览器可能不生效">
-          <IconQuestionCircle className="question_icon" />
-        </Tooltip>
-      </span>
-    ),
-    value: 'text',
   },
 ]
 

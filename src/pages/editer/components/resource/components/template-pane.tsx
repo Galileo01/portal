@@ -9,11 +9,12 @@ import {
   Empty,
   Divider,
   Button,
+  Tag,
   FormProps,
 } from '@arco-design/web-react'
 import { IconPlus, IconEye } from '@arco-design/web-react/icon'
 import clsx from 'clsx'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 
 import {
   TemplateTypeSelect,
@@ -48,7 +49,14 @@ const initialQuery: QueryForm = {
 const TemplatePane = () => {
   const [queryForm] = Form.useForm<QueryForm>()
 
+  const [params] = useSearchParams()
+
   const triggerElementRef = React.useRef(null)
+
+  const currentResourceId = React.useMemo(
+    () => params.get('resource_id') || '',
+    [params]
+  )
 
   const {
     loading,
@@ -89,7 +97,7 @@ const TemplatePane = () => {
     onRefresh: handleRefresh,
   })
 
-  // 加载更多
+  // IntersectionObserver 加载更多
   // eslint-disable-next-line consistent-return
   React.useEffect(() => {
     const triggerElement = triggerElementRef.current
@@ -153,53 +161,60 @@ const TemplatePane = () => {
       <Spin style={{ display: 'block' }} loading={loading}>
         <div className={styles.resources_list}>
           {resourceListRes.resourceList.map(
-            ({ thumbnailUrl, title, resourceId }) => (
-              <Card
-                hoverable
-                cover={
-                  <div className={styles.template_cover}>
-                    <CustomImage
-                      src={thumbnailUrl}
-                      height={80}
-                      width="100%"
-                      preview={false}
-                      className={styles.resource_cover}
-                    />
-                    <div className={styles.template_btns}>
-                      <Link
-                        className={styles.action_btn}
-                        target="_blank"
-                        to={generatePagePath({
-                          resource_id: resourceId,
-                          resource_type: 'template',
-                        })}
-                      >
-                        <Button
-                          className={styles.template_btn}
-                          size="mini"
-                          icon={<IconEye />}
-                        >
-                          查看
-                        </Button>
-                      </Link>
-                      <Button
-                        className={styles.template_btn}
-                        size="mini"
-                        type="primary"
-                        icon={<IconPlus />}
-                        onClick={generateImportHandler(resourceId)}
-                      >
-                        引入
-                      </Button>
+            ({ thumbnailUrl, title, resourceId }) => {
+              const isCurrent = currentResourceId === resourceId
+              return (
+                <Card
+                  className={styles.resource_card}
+                  key={resourceId}
+                  hoverable
+                  cover={
+                    <div className={styles.template_cover}>
+                      <CustomImage
+                        src={thumbnailUrl}
+                        height={80}
+                        width="100%"
+                        preview={false}
+                        className={styles.resource_cover}
+                      />
+                      {isCurrent ? (
+                        <Tag className={styles.current_tag}>当前模板</Tag>
+                      ) : (
+                        <div className={styles.template_btns}>
+                          <Link
+                            className={styles.action_btn}
+                            target="_blank"
+                            to={generatePagePath({
+                              resource_id: resourceId,
+                              resource_type: 'template',
+                            })}
+                          >
+                            <Button
+                              className={styles.template_btn}
+                              size="mini"
+                              icon={<IconEye />}
+                            >
+                              查看
+                            </Button>
+                          </Link>
+                          <Button
+                            className={styles.template_btn}
+                            size="mini"
+                            type="primary"
+                            icon={<IconPlus />}
+                            onClick={generateImportHandler(resourceId)}
+                          >
+                            引入
+                          </Button>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                }
-                className={styles.resource_card}
-                key={resourceId}
-              >
-                {title}
-              </Card>
-            )
+                  }
+                >
+                  {title}
+                </Card>
+              )
+            }
           )}
         </div>
         {resourceListRes.resourceList.length === 0 && <Empty />}

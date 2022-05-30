@@ -90,16 +90,11 @@ const OutputModal: React.FC<OutputModalProps> = (props) => {
             defaultValue={pageId}
             disabled
           >
-            <Input allowClear />
+            <Input />
           </FormItem>
           <FormItem
             field="title"
-            label={
-              <>
-                页面名称
-                <HelpTip content="显示为页面的名称" />
-              </>
-            }
+            label="页面名称"
             rules={[
               {
                 required: true,

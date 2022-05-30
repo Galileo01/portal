@@ -7,6 +7,7 @@ import { TemplateBase, GetResourceListQuery } from '@/typings/request'
 import { useRefreshWhenUserUpdate } from '@/common/hooks/user'
 import { useFetchResrouceList } from '@/common/hooks/fetch-resource'
 import TemplateTypeRadio from '@/components/template-type-selector'
+import { generatePagePath } from '@/common/utils/route'
 
 import styles from './index.module.less'
 import ResourceList, {
@@ -36,7 +37,7 @@ const TemplateList = () => {
   const handleFilterChange = (value: string) => {
     setFilter(value as GetResourceListQuery['filter'])
     fetchResourceList('init', {
-      value,
+      filter: value,
     })
   }
 
@@ -91,7 +92,21 @@ const TemplateList = () => {
     }).then((res) => {
       if (res.success) {
         Message.success('删除成功')
+        handleRefresh()
       }
+    })
+  }
+
+  const handlePathCopy: ResourceListProps['onPathCopy'] = (resourceId) => {
+    const path = generatePagePath(
+      {
+        resource_id: resourceId,
+        resource_type: 'template',
+      },
+      true
+    )
+    navigator.clipboard.writeText(path).then(() => {
+      Message.success('复制成功')
     })
   }
 
@@ -110,6 +125,7 @@ const TemplateList = () => {
           resourceList={resourceListRes.resourceList}
           onLoadMore={() => hanldeLoadMore()}
           onRemove={handleRemove}
+          onPathCopy={handlePathCopy}
           // @ts-ignore
           actionComputer={actionComputer}
           // @ts-ignore

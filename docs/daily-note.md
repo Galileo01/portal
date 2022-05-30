@@ -651,20 +651,29 @@ bug-属性配置 active 失败
 - [x] feat-Output-code-template 模板 清楚不必要的依赖
 - [ ] 优化 只 打包使用到的源组件？
 
-#### 
+####
 
-
-
-### 第二阶段Bug
+### 第二阶段 Bug
 
 - [ ] back-top 未展示 bug
+
 - [ ] 上下移动 bug
-- [ ] title 搜索
+
+- [x] dragable 丢失问题
+
+- [x] title 搜索
+
 - [ ] icon 选中 位置问题
+
 - [x] 元素 辅助选中按钮
-- [ ] 字体上传入口 !!! 暂时移除
+
+- [x] 字体上传入口 !!! 暂时移除
+
 - [ ] elementSelectorGenerator 结果 不唯一问题
-- [ ] 编辑器页面 在发布模板或编辑模板成功 后，需要刷新资源模板列表
+
+- [x] 模板列表 除开当前正在编辑的
+
+  
 
 答辩 todo
 

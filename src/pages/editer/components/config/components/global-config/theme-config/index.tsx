@@ -67,6 +67,7 @@ const ThemeConfig = () => {
       </div>
       <Form
         form={colorConfigFom}
+        autoComplete="off"
         size="small"
         labelCol={{
           span: 9,

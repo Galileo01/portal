@@ -138,7 +138,7 @@ const PublishModal: React.FC<PublishModalProps> = (props) => {
             defaultValue={resourceId}
             disabled
           >
-            <Input allowClear />
+            <Input />
           </FormItem>
           <FormItem
             field="title"

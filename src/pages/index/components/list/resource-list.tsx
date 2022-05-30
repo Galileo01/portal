@@ -7,6 +7,7 @@ import {
   IconLaunch,
   IconDelete,
   IconEdit,
+  IconCopy,
 } from '@arco-design/web-react/icon'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { Link } from 'react-router-dom'
@@ -49,6 +50,7 @@ export type ResourceListProps = {
   resourceType: ResourceType
   onLoadMore: () => void
   onRemove: (resourceId: string) => void
+  onPathCopy: (resourceId: string) => void
 }
 
 const ResourceList: React.FC<ResourceListProps> = (props) => {
@@ -61,6 +63,7 @@ const ResourceList: React.FC<ResourceListProps> = (props) => {
     tagComputer,
     onLoadMore,
     onRemove,
+    onPathCopy,
   } = props
 
   const newPathRef = React.useRef(createNewResourcePath(resourceType))
@@ -92,7 +95,18 @@ const ResourceList: React.FC<ResourceListProps> = (props) => {
         {resourceList.map((resource) => {
           const { edit, launch, remove } = actionComputer(resource)
           const tags = tagComputer?.(resource) || []
-          const actions: JSX.Element[] = []
+
+          const actions: JSX.Element[] = [
+            <div
+              className={styles.action_btn}
+              onClick={() => {
+                onPathCopy(resource.resourceId)
+              }}
+            >
+              <IconCopy />
+            </div>,
+          ]
+
           if (edit) {
             actions.push(
               <Link

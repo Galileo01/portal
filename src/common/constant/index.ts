@@ -49,4 +49,4 @@ export const BLEND_MODE_DOC_HREF =
 
 export const TEMPLATE_IMPORT_EVENT = 'template_import'
 
-export const CUSTOM_STORAGE_EVENT = 'custom_event'
+export const CUSTOM_STORAGE_EVENT = 'custom_storage'

@@ -6,6 +6,7 @@ import { deleteResourceById } from '@/network/resource'
 import { PageBase } from '@/typings/request/resource'
 import { useRefreshWhenUserUpdate } from '@/common/hooks/user'
 import { useFetchResrouceList } from '@/common/hooks/fetch-resource'
+import { generatePagePath } from '@/common/utils/route'
 
 import styles from './index.module.less'
 import ResourceList, {
@@ -39,6 +40,19 @@ const PageList = () => {
     })
   }
 
+  const handlePathCopy: ResourceListProps['onPathCopy'] = (resourceId) => {
+    const path = generatePagePath(
+      {
+        resource_id: resourceId,
+        resource_type: 'page',
+      },
+      true
+    )
+    navigator.clipboard.writeText(path).then(() => {
+      Message.success('复制成功')
+    })
+  }
+
   React.useEffect(() => {
     fetchResourceList('init')
 
@@ -60,6 +74,7 @@ const PageList = () => {
           onLoadMore={() => hanldeLoadMore()}
           actionComputer={actionsComputer}
           onRemove={handleRemove}
+          onPathCopy={handlePathCopy}
         />
       </Spin>
     </section>

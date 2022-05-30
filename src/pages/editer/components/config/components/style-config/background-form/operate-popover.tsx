@@ -79,8 +79,8 @@ const OperatePopover: React.FC<OperatePopoverProps> = (props) => {
     styleConfigForm.setFieldsValue({
       ...rest,
       backgrounds,
-      //  保存变更 切换到 false
-      // change_saved: false,
+      //  保存变更 强制 切换到 false
+      change_saved: false,
     })
 
     setSavedFalse()

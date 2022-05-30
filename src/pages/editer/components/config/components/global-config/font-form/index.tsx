@@ -86,6 +86,7 @@ const GlobalFontForm: React.FC<FontFormProps> = ({ fontList }) => {
           span: 15,
         }}
         labelAlign="left"
+        autoComplete="off"
         onChange={handleFormChangeHandler}
         className={styles.font_form}
         initialValues={configData?.fontConfig}

@@ -1,9 +1,12 @@
-import { ROUTE_EDITER, ROUTE_PAGE } from '@/common/constant/route'
-import { StringKeyValueObject } from '@/typings/common/editer-config-data'
+import {
+  ROUTE_EDITER,
+  ROUTE_PAGE,
+  DISABLE_ERROR_REDIRECT_PARAMS,
+} from '@/common/constant/route'
 import { ResourceType } from '@/typings/database'
 import { EditType } from '@/typings/common/editer'
 
-import { getUniqueId } from './index'
+import { getUniqueId, IS_DEV } from './index'
 
 export type EditerSearchGenerateParams = {
   resource_id: string
@@ -13,7 +16,9 @@ export type EditerSearchGenerateParams = {
 }
 
 // 字符串 对象为 search 部分参数
-export const stringfySearch = (params: Record<string, string | number>) => {
+export const stringfySearch = (
+  params: Record<string, string | number | undefined>
+) => {
   const keys = Object.keys(params)
   // 生成  search 部分
   const search = keys.reduce((preValue, curKey) => {
@@ -27,10 +32,11 @@ export const stringfySearch = (params: Record<string, string | number>) => {
 
 export const generateEditerSearch = (params: EditerSearchGenerateParams) => {
   const { edit_type, use_local, ...rest } = params
-  const transformedParams: StringKeyValueObject = {
+  const transformedParams: Record<string, string | undefined> = {
     ...rest,
     edit_type: params.edit_type || EditType.CREATE,
     use_local: params.use_local ? '1' : '0',
+    [DISABLE_ERROR_REDIRECT_PARAMS]: IS_DEV ? '1' : undefined, // dev环境  发生错误时 不会强制 重定向到首页
   }
   return stringfySearch(transformedParams)
 }

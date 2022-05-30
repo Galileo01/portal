@@ -106,6 +106,7 @@ const Previewer = () => {
         onClick={handlePreviewerClick}
       >
         <RCListRenderer
+          isEditer
           componentDataList={componentDataList}
           onDragStart={handleRCRDragStart}
         />

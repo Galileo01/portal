@@ -1,17 +1,18 @@
 import * as React from 'react'
 
 import { ComponentDataList } from '@/typings/common/editer'
-import { IS_ROUTE_EDITER } from '@/common/utils'
 import { RCList } from '@/resource-components'
 
 export type RCListRendererProps = {
   componentDataList: ComponentDataList
   onDragStart?: React.DragEventHandler<HTMLElement>
+  isEditer?: boolean
 }
 
 const RCListRenderer: React.FC<RCListRendererProps> = ({
   componentDataList,
   onDragStart,
+  isEditer,
 }) => (
   <>
     {componentDataList.map((component) => {
@@ -28,7 +29,7 @@ const RCListRenderer: React.FC<RCListRendererProps> = ({
        * id :用于 计算 下标
        * draggable 允许 拖拽
        */
-      if (IS_ROUTE_EDITER) {
+      if (isEditer) {
         elementProps = {
           ...elementProps,
           draggable: true,

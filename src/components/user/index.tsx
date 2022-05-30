@@ -10,7 +10,7 @@ import {
   useUserInfoDispatch,
   UserActionEnum,
 } from '@/store/user-info'
-import { HAS_TOKEN } from '@/common/utils'
+import { devLogger, HAS_TOKEN } from '@/common/utils'
 import { LOSTORAGE_KEY_TOKEN } from '@/common/constant'
 import { setLocalStorage } from '@/common/utils/storage'
 import { getUserInfo, login, updateUserInfo } from '@/network/user'
@@ -112,6 +112,7 @@ const UserComponent: React.FC<UserProps> = (props) => {
   const handleStorage = React.useCallback<(e: StorageEvent) => void>(
     (e) => {
       if (e.key === LOSTORAGE_KEY_TOKEN) {
+        devLogger('handleStorage in user', e)
         // 若token 存在新的有效值
         if (e.newValue) {
           fetchUserInfo()

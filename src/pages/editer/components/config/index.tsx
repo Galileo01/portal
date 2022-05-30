@@ -148,7 +148,7 @@ const Config = () => {
           onReset={handleElementReset}
           onHelpChoose={handleHelpChoose}
         />
-        <GlobalConfig active={isPreviwer} />
+        <GlobalConfig active />
         <PropConfig
           active={isRCComponent}
           componentData={componentData}

@@ -217,6 +217,7 @@ const BackgroundForm: React.FC<BackgroundFormProps> = (props) => {
         wrapperCol={{ span: 16 }}
         shouldUpdate
         field="change_saved"
+        triggerPropName="checked"
       >
         <Switch
           size="default"
