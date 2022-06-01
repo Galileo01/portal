@@ -32,6 +32,7 @@ const RCListRenderer: React.FC<RCListRendererProps> = ({
       if (isEditer) {
         elementProps = {
           ...elementProps,
+          isEditer: true,
           draggable: true,
           onDragStart,
         }

@@ -7,7 +7,6 @@ import {
 import BackTop, { BackTopProps } from '.'
 
 const initProps: BackTopProps = {
-  isEditer: true,
   visibleHeight: 30,
   duration: 400,
 }

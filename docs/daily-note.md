@@ -655,7 +655,7 @@ bug-属性配置 active 失败
 
 ### 第二阶段 Bug
 
-- [ ] back-top 未展示 bug
+- [x] back-top 未展示 bug
 
 - [ ] 上下移动 bug
 
@@ -672,8 +672,6 @@ bug-属性配置 active 失败
 - [ ] elementSelectorGenerator 结果 不唯一问题
 
 - [x] 模板列表 除开当前正在编辑的
-
-  
 
 答辩 todo
 
