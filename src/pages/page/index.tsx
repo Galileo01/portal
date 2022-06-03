@@ -4,9 +4,9 @@ import { useSearchParams } from 'react-router-dom'
 
 import {
   PAGE_CONTAINER_CLASS,
-  LOSTORAGE_KEY_IS_SIDER_COLLAPSE,
+  LOSTORAGE_KEY_PAGE_CONFIGS,
 } from '@/common/constant'
-import { usePageInit } from '@/common/hooks/page-init'
+import { useResourceInit } from '@/common/hooks/resource-init'
 import RCListRenderer from '@/components/rclist-renderer'
 
 const Page = () => {
@@ -21,7 +21,7 @@ const Page = () => {
     [params]
   )
 
-  const { componentDataList, pageTitle } = usePageInit({
+  const { componentDataList, pageTitle } = useResourceInit({
     resourceId: searchParams.resource_id,
     isEditer: false,
     initType: searchParams.is_preview ? 'restore' : 'fetch',
@@ -38,9 +38,9 @@ const Page = () => {
   // eslint-disable-next-line consistent-return
   React.useEffect(() => {
     if (searchParams.is_preview) {
-      const handleStorage = (e: unknown) => {
-        const { key } = e as { key: string }
-        if (key !== LOSTORAGE_KEY_IS_SIDER_COLLAPSE) {
+      const handleStorage: (e: StorageEvent) => void = (e) => {
+        const { key } = e
+        if (key === LOSTORAGE_KEY_PAGE_CONFIGS) {
           // eslint-disable-next-line no-restricted-globals
           location.reload()
         }

@@ -5,15 +5,16 @@ import clsx from 'clsx'
 import md5 from 'js-md5'
 
 import {
+  Store,
   useUserInfo,
   useUserInfoDispatch,
   UserActionEnum,
 } from '@/store/user-info'
-import { UserBase } from '@/typings/request'
-import { devLogger } from '@/common/utils'
-
-import { getLocalStorage, setLocalStorage } from '@/common/utils/storage'
+import { devLogger, HAS_TOKEN } from '@/common/utils'
+import { LOSTORAGE_KEY_TOKEN } from '@/common/constant'
+import { setLocalStorage } from '@/common/utils/storage'
 import { getUserInfo, login, updateUserInfo } from '@/network/user'
+import { uploadCos } from '@/network/cos'
 
 import CustomImage from '../custom-image'
 import LoginModal, { LoginModalProps } from './login-modal'
@@ -40,12 +41,23 @@ const UserComponent: React.FC<UserProps> = (props) => {
   const userInfo = useUserInfo()
   const dispatch = useUserInfoDispatch()
 
-  const updateUserInfoDispatch = (newUserInfo: UserBase) => {
-    dispatch({
-      type: UserActionEnum.SET_STATE,
-      payload: newUserInfo,
+  const updateUserInfoDispatch = React.useCallback(
+    (newUserInfo: Store) => {
+      dispatch({
+        type: UserActionEnum.SET_STATE,
+        payload: newUserInfo,
+      })
+    },
+    [dispatch]
+  )
+
+  const fetchUserInfo = React.useCallback(() => {
+    getUserInfo().then((res) => {
+      if (res.success) {
+        updateUserInfoDispatch(res.data)
+      }
     })
-  }
+  }, [updateUserInfoDispatch])
 
   const handleLoginValidateSuccess: LoginModalProps['onValidateSuccess'] = (
     values
@@ -65,17 +77,22 @@ const UserComponent: React.FC<UserProps> = (props) => {
     })
   }
 
-  const hanldeEditSubmitClick: UserInfoPopoverProps['onSubmitClick'] = (
+  const hanldeEditSubmitClick: UserInfoPopoverProps['onSubmitClick'] = async (
     values
   ) => {
-    devLogger('hanldeEditSubmitClick', values)
-    const { password } = values
+    const { password, avatarImg, ...resetValues } = values
+    let avatarCOSUrl: undefined | string
+    if (values.avatarImg) {
+      // 点击确认时 才上传至 腾讯云 cos
+      avatarCOSUrl = await uploadCos(values.avatarImg, values.avatarImg.name)
+    }
+
     updateUserInfo({
-      ...values,
+      ...resetValues,
+      avatar: avatarCOSUrl,
       password: password ? md5(password) : undefined,
     }).then((res) => {
       if (res.success) {
-        devLogger('updateUserInfo', res.data)
         updateUserInfoDispatch(res.data)
         Message.success('更新成功')
       }
@@ -88,24 +105,43 @@ const UserComponent: React.FC<UserProps> = (props) => {
       payload: undefined,
     })
     setLocalStorage('token', '')
+    // 清空本地缓存
+    setLocalStorage('page_configs', '')
   }
 
-  // 若 本地存储中存在token 则获取用户信息
-  React.useEffect(() => {
-    const token = getLocalStorage('token')
-    if (token) {
-      getUserInfo().then((res) => {
-        if (res.success) {
-          updateUserInfoDispatch(res.data)
+  const handleStorage = React.useCallback<(e: StorageEvent) => void>(
+    (e) => {
+      if (e.key === LOSTORAGE_KEY_TOKEN) {
+        devLogger('handleStorage in user', e)
+        // 若token 存在新的有效值
+        if (e.newValue) {
+          fetchUserInfo()
         }
-        // token 验证失败 清除token
+        // 否则 为 登出操作，清空
         else {
-          setLocalStorage('token', '')
+          updateUserInfoDispatch(undefined)
         }
-      })
+      }
+    },
+    [fetchUserInfo, updateUserInfoDispatch]
+  )
+
+  // 第一次渲染 时，若 本地存储中存在token 则获取用户信息
+  React.useEffect(() => {
+    if (HAS_TOKEN) {
+      fetchUserInfo()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // storage 事件 触发 更新 用户信息
+  React.useEffect(() => {
+    window.addEventListener('storage', handleStorage)
+
+    return () => {
+      window.removeEventListener('storage', handleStorage)
+    }
+  }, [handleStorage])
 
   return (
     <div className={className}>
@@ -115,9 +151,15 @@ const UserComponent: React.FC<UserProps> = (props) => {
           onSubmitClick={hanldeEditSubmitClick}
           onLogout={handleLogOut}
         >
-          <Avatar className={clsx(styles.avatar_wrapper, 'cursor_pointer')}>
+          <Avatar
+            className={clsx(
+              styles.avatar_wrapper,
+              'cursor_pointer',
+              userInfo.avatar && styles.avatar_wrapper_un_scale
+            )}
+          >
             {userInfo.avatar ? (
-              <CustomImage src={userInfo.avatar} preview={false} />
+              <CustomImage src={userInfo.avatar} height={40} width={40} />
             ) : (
               userInfo.name
             )}

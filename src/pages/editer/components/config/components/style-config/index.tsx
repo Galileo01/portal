@@ -84,7 +84,7 @@ const StyleConfig: React.FC<StyleConfigProps> = ({ active }) => {
         styleConfig[targetElementInfo.configIndex].cssAttribute =
           cloneDeep(values)
       }
-      // 插入
+      // 找不到 下标 就插入
       else {
         styleConfig.push({
           styleNodeId,
@@ -166,6 +166,7 @@ const StyleConfig: React.FC<StyleConfigProps> = ({ active }) => {
               // 忽略 对于 FormInstance 的类型检测
               // @ts-ignore
               styleConfigForm={styleConfigForm}
+              customPalette={globalConfig?.customPalette}
             />
           </CollapseItem>
           <CollapseItem header="边框" name="style_config.border">

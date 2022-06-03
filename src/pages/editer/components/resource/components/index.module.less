@@ -20,6 +20,7 @@
   margin-bottom: 10px;
   padding: 0 8px;
   cursor: pointer;
+  position: relative;
 
   :global(.arco-card-body) {
     padding: 4px 0px;
@@ -36,10 +37,10 @@
 .resource_cover img {
   object-fit: contain;
   transition: transform 0.2s ease-in-out;
+}
 
-  &:hover {
-    transform: scale(2);
-  }
+.resource_card:hover .resource_cover img {
+  transform: scale(2);
 }
 
 // template
@@ -70,12 +71,12 @@
 .template_cover {
   position: relative;
 
-  &:hover .template_import_btn {
+  &:hover .template_btns {
     opacity: 1;
   }
 }
 
-.template_import_btn {
+.template_btns {
   opacity: 0;
   transition: opacity 0.2s ease-in-out;
 
@@ -83,4 +84,14 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.template_btn:first-of-type {
+  margin-bottom: 5px;
+}
+
+.current_tag {
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }

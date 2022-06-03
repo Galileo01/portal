@@ -21,6 +21,19 @@ export type FontFormField = {
 
 export type FontConfigData = Partial<FontFormField>
 
+// 元信息配置
+export type MetaFormField = {
+  favicon: string
+  meta: {
+    [key: string]: string | string[]
+    keywords: string[]
+    author: string
+    description: string
+  }
+}
+
+export type MetaConfigData = Partial<MetaFormField>
+
 // 全局配置
 export type GlobalConfig = {
   // 主题配置 - 颜色变量
@@ -29,6 +42,8 @@ export type GlobalConfig = {
   customPalette?: string[]
   // 字体配置
   fontConfig?: FontConfigData
+  // 元信息配置
+  metaConfig?: MetaConfigData
 }
 
 // 样式 配置

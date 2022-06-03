@@ -48,5 +48,5 @@ export const updateFontConfigToDOM = (
   isEditer = false
 ) => {
   if (usedFont.length > 0) createFontStyleNode(usedFont)
-  if (globalFont) updateGlobalFont(globalFont, isEditer)
+  updateGlobalFont(globalFont || '', isEditer)
 }

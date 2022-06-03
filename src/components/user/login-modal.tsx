@@ -26,6 +26,12 @@ const LoginModal: React.FC<LoginModalProps> = (props) => {
     })
   }
 
+  const handleEnterLogin: React.KeyboardEventHandler = (e) => {
+    if (e.key === 'Enter') {
+      handleLoginSubmit()
+    }
+  }
+
   React.useEffect(() => {
     if (!visible) {
       loginForm.resetFields()
@@ -51,7 +57,7 @@ const LoginModal: React.FC<LoginModalProps> = (props) => {
             },
           ]}
         >
-          <Input placeholder="用户名" />
+          <Input placeholder="用户名" onKeyDown={handleEnterLogin} />
         </FormItem>
         <FormItem
           field="password"
@@ -62,7 +68,7 @@ const LoginModal: React.FC<LoginModalProps> = (props) => {
             },
           ]}
         >
-          <Input.Password placeholder="密码" />
+          <Input.Password placeholder="密码" onKeyDown={handleEnterLogin} />
         </FormItem>
         <div className={styles.submit_btn_wrapper}>
           <Button type="primary" onClick={handleLoginSubmit}>

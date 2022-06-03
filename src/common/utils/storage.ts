@@ -4,6 +4,7 @@ import {
   PageConfigStorageValue,
   PageConfigInStorage,
 } from '@/typings/common/storage'
+import { dispatchCustomStorageEvent } from '@/common/utils/custom-event'
 
 import { safeJsonParse } from './index'
 
@@ -26,6 +27,7 @@ export const setPageConfigById = (
   const prePageConfigs = getAllResourceConfig()!
   prePageConfigs[resourceId] = pageConfig
   setLocalStorage('page_configs', JSON.stringify(prePageConfigs))
+  dispatchCustomStorageEvent()
 }
 
 export const getPageConfigById = (resourceId: string) => {

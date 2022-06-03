@@ -1,17 +1,9 @@
 import * as React from 'react'
 
-import {
-  Form,
-  Input,
-  Button,
-  Grid,
-  Popover,
-  Tabs,
-} from '@arco-design/web-react'
+import { Form, Input, Button, Grid, Popover } from '@arco-design/web-react'
 import { FormInstance } from '@arco-design/web-react/lib/Form/interface'
 
 import {
-  PxInputNumber,
   BackgroundRepeatSelect,
   BackgroundSizeSelect,
   BackgroundClipSelect,
@@ -21,7 +13,6 @@ import {
 import styles from './index.module.less'
 
 const { Item: FormItem } = Form
-const { TabPane } = Tabs
 const { Col, Row } = Grid
 
 export type OprateTabKey = 'image' | 'linear_gradient' | 'radial_gradient'
@@ -57,7 +48,7 @@ const OperatePopover: React.FC<OperatePopoverProps> = (props) => {
     setSavedFalse,
   } = props
 
-  const [currentTab, setTab] = React.useState<OprateTabKey>('image')
+  const [currentTab] = React.useState<OprateTabKey>('image')
   const [changed, setChanged] = React.useState(false)
 
   const handleConfirmClick = () => {
@@ -88,16 +79,12 @@ const OperatePopover: React.FC<OperatePopoverProps> = (props) => {
     styleConfigForm.setFieldsValue({
       ...rest,
       backgrounds,
-      //  保存变更 切换到 false
-      // change_saved: false,
+      //  保存变更 强制 切换到 false
+      change_saved: false,
     })
 
     setSavedFalse()
     onHide()
-  }
-
-  const handleTabChange = (key: string) => {
-    setTab(key as OprateTabKey)
   }
 
   const handleFormChange = () => {
@@ -116,31 +103,21 @@ const OperatePopover: React.FC<OperatePopoverProps> = (props) => {
       wrapperCol={{ span: 15 }}
       onChange={handleFormChange}
     >
-      <Tabs type="text" activeTab={currentTab} onChange={handleTabChange}>
-        <TabPane title={operateTabName.image} key="image">
-          <FormItem label="链接" field="image.url">
-            <Input allowClear />
-          </FormItem>
-          <FormItem label="尺寸" field="image.background_size">
-            <BackgroundSizeSelect />
-          </FormItem>
-          <FormItem label="重复方式" field="image.background_repeat">
-            <BackgroundRepeatSelect />
-          </FormItem>
-          <FormItem label="延伸区域" field="image.background_clip">
-            <BackgroundClipSelect />
-          </FormItem>
-          <FormItem label="滚动吸附" field="image.background_attachment">
-            <BackgroundAttachmentSelect />
-          </FormItem>
-        </TabPane>
-        <TabPane title={operateTabName.linear_gradient} key="linear_gradient">
-          <FormItem label="测试字段" field="linear-gradient.text-field">
-            <PxInputNumber />
-          </FormItem>
-        </TabPane>
-        <TabPane title={operateTabName.radial_gradient} key="radial_gradient" />
-      </Tabs>
+      <FormItem label="链接" field="image.url">
+        <Input allowClear />
+      </FormItem>
+      <FormItem label="尺寸" field="image.background_size">
+        <BackgroundSizeSelect />
+      </FormItem>
+      <FormItem label="重复方式" field="image.background_repeat">
+        <BackgroundRepeatSelect />
+      </FormItem>
+      <FormItem label="延伸区域" field="image.background_clip">
+        <BackgroundClipSelect />
+      </FormItem>
+      <FormItem label="滚动吸附" field="image.background_attachment">
+        <BackgroundAttachmentSelect />
+      </FormItem>
       <Row justify="end">
         <Col span={6}>
           <Button
@@ -163,7 +140,7 @@ const OperatePopover: React.FC<OperatePopoverProps> = (props) => {
   return (
     <Popover content={PopupContent} popupVisible={visible} position="bottom">
       <Button style={{ width: '100%', margin: '10px 0' }} onClick={onShow}>
-        添加图片或渐变
+        添加图片
       </Button>
     </Popover>
   )

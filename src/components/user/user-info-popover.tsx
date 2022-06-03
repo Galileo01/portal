@@ -14,7 +14,6 @@ import { UploadItem } from '@arco-design/web-react/es/Upload/interface'
 import { IconEdit } from '@arco-design/web-react/icon'
 import { UserBase } from '@/typings/request'
 
-import { devLogger } from '@/common/utils'
 import CustomImage from '../custom-image'
 
 import styles from './index.module.less'
@@ -27,9 +26,13 @@ export type EditField = {
   password: string
 }
 
+export type SubmitData = EditField & {
+  avatarImg?: File
+}
+
 export type UserInfoPopoverProps = {
   userInfo: UserBase
-  onSubmitClick: (values: Partial<EditField>) => void
+  onSubmitClick: (values: Partial<SubmitData>) => void
   onLogout: () => void
 }
 
@@ -73,7 +76,6 @@ const UserInfoPopover: React.FC<UserInfoPopoverProps> = (props) => {
   }
 
   const handleUplaodChange: UploadProps['onChange'] = (_, currentFile) => {
-    devLogger('handleUplaodChange', currentFile)
     revokeUrl()
     setImgFile({
       ...currentFile,
@@ -81,7 +83,6 @@ const UserInfoPopover: React.FC<UserInfoPopoverProps> = (props) => {
         ? URL.createObjectURL(currentFile.originFile)
         : undefined,
     })
-    // TODO: 图片服务 统一处理
     setEdited((pre) => ({ ...pre, avatar: true }))
     editForm.resetFields()
   }
@@ -89,6 +90,7 @@ const UserInfoPopover: React.FC<UserInfoPopoverProps> = (props) => {
   const resetData = () => {
     editForm.resetFields()
     setEdited(initEditedMap)
+    revokeUrl()
     setImgFile({
       uid: 'init',
       url: userInfo.avatar,
@@ -96,7 +98,6 @@ const UserInfoPopover: React.FC<UserInfoPopoverProps> = (props) => {
   }
 
   const handleVisibleChange: PopoverProps['onVisibleChange'] = (visible) => {
-    devLogger('onVisibleChange', visible)
     if (!visible) {
       resetData()
     }
@@ -104,8 +105,8 @@ const UserInfoPopover: React.FC<UserInfoPopoverProps> = (props) => {
 
   const handleSubmitClick = () => {
     const values = editForm.getFieldsValue()
-    devLogger('handleSubmitClick', values)
     onSubmitClick({
+      avatarImg: imgFile?.originFile,
       ...userInfo,
       ...values,
     })
@@ -131,8 +132,8 @@ const UserInfoPopover: React.FC<UserInfoPopoverProps> = (props) => {
           >
             <FormItem label="头像">
               <div className={styles.item_inner_wrapper}>
-                <Avatar className={styles.avatar_wrapper}>
-                  <CustomImage src={imgFile.url} />
+                <Avatar className={styles.avatar_wrapper_un_scale}>
+                  <CustomImage src={imgFile.url} height={40} width={40} />
                 </Avatar>
                 <Upload
                   showUploadList={false}

@@ -39,7 +39,7 @@ export const getColorVariableValue = (sourceElement?: 'body' | 'previewer') => {
       .trim()
 
     // rgb/rgba 转换为 hex
-    varValue[key] = tinycolor(value).toHexString()
+    varValue[key] = tinycolor(value).toHex8String()
   })
 
   return varValue

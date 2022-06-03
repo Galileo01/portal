@@ -98,6 +98,14 @@ const Config = () => {
     })
   }
 
+  // 辅助选中源组件爱你
+  const handleHelpChoose = () => {
+    editerDispatch({
+      type: EditerDataActionEnum.SET_CURRENT_CLICK_ELEMENT,
+      payload: preClosedRCRElement.current,
+    })
+  }
+
   // 手动折叠
   React.useEffect(() => {
     if (
@@ -138,8 +146,9 @@ const Config = () => {
           isPreviwer={isPreviwer}
           RCComponentName={componentData?.resourceComponent.name}
           onReset={handleElementReset}
+          onHelpChoose={handleHelpChoose}
         />
-        <GlobalConfig active={isPreviwer} />
+        <GlobalConfig active />
         <PropConfig
           active={isRCComponent}
           componentData={componentData}

@@ -69,14 +69,20 @@ export type PropsSchemaObj = {
   [key: string]: PropsSchema
 }
 
-export type ResourceComponent<ComponentProps = CommonProps> = {
-  name: string
+// 源组件 的 关键性质
+export type ResourceComponentKeyAttr<ComponentProps = CommonProps> = {
+  // 源组件 唯一标识
   key: string
-  category: ComponentCategoryEnum
-  previewImg: string
-  component: React.FC<ComponentProps>
-  // 组件 需要的props ,
-  propsSchema: PropsSchemaObj
   // 组件 的  props
   props: ComponentProps
 }
+
+export type ResourceComponent<ComponentProps = CommonProps> =
+  ResourceComponentKeyAttr & {
+    name: string
+    category: ComponentCategoryEnum
+    previewImg: string
+    component: React.FC<ComponentProps>
+    // 组件 需要的props ,
+    propsSchema: PropsSchemaObj
+  }

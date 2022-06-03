@@ -9,19 +9,23 @@ import {
   Empty,
   Divider,
   Button,
+  Tag,
   FormProps,
 } from '@arco-design/web-react'
-import { IconPlus } from '@arco-design/web-react/icon'
-
+import { IconPlus, IconEye } from '@arco-design/web-react/icon'
 import clsx from 'clsx'
+import { Link, useSearchParams } from 'react-router-dom'
+
 import {
   TemplateTypeSelect,
   TemplateOrderSelect,
 } from '@/components/template-type-selector'
 import CustomImage from '@/components/custom-image'
-import { GetTemplateListRes, GetResourceListQuery } from '@/typings/request'
-import { getTemplateList } from '@/network/resource'
-import { dispatchTemplateImportEvent } from '@/common/utils'
+import { GetResourceListQuery } from '@/typings/request'
+import { dispatchTemplateImportEvent } from '@/common/utils/custom-event'
+import { useRefreshWhenUserUpdate } from '@/common/hooks/user'
+import { useFetchResrouceList } from '@/common/hooks/fetch-resource'
+import { generatePagePath } from '@/common/utils/route'
 
 import styles from './index.module.less'
 
@@ -43,54 +47,39 @@ const initialQuery: QueryForm = {
 }
 
 const TemplatePane = () => {
-  const [paginationInfo, setPagination] = React.useState<{
-    current: number
-    size: number
-  }>({ current: 1, size: 10 })
-
   const [queryForm] = Form.useForm<QueryForm>()
 
-  const [templateListRes, setPageList] = React.useState<GetTemplateListRes>({
-    resourceList: [],
-    hasMore: 0,
-  })
-  const [loading, setLoading] = React.useState(false)
+  const [params] = useSearchParams()
 
   const triggerElementRef = React.useRef(null)
 
-  const fetchTemplateList = React.useCallback(() => {
-    const values = queryForm.getFieldsValue(['titleLike', 'filter', 'order'])
-    const { current, size } = paginationInfo
-    const offset = (current - 1) * size
+  const currentResourceId = React.useMemo(
+    () => params.get('resource_id') || '',
+    [params]
+  )
 
-    setLoading(true)
-    getTemplateList({
-      offset,
-      limit: size,
-      ...values,
-    })
-      .then((res) => {
-        if (res.success) {
-          setPageList(res.data)
-        }
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }, [paginationInfo, queryForm])
+  const {
+    loading,
+    resourceListRes,
+    fetchResourceList,
+    hanldeLoadMore,
+    handleRefresh,
+  } = useFetchResrouceList({ resourceType: 'template', size: 5 })
 
-  const hanldeLoadMore = React.useCallback(() => {
-    if (!templateListRes.hasMore) return
-    setPagination(({ current, size }) => ({
-      size,
-      current: current + 1,
-    }))
-  }, [templateListRes.hasMore])
+  const fetchWithFrom = () => {
+    const values = queryForm.getFieldsValue()
+    fetchResourceList('init', values)
+  }
+
+  const loadMoreWithForm = React.useCallback(() => {
+    const values = queryForm.getFieldsValue()
+    hanldeLoadMore(values)
+  }, [hanldeLoadMore, queryForm])
 
   const handleFormChange: FormProps<QueryForm>['onChange'] = (value) => {
     // 不是 输入框的变化 引起的 才触发请求
     if (!value.titleLike) {
-      fetchTemplateList()
+      fetchWithFrom()
     }
   }
 
@@ -99,24 +88,28 @@ const TemplatePane = () => {
   }
 
   React.useEffect(() => {
-    fetchTemplateList()
-  }, [fetchTemplateList])
+    fetchWithFrom()
+    // 第一次渲染才请求
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  // 加载更多
+  useRefreshWhenUserUpdate({
+    onRefresh: handleRefresh,
+  })
+
+  // IntersectionObserver 加载更多
   // eslint-disable-next-line consistent-return
   React.useEffect(() => {
     const triggerElement = triggerElementRef.current
     const observerCallback: IntersectionObserverCallback = (entries) => {
       const { intersectionRatio } = entries[0]
-      // 排除 triggerElement 一开始 就可见的情况，很常见
-      if (intersectionRatio !== 1) {
-        hanldeLoadMore()
+      // // 排除 triggerElement 一开始 就可见的情况，很常见
+      if (intersectionRatio > 0) {
+        loadMoreWithForm()
       }
     }
 
-    const observer = new IntersectionObserver(observerCallback, {
-      threshold: 0.5, // 交叉比例 超过 0.5 才触发
-    })
+    const observer = new IntersectionObserver(observerCallback)
     if (triggerElement) {
       observer.observe(triggerElement)
       return () => {
@@ -124,7 +117,7 @@ const TemplatePane = () => {
         observer.unobserve(triggerElement)
       }
     }
-  }, [hanldeLoadMore])
+  }, [loadMoreWithForm])
 
   return (
     <div className={styles.resource_pane}>
@@ -147,7 +140,8 @@ const TemplatePane = () => {
             placeholder="输入关键词进行模糊查询"
             style={{ width: '90%' }}
             size="small"
-            onSearch={fetchTemplateList}
+            onSearch={fetchWithFrom}
+            allowClear
           />
         </FormItem>
         <Row className={styles.filter} gutter={10}>
@@ -166,44 +160,69 @@ const TemplatePane = () => {
       <h4 className={styles.section_title}>模板列表</h4>
       <Spin style={{ display: 'block' }} loading={loading}>
         <div className={styles.resources_list}>
-          {templateListRes.resourceList.map(
-            ({ thumbnailUrl, title, resourceId }) => (
-              <Card
-                hoverable
-                cover={
-                  <div className={styles.template_cover}>
-                    <CustomImage
-                      src={thumbnailUrl}
-                      height={80}
-                      width="100%"
-                      preview={false}
-                      className={styles.resource_cover}
-                    />
-                    <Button
-                      className={styles.template_import_btn}
-                      size="mini"
-                      type="primary"
-                      icon={<IconPlus />}
-                      onClick={generateImportHandler(resourceId)}
-                    >
-                      引入
-                    </Button>
-                  </div>
-                }
-                className={styles.resource_card}
-                key={resourceId}
-              >
-                {title}
-              </Card>
-            )
+          {resourceListRes.resourceList.map(
+            ({ thumbnailUrl, title, resourceId }) => {
+              const isCurrent = currentResourceId === resourceId
+              return (
+                <Card
+                  className={styles.resource_card}
+                  key={resourceId}
+                  hoverable
+                  cover={
+                    <div className={styles.template_cover}>
+                      <CustomImage
+                        src={thumbnailUrl}
+                        height={80}
+                        width="100%"
+                        preview={false}
+                        className={styles.resource_cover}
+                      />
+                      {isCurrent ? (
+                        <Tag className={styles.current_tag}>当前模板</Tag>
+                      ) : (
+                        <div className={styles.template_btns}>
+                          <Link
+                            className={styles.action_btn}
+                            target="_blank"
+                            to={generatePagePath({
+                              resource_id: resourceId,
+                              resource_type: 'template',
+                            })}
+                          >
+                            <Button
+                              className={styles.template_btn}
+                              size="mini"
+                              icon={<IconEye />}
+                            >
+                              查看
+                            </Button>
+                          </Link>
+                          <Button
+                            className={styles.template_btn}
+                            size="mini"
+                            type="primary"
+                            icon={<IconPlus />}
+                            onClick={generateImportHandler(resourceId)}
+                          >
+                            引入
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  }
+                >
+                  {title}
+                </Card>
+              )
+            }
           )}
         </div>
-        {templateListRes.resourceList.length === 0 && <Empty />}
+        {resourceListRes.resourceList.length === 0 && <Empty />}
         <Divider
           className={clsx(styles.load_trigger, 'load_trigger')}
           ref={triggerElementRef}
         >
-          <span className="tip_text">我也是有底线的</span>
+          <span className="tip_text">底线在这里</span>
         </Divider>
       </Spin>
     </div>

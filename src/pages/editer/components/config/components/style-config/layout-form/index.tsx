@@ -78,7 +78,12 @@ const foformItemsLinkRenderer = (values: any) =>
 
 const LayoutForm = () => (
   <div>
-    <FormItem label="分离边距" field="mp_separate" labelCol={{ span: 7 }}>
+    <FormItem
+      label="分离边距"
+      field="mp_separate"
+      labelCol={{ span: 7 }}
+      triggerPropName="checked"
+    >
       <Switch />
     </FormItem>
     <FormItem noStyle shouldUpdate>

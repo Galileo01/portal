@@ -23,7 +23,7 @@ const OTHER_HEIGHT = 30
 
 const WaterFallFlow: React.FC<WaterFallFlowProps> = (props) => {
   const { flowConfig, itemList, ...elementProps } = props
-  const { column = 4, columnGap = 10, containerWidth = 1200 } = flowConfig
+  const { column = 4, columnGap = 10, containerWidth } = flowConfig
 
   const containerElementRef = React.useRef<HTMLDivElement | null>(null)
 
@@ -77,7 +77,9 @@ const WaterFallFlow: React.FC<WaterFallFlowProps> = (props) => {
             className={clsx(styles.img, 'img_item')}
             onLoad={handleImgLoadGenerator(index)}
           />
-          <div className={clsx('line_1', styles.desc)}>{item.description}</div>
+          <div className={clsx('line_1', 'description', styles.desc)}>
+            {item.description}
+          </div>
         </div>
       ))}
     </div>

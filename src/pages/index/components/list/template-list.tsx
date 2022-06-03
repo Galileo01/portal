@@ -2,15 +2,12 @@ import * as React from 'react'
 
 import { Spin, Message } from '@arco-design/web-react'
 
-import { devLogger } from '@/common/utils'
-import { getTemplateList, deleteResourceById } from '@/network/resource'
-import {
-  TemplateBase,
-  GetTemplateListRes,
-  GetResourceListQuery,
-} from '@/typings/request'
-import { useRefreshWhenUpdate } from '@/common/hooks/user'
+import { deleteResourceById } from '@/network/resource'
+import { TemplateBase, GetResourceListQuery } from '@/typings/request'
+import { useRefreshWhenUserUpdate } from '@/common/hooks/user'
+import { useFetchResrouceList } from '@/common/hooks/fetch-resource'
 import TemplateTypeRadio from '@/components/template-type-selector'
+import { generatePagePath } from '@/common/utils/route'
 
 import styles from './index.module.less'
 import ResourceList, {
@@ -19,111 +16,104 @@ import ResourceList, {
   TagComputer,
 } from './resource-list'
 
-type Pagination = {
-  current: number
-  size: number
-}
-
-const initPagination: Pagination = {
-  current: 1,
-  size: 5,
-}
-
 const TemplateList = () => {
-  const [paginationInfo, setPagination] =
-    React.useState<Pagination>(initPagination)
-
   const [filter, setFilter] =
     React.useState<GetResourceListQuery['filter']>('all')
-  const [templateListRes, setPageList] = React.useState<GetTemplateListRes>({
-    resourceList: [],
-    hasMore: 0,
-  })
 
-  const [loading, setLoading] = React.useState(false)
+  const {
+    loading,
+    resourceListRes,
+    fetchResourceList,
+    hanldeLoadMore,
+    handleRefresh,
+  } = useFetchResrouceList({ resourceType: 'template', size: 5 })
 
-  const fetchTemplateList = React.useCallback(() => {
-    const { current, size } = paginationInfo
-    const offset = (current - 1) * size
+  React.useEffect(() => {
+    fetchResourceList('init')
+    // 第一次渲染才请求
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-    setLoading(true)
-
-    getTemplateList({
-      offset,
-      limit: size,
-      filter,
+  const handleFilterChange = (value: string) => {
+    setFilter(value as GetResourceListQuery['filter'])
+    fetchResourceList('init', {
+      filter: value,
     })
-      .then((res) => {
-        if (res.success) {
-          setPageList(res.data)
-        }
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }, [paginationInfo, filter])
-
-  const hanldeLoadMore = () => {
-    setPagination(({ current, size }) => ({
-      size,
-      current: current + 1,
-    }))
   }
+
+  const { userInfo } = useRefreshWhenUserUpdate({
+    onRefresh: handleRefresh,
+  })
 
   const actionComputer: ActionComputer<TemplateBase> = React.useCallback(
     (resource) => {
-      const isPrivate = Boolean(resource.private)
+      const isOnwer = resource.ownerId === userInfo?.userId
       return {
-        edit: isPrivate,
-        remove: isPrivate,
+        edit: isOnwer,
+        remove: isOnwer,
         launch: true,
       }
     },
-    []
+    [userInfo]
   )
 
-  const tagComputer: TagComputer<TemplateBase> = (resource) => {
-    const isPrivate = Boolean(resource.private)
+  const tagComputer: TagComputer<TemplateBase> = React.useCallback(
+    (resource) => {
+      const isPrivate = Boolean(resource.private)
+      const isOnwer = resource.ownerId === userInfo?.userId
 
-    const tags: Array<{ text: string; color: string }> = [
-      {
-        text: isPrivate ? '我的' : '共享',
-        color: isPrivate ? 'red' : 'blue',
-      },
-      {
-        text: resource.type === 'platform' ? '平台' : '用户',
-        color: 'green',
-      },
-    ]
-    return tags
-  }
+      const tags: Array<{ text: string; color: string }> = [
+        {
+          text: isPrivate ? '私有' : '共享',
+          color: isPrivate ? 'red' : 'blue',
+        },
+        {
+          text: resource.type === 'platform' ? '平台' : '用户',
+          color: 'green',
+        },
+      ]
+
+      if (isOnwer) {
+        tags.unshift({
+          text: '我的',
+          color: 'orange',
+        })
+      }
+
+      return tags
+    },
+    [userInfo]
+  )
 
   const handleRemove: ResourceListProps['onRemove'] = (resourceId) => {
-    deleteResourceById(resourceId).then((res) => {
+    deleteResourceById({
+      resourceId,
+      resourceType: 'template',
+    }).then((res) => {
       if (res.success) {
         Message.success('删除成功')
-        fetchTemplateList()
+        handleRefresh()
       }
     })
   }
 
-  React.useEffect(() => {
-    fetchTemplateList()
-  }, [fetchTemplateList])
-
-  const handleRefresh = React.useCallback(() => {
-    devLogger('handleRefresh')
-    setPagination({ ...initPagination })
-  }, [])
-
-  useRefreshWhenUpdate({
-    onRefresh: handleRefresh,
-  })
+  const handlePathCopy: ResourceListProps['onPathCopy'] = (resourceId) => {
+    const path = generatePagePath(
+      {
+        resource_id: resourceId,
+        resource_type: 'template',
+      },
+      true
+    )
+    navigator.clipboard.writeText(path).then(() => {
+      Message.success('复制成功')
+    })
+  }
 
   return (
     <section className={styles.page_list_container}>
       <h1 className={styles.title}>模板空间</h1>
-      <TemplateTypeRadio value={filter} onChange={setFilter} />
+      <TemplateTypeRadio value={filter} onChange={handleFilterChange} />
       <Spin
         style={{ display: 'block' }}
         className={styles.template_spin}
@@ -131,10 +121,11 @@ const TemplateList = () => {
       >
         <ResourceList
           resourceType="template"
-          hasMore={templateListRes.hasMore}
-          resourceList={templateListRes.resourceList}
-          onLoadMore={hanldeLoadMore}
+          hasMore={resourceListRes.hasMore}
+          resourceList={resourceListRes.resourceList}
+          onLoadMore={() => hanldeLoadMore()}
           onRemove={handleRemove}
+          onPathCopy={handlePathCopy}
           // @ts-ignore
           actionComputer={actionComputer}
           // @ts-ignore

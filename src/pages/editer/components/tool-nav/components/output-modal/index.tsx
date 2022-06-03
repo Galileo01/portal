@@ -14,6 +14,7 @@ import HelpTip from '@/components/help-tip'
 import { devLogger } from '@/common/utils'
 import { CodeOutputData } from '@/typings/request'
 import { EditType } from '@/typings/common/editer'
+import { useFetchDataStore } from '@/store/fetch-data'
 
 const { Item: FormItem } = Form
 const { Group: RadioGroup } = Radio
@@ -29,20 +30,13 @@ export type OutputModalProps = Omit<ModalProps, 'onConfirm'> & {
   pageId: string
   editType: string
   fetching: boolean
-  title?: string
   onConfirm: (values: OutputForm) => void
 }
 
 const OutputModal: React.FC<OutputModalProps> = (props) => {
-  const {
-    visible,
-    pageId,
-    title,
-    editType,
-    fetching,
-    onConfirm,
-    ...restProps
-  } = props
+  const { visible, pageId, editType, fetching, onConfirm, ...restProps } = props
+
+  const useFetchData = useFetchDataStore()
 
   const [outputForm] = Form.useForm<OutputForm>()
 
@@ -51,11 +45,11 @@ const OutputModal: React.FC<OutputModalProps> = (props) => {
   const initialValues = React.useMemo<OutputForm>(
     () => ({
       pageId,
-      title: title || pageId,
+      title: useFetchData.resource?.title || pageId,
       type: 'src_code',
       useLocal: isEditTypeCreate,
     }),
-    [pageId, title, isEditTypeCreate]
+    [pageId, useFetchData.resource, isEditTypeCreate]
   )
 
   const handleSubmitClick = () => {
@@ -70,9 +64,9 @@ const OutputModal: React.FC<OutputModalProps> = (props) => {
 
   React.useEffect(() => {
     if (!visible) {
-      outputForm.resetFields()
+      outputForm.setFieldsValue(initialValues)
     }
-  }, [outputForm, visible])
+  }, [outputForm, visible, initialValues])
 
   return (
     <Modal
@@ -85,9 +79,9 @@ const OutputModal: React.FC<OutputModalProps> = (props) => {
         <Form
           form={outputForm}
           wrapperCol={{ span: 12 }}
+          labelCol={{ span: 6 }}
           labelAlign="left"
           autoComplete="off"
-          initialValues={initialValues}
           size="small"
         >
           <FormItem
@@ -96,7 +90,7 @@ const OutputModal: React.FC<OutputModalProps> = (props) => {
             defaultValue={pageId}
             disabled
           >
-            <Input allowClear />
+            <Input />
           </FormItem>
           <FormItem
             field="title"
@@ -105,6 +99,10 @@ const OutputModal: React.FC<OutputModalProps> = (props) => {
               {
                 required: true,
                 message: '请填写页面名称',
+              },
+              {
+                maxLength: 20,
+                message: '最大长度为20',
               },
             ]}
           >

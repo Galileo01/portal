@@ -9,6 +9,7 @@ import {
 } from '../../config'
 import ThemeConfig from './theme-config'
 import FontConfig from './font-config'
+import MetaConfig from './meta-config'
 
 const { Item: CollapseItem } = Collapse
 
@@ -39,6 +40,7 @@ const GlobalConfig: React.FC<ConfigPaneBaseProps> = ({ active }) => {
       >
         <ThemeConfig />
         <FontConfig />
+        <MetaConfig />
       </Collapse>
     </CollapseItem>
   )

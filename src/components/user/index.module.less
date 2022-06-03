@@ -4,6 +4,12 @@
 .avatar_wrapper {
   overflow: hidden;
   flex-shrink: 0;
+
+  &_un_scale {
+    :global(.arco-avatar-text) {
+      transform: scale(1) translateX(-50%) !important;
+    }
+  }
 }
 
 .submit_btn_wrapper {

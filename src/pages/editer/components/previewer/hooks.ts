@@ -11,7 +11,7 @@ import {
 } from '@/typings/common/editer'
 import {
   DATASET_KEY_RESOURCE_COMPONENT_KEY,
-  CUSTOM_EVENT_TEMPLATE_IMPORT,
+  TEMPLATE_IMPORT_EVENT,
 } from '@/common/constant'
 import {
   devLogger,
@@ -19,6 +19,7 @@ import {
   safeJsonParse,
   createTimeoutPromise,
 } from '@/common/utils'
+import { TemplateImportEvent } from '@/typings/common/event'
 import {
   isPreviewerElement,
   getClosedRCRenderedElement,
@@ -26,7 +27,8 @@ import {
 } from '@/common/utils/element'
 import { RCList } from '@/resource-components'
 import { getResourceById } from '@/network/resource'
-import { applyConfigToDOM } from '@/common/hooks/page-init'
+import { applyConfigToDOM } from '@/common/hooks/resource-init'
+import { transformToDataList } from '@/common/utils/prop-config'
 
 import { ToolBoxRef, ToolBoxProps } from './components/tool-box'
 
@@ -267,9 +269,7 @@ export const useTemplateImport = (params: useTemplateImportParmas) => {
     (e) => {
       const {
         detail: { resourceId },
-      } = e as CustomEvent<{
-        resourceId: string
-      }>
+      } = e as TemplateImportEvent
       const modal = Modal.info({
         title: '提示',
         content: '正在拉取并导入模板数据...',
@@ -304,7 +304,9 @@ export const useTemplateImport = (params: useTemplateImportParmas) => {
             applyConfigToDOM(config, [], true)
             // 模板的组件列表追加到后面
             updateComponenDataList(
-              componentDataList.concat(componentDataListInConfig)
+              componentDataList.concat(
+                transformToDataList(componentDataListInConfig)
+              )
             )
             modal.close()
             Message.success('导入成功')
@@ -316,10 +318,10 @@ export const useTemplateImport = (params: useTemplateImportParmas) => {
   )
 
   React.useEffect(() => {
-    window.addEventListener(CUSTOM_EVENT_TEMPLATE_IMPORT, handleImport)
+    window.addEventListener(TEMPLATE_IMPORT_EVENT, handleImport)
 
     return () => {
-      window.removeEventListener(CUSTOM_EVENT_TEMPLATE_IMPORT, handleImport)
+      window.removeEventListener(TEMPLATE_IMPORT_EVENT, handleImport)
     }
   }, [handleImport])
 }

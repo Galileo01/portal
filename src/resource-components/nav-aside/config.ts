@@ -8,20 +8,20 @@ import NavAside, { NavAsideProps } from './index'
 
 const initProps: NavAsideProps = {
   position: 'right',
-  scrollSmooth: false,
+  scrollSmooth: true,
   titleMode: 'text',
   navList: [
     {
       title: '导航1',
-      id: 'nav_1',
+      id: 'id1',
     },
     {
       title: '元素1',
-      id: 'ele_1',
+      id: 'id2',
     },
     {
       title: '元素2',
-      id: 'ele_2',
+      id: 'id3',
     },
   ],
 }
@@ -73,7 +73,7 @@ export const componentConfig: ResourceComponent<NavAsideProps> = {
     scrollSmooth: {
       type: PropTypeEnum.BOOLEAN,
       label: '平滑滚动',
-      help: '打开使得页面的滚动更加舒适平滑',
+      help: '使得页面的滚动更加舒适平滑',
     },
     navList: {
       type: PropTypeEnum.ARRAY,
@@ -89,7 +89,7 @@ export const componentConfig: ResourceComponent<NavAsideProps> = {
             type: PropTypeEnum.STRING,
           },
           id: {
-            label: '元素id',
+            label: '元素id/图片url',
             type: PropTypeEnum.STRING,
           },
         },

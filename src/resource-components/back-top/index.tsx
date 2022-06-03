@@ -20,7 +20,7 @@ export type BackTopProps = {
 
 const BackTop: React.FC<BackTopProps> = (props) => {
   const {
-    isEditer,
+    isEditer = false,
     visibleHeight = 30,
     duration = 400,
     ...elementProps

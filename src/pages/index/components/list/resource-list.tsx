@@ -7,6 +7,7 @@ import {
   IconLaunch,
   IconDelete,
   IconEdit,
+  IconCopy,
 } from '@arco-design/web-react/icon'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { Link } from 'react-router-dom'
@@ -49,6 +50,7 @@ export type ResourceListProps = {
   resourceType: ResourceType
   onLoadMore: () => void
   onRemove: (resourceId: string) => void
+  onPathCopy: (resourceId: string) => void
 }
 
 const ResourceList: React.FC<ResourceListProps> = (props) => {
@@ -61,6 +63,7 @@ const ResourceList: React.FC<ResourceListProps> = (props) => {
     tagComputer,
     onLoadMore,
     onRemove,
+    onPathCopy,
   } = props
 
   const newPathRef = React.useRef(createNewResourcePath(resourceType))
@@ -75,24 +78,35 @@ const ResourceList: React.FC<ResourceListProps> = (props) => {
             exit: 300,
           }}
         >
-          <Card
-            hoverable
-            className={clsx(styles.resource_item, styles.function_item)}
-            cover={
-              <div className={styles.function_item_cover}>
-                <IconPlus />
-              </div>
-            }
-          >
-            <Link to={newPathRef.current}>
+          <Link to={newPathRef.current} style={{ display: 'block' }}>
+            <Card
+              hoverable
+              className={clsx(styles.resource_item, styles.function_item)}
+              cover={
+                <div className={styles.function_item_cover}>
+                  <IconPlus />
+                </div>
+              }
+            >
               <Button type="primary">创建</Button>
-            </Link>
-          </Card>
+            </Card>
+          </Link>
         </CSSTransition>
         {resourceList.map((resource) => {
           const { edit, launch, remove } = actionComputer(resource)
           const tags = tagComputer?.(resource) || []
-          const actions: JSX.Element[] = []
+
+          const actions: JSX.Element[] = [
+            <div
+              className={styles.action_btn}
+              onClick={() => {
+                onPathCopy(resource.resourceId)
+              }}
+            >
+              <IconCopy />
+            </div>,
+          ]
+
           if (edit) {
             actions.push(
               <Link
@@ -102,7 +116,6 @@ const ResourceList: React.FC<ResourceListProps> = (props) => {
                   resource_id: resource.resourceId,
                   resource_type: resourceType,
                   edit_type: 'edit',
-                  title: resource.title,
                 })}
               >
                 <IconEdit />
@@ -128,7 +141,9 @@ const ResourceList: React.FC<ResourceListProps> = (props) => {
           if (remove) {
             actions.push(
               <Popconfirm
-                title="确认删除该页面?"
+                title={`确认删除该${
+                  resourceType === 'page' ? '页面' : '模板'
+                }?`}
                 onOk={() => {
                   onRemove(resource.resourceId)
                 }}

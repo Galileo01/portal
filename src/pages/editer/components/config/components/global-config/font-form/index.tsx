@@ -86,6 +86,7 @@ const GlobalFontForm: React.FC<FontFormProps> = ({ fontList }) => {
           span: 15,
         }}
         labelAlign="left"
+        autoComplete="off"
         onChange={handleFormChangeHandler}
         className={styles.font_form}
         initialValues={configData?.fontConfig}
@@ -97,7 +98,7 @@ const GlobalFontForm: React.FC<FontFormProps> = ({ fontList }) => {
           field="usedFont"
           label={
             <span>
-              使用的字体
+              字体全集
               <HelpTip content="包含全局字体和单个元素个性化字体" />
             </span>
           }
@@ -111,7 +112,9 @@ const GlobalFontForm: React.FC<FontFormProps> = ({ fontList }) => {
             width: '100%',
           }}
           onClick={handleSaveClick}
-        />
+        >
+          保存
+        </Button>
       </Form>
       <Collapse {...COLLAPSE_BASE_PROPS}>
         <CollapseItem

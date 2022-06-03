@@ -3,7 +3,6 @@ import * as React from 'react'
 import {
   Button,
   Space,
-  Popover,
   Message,
   Popconfirm,
   Tag,
@@ -11,7 +10,6 @@ import {
   Tooltip,
 } from '@arco-design/web-react'
 import { IconRedo, IconUndo, IconCopy } from '@arco-design/web-react/icon'
-import clsx from 'clsx'
 import { Link, useSearchParams } from 'react-router-dom'
 
 import Logo from '@/components/logo'
@@ -24,6 +22,7 @@ import {
   MAX_LENGTH,
 } from '@/store/editer-data'
 import { useUserInfo } from '@/store/user-info'
+import { useFetchDataDispatch, FetchDataActionEnum } from '@/store/fetch-data'
 import { ROUTE_PAGE } from '@/common/constant/route'
 import { setPageConfigById, clearResourceConfig } from '@/common/utils/storage'
 import { restorePreviewColorVariable } from '@/common/utils/color-variable'
@@ -34,6 +33,7 @@ import { operateResource } from '@/network/resource'
 import { outputCode } from '@/network/code'
 import { uploadCos } from '@/network/cos'
 import { EditType } from '@/typings/common/editer'
+import { transformToNecessaryList } from '@/common/utils/prop-config'
 
 import styles from './index.module.less'
 import ResourceManage from './components/resource-manage'
@@ -64,13 +64,13 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
   } = useEditerDataStore()
   const editerDataDispatch = useEditerDataDispatch()
   const userInfo = useUserInfo()
+  const fetchDataDispatch = useFetchDataDispatch()
 
   const [params] = useSearchParams()
 
-  const searchParams = React.useRef({
+  const searchParamsRef = React.useRef({
     resource_type: params.get('resource_type') || 'page',
     edit_type: params.get('edit_type') || EditType.CREATE,
-    title: params.get('title') || undefined,
   })
 
   const canSnapshotBack = currentSnapshotIndex > 0
@@ -132,29 +132,39 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
     setOutputModalVisible(false)
   }
 
-  const stringfyConfig = () =>
+  const stringfyConfig = (title: string, transform = false) =>
     JSON.stringify({
-      title: resourceId,
+      title,
       globalConfig,
       styleConfig,
-      componentDataList,
+      componentDataList: transform
+        ? transformToNecessaryList(componentDataList)
+        : componentDataList,
     })
 
   const handleResourceOperate: PublishModalProps['onConfirm'] = async (
     values
   ) => {
-    const isPublish = searchParams.current.edit_type === 'create'
-    const { thumbnail, ...restData } = values
+    const { thumbnail, resourceType, ...restData } = values
+    // values 中的 resourceType和 地址栏的不一致 也视为发布 -> 将已有 页面发布为 模板
+    const isPublish =
+      searchParamsRef.current.edit_type === 'create' ||
+      resourceType !== searchParamsRef.current.resource_type
+
     setOperating(true)
     // 点击确认时 才上传至 腾讯云 cos
-    const thumbnailUrl = await uploadCos(thumbnail, restData.resourceId)
+    const thumbnailUrl = await uploadCos(
+      thumbnail,
+      `${restData.resourceId}.png`
+    )
 
     const oprateRes = await operateResource({
       operateType: isPublish ? 'publish' : 'update',
       resourceData: {
         ...restData,
+        resourceType,
         thumbnailUrl,
-        config: stringfyConfig(),
+        config: stringfyConfig(restData.title, true),
       },
     })
 
@@ -171,7 +181,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
       const pageUrl = generatePagePath(
         {
           resource_id: resourceId,
-          resource_type: searchParams.current.resource_type,
+          resource_type: searchParamsRef.current.resource_type,
         },
         true
       )
@@ -181,6 +191,11 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
           Message.success('复制成功')
         })
       }
+
+      fetchDataDispatch({
+        type: FetchDataActionEnum.SET_RESOURCE,
+        payload: oprateRes.data,
+      })
 
       Modal.success({
         title: '提示',
@@ -207,12 +222,10 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
         onCancel: () => {
           // NOTE: 若是发布模式 发布成功后 必须跳转到 编辑模式的页面
           if (isPublish) {
-            const { resourceType, title } = values
             const newHref = generateEditerPath({
               resource_id: resourceId,
               edit_type: 'edit',
               resource_type: resourceType,
-              title,
             })
             // eslint-disable-next-line no-restricted-globals
             location.replace(newHref)
@@ -229,7 +242,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
       return
     }
     // 资源类型 为页面时 才允许 出码
-    if (searchParams.current.resource_type === 'page') {
+    if (searchParamsRef.current.resource_type === 'page') {
       showOutputModal()
     } else {
       Message.warning('模板资源不支持出码')
@@ -250,7 +263,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
     setIsBlocking(false)
     outputCode({
       ...restField,
-      pageConfig: useLocal ? stringfyConfig() : undefined,
+      pageConfig: useLocal ? stringfyConfig(restField.title) : undefined,
     })
       .then((res) => {
         if (res.success === 1) {
@@ -273,32 +286,36 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
       </Space>
       <Space className={styles.btns} size="medium">
         <ThemeSwitch />
-        <IconUndo
-          className={clsx(
-            styles.snapshot_btn,
-            !canSnapshotBack && styles.snapshot_disable
-          )}
+        <Button
+          size="mini"
+          icon={<IconUndo />}
+          className={styles.snapshot_btn}
+          disabled={!canSnapshotBack}
           onClick={handleSnapshotBack}
         />
-        <Popover content={`注意: 最多保存${MAX_LENGTH}个状态快照`}>
-          <Tag>{snapshotList.length}</Tag>
-        </Popover>
-        <IconRedo
-          className={clsx(
-            styles.snapshot_btn,
-            !canSnapshotForward && styles.snapshot_disable
-          )}
+        <Tooltip content={`注意: 最多保存${MAX_LENGTH}个状态快照`}>
+          <Tag color="blue">{`${currentSnapshotIndex + 1}/${
+            snapshotList.length
+          }`}</Tag>
+        </Tooltip>
+        <Button
+          size="mini"
+          icon={<IconRedo />}
+          className={styles.snapshot_btn}
+          disabled={!canSnapshotForward}
           onClick={handleSnapshotForward}
         />
         <Link
           to={{
             pathname: ROUTE_PAGE,
-            search: `resource_id=${resourceId}&resource_type=${searchParams.current.resource_type}&is_preview=1`,
+            search: `resource_id=${resourceId}&resource_type=${searchParamsRef.current.resource_type}&is_preview=1`,
           }}
           target="_blank"
           className={styles.preview_link}
         >
-          <Button type="primary">预览</Button>
+          <Tooltip content="注:请先点击保存按钮，保存数据">
+            <Button type="primary">预览</Button>
+          </Tooltip>
         </Link>
         <Button onClick={handleSaveClick}>保存</Button>
         <Popconfirm
@@ -317,8 +334,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
       </Space>
       <PublishModal
         resourceId={resourceId}
-        title={searchParams.current.title}
-        resourceType={searchParams.current.resource_type}
+        resourceType={searchParamsRef.current.resource_type}
         visible={publishModalVisible}
         fetching={operating}
         onCancel={hidePublishModal}
@@ -326,8 +342,7 @@ const ToolNav: React.FC<ToolNavProps> = ({ resourceId, editType }) => {
       />
       <OutputModal
         pageId={resourceId}
-        editType={searchParams.current.edit_type}
-        title={searchParams.current.title}
+        editType={searchParamsRef.current.edit_type}
         visible={outputModalVisible}
         fetching={outputing}
         onCancel={hideOutputModal}

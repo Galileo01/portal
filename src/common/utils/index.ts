@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 import { nanoid } from 'nanoid'
 
-import { NANO_ID_LENGTH, CUSTOM_EVENT_TEMPLATE_IMPORT } from '@/common/constant'
-import { ROUTE_EDITER } from '@/common/constant/route'
+import { NANO_ID_LENGTH } from '@/common/constant'
+import { getLocalStorage } from '@/common/utils/storage'
 
 export const calculateIsDevFromQuery = () => {
   const searchParams = new URLSearchParams(window.location.search)
@@ -15,7 +15,7 @@ export const calculateIsDevFromQuery = () => {
 export const IS_DEV =
   process.env.NODE_ENV === 'development' || calculateIsDevFromQuery()
 
-export const IS_ROUTE_EDITER = window.location.pathname === ROUTE_EDITER
+export const HAS_TOKEN = Boolean(getLocalStorage('token'))
 
 export const devLogger = (...args: unknown[]) => {
   if (IS_DEV) {
@@ -66,15 +66,6 @@ export const compose =
         curFun.apply(null, [].concat(preValue as any | any[])),
       args
     ) as unknown as T
-
-export const dispatchTemplateImportEvent = (resourceId: string) => {
-  const customEvent = new CustomEvent(CUSTOM_EVENT_TEMPLATE_IMPORT, {
-    detail: {
-      resourceId,
-    },
-  })
-  window.dispatchEvent(customEvent)
-}
 
 // 使用 Promise 创建延时效果
 export const createTimeoutPromise = (ms: number) =>
